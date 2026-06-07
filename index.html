@@ -1215,8 +1215,8 @@ label{display:grid;gap:8px;font-size:13px;font-weight:850;color:var(--text);lett
 .pphfinal-preview-shell #pphFinalFrame{
   display:block;
   width:100%;
-  min-height:1550px;
-  height:1550px;
+  min-height:0;
+  height:920px;
   border:0;
   border-radius:0;
   overflow:hidden;
@@ -1226,10 +1226,10 @@ label{display:grid;gap:8px;font-size:13px;font-weight:850;color:var(--text);lett
   .container.pphfinal-main-area{max-width:100%!important;padding-left:16px!important;padding-right:16px!important}
 }
 @media(max-width:860px){
-  .pphfinal-preview-shell #pphFinalFrame{min-height:2050px;height:2050px}
+  .pphfinal-preview-shell #pphFinalFrame{min-height:0;height:1120px}
 }
 @media(max-width:520px){
-  .pphfinal-preview-shell #pphFinalFrame{min-height:2450px;height:2450px}
+  .pphfinal-preview-shell #pphFinalFrame{min-height:0;height:1320px}
 }
 
 
@@ -1248,8 +1248,8 @@ label{display:grid;gap:8px;font-size:13px;font-weight:850;color:var(--text);lett
 .pph22-preview-shell #pph22Frame{
   display:block;
   width:100%;
-  min-height:1350px;
-  height:1350px;
+  min-height:0;
+  height:820px;
   border:0;
   border-radius:0;
   overflow:hidden;
@@ -1259,10 +1259,10 @@ label{display:grid;gap:8px;font-size:13px;font-weight:850;color:var(--text);lett
   .container.pph22-main-area{max-width:100%!important;padding-left:16px!important;padding-right:16px!important}
 }
 @media(max-width:860px){
-  .pph22-preview-shell #pph22Frame{min-height:1850px;height:1850px}
+  .pph22-preview-shell #pph22Frame{min-height:0;height:1040px}
 }
 @media(max-width:520px){
-  .pph22-preview-shell #pph22Frame{min-height:2200px;height:2200px}
+  .pph22-preview-shell #pph22Frame{min-height:0;height:1240px}
 }
 
 
@@ -2533,8 +2533,8 @@ const state = {
 
 const app = document.getElementById('app');
 
-const ABOUT_MUSIC_SRC = 'assets/about/safe-and-sound-60s-fade.mp3';
-const ABOUT_MUSIC_LIMIT_SECONDS = 60;
+const ABOUT_MUSIC_SRC = 'assets/about/safe-and-sound-80s-fade.mp3?v=50';
+const ABOUT_MUSIC_LIMIT_SECONDS = 80;
 let aboutMusicAudio = null;
 let aboutMusicTimer = null;
 
@@ -3232,6 +3232,64 @@ function renderPPh21() {
 }
 
 
+function resizeEmbeddedCalculatorFrame(frame, minHeight = 280) {
+  if (!frame) return;
+  try {
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    const win = frame.contentWindow;
+    const wrap = doc.querySelector('.wrap');
+    let height = 0;
+
+    if (wrap) {
+      const rect = wrap.getBoundingClientRect();
+      const style = win.getComputedStyle(wrap);
+      const marginBottom = parseFloat(style.marginBottom || '0') || 0;
+      height = Math.ceil(rect.top + wrap.scrollHeight + marginBottom);
+    }
+
+    if (!height && doc.body) {
+      const children = Array.from(doc.body.children || []).filter(el => {
+        const tag = (el.tagName || '').toLowerCase();
+        return tag !== 'script' && tag !== 'style';
+      });
+      height = Math.ceil(children.reduce((max, el) => {
+        if (!el.getBoundingClientRect) return max;
+        const r = el.getBoundingClientRect();
+        return Math.max(max, r.bottom);
+      }, 0));
+    }
+
+    frame.style.height = Math.max(height + 4, minHeight) + 'px';
+  } catch (e) {
+    // Local/offline fallback height is already set in CSS.
+  }
+}
+
+function attachEmbeddedCalculatorAutoResize(frame, minHeight = 280) {
+  if (!frame) return;
+  const resize = () => resizeEmbeddedCalculatorFrame(frame, minHeight);
+  frame.addEventListener('load', () => {
+    applyEmbeddedFrameTheme(frame);
+    resize();
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      const wrap = doc.querySelector('.wrap');
+      const ro = new ResizeObserver(() => requestAnimationFrame(resize));
+      frame._ngolahResizeObserver = ro;
+      if (wrap) ro.observe(wrap);
+      if (doc.body) ro.observe(doc.body);
+      doc.addEventListener('input', () => requestAnimationFrame(resize), true);
+      doc.addEventListener('change', () => setTimeout(resize, 50), true);
+      doc.addEventListener('click', () => {
+        requestAnimationFrame(resize);
+        setTimeout(resize, 90);
+        setTimeout(resize, 260);
+      }, true);
+      window.addEventListener('resize', resize);
+    } catch (e) {}
+  });
+}
+
 function renderPPhFinal() {
   shell(`
     <section class="fade-in pphfinal-preview-shell">
@@ -3242,30 +3300,7 @@ function renderPPhFinal() {
       <iframe id="pphFinalFrame" src="pph_final_pasal_4_ayat_2.html?theme=${embeddedThemeParam()}" title="Kalkulator PPh Final Pasal 4 Ayat (2)"></iframe>
     </section>`);
   wireBack();
-  const frame = document.getElementById('pphFinalFrame');
-  const resizeFrame = () => {
-    try {
-      const doc = frame.contentDocument || frame.contentWindow.document;
-      const height = Math.max(
-        doc.body ? doc.body.scrollHeight : 0,
-        doc.documentElement ? doc.documentElement.scrollHeight : 0,
-        1550
-      );
-      frame.style.height = (height + 12) + 'px';
-    } catch (e) {
-      // Local offline file: fallback height is already set in CSS.
-    }
-  };
-  frame.addEventListener('load', () => {
-    applyEmbeddedFrameTheme(frame);
-    resizeFrame();
-    try {
-      const doc = frame.contentDocument || frame.contentWindow.document;
-      const ro = new ResizeObserver(resizeFrame);
-      ro.observe(doc.body);
-      window.addEventListener('resize', resizeFrame);
-    } catch (e) {}
-  });
+  attachEmbeddedCalculatorAutoResize(document.getElementById('pphFinalFrame'), 420);
 }
 
 
@@ -3279,30 +3314,7 @@ function renderPPh22() {
       <iframe id="pph22Frame" src="pph22.html?theme=${embeddedThemeParam()}" title="Kalkulator PPh Pasal 22"></iframe>
     </section>`);
   wireBack();
-  const frame = document.getElementById('pph22Frame');
-  const resizeFrame = () => {
-    try {
-      const doc = frame.contentDocument || frame.contentWindow.document;
-      const height = Math.max(
-        doc.body ? doc.body.scrollHeight : 0,
-        doc.documentElement ? doc.documentElement.scrollHeight : 0,
-        1350
-      );
-      frame.style.height = (height + 12) + 'px';
-    } catch (e) {
-      // Local offline file: fallback height is already set in CSS.
-    }
-  };
-  frame.addEventListener('load', () => {
-    applyEmbeddedFrameTheme(frame);
-    resizeFrame();
-    try {
-      const doc = frame.contentDocument || frame.contentWindow.document;
-      const ro = new ResizeObserver(resizeFrame);
-      ro.observe(doc.body);
-      window.addEventListener('resize', resizeFrame);
-    } catch (e) {}
-  });
+  attachEmbeddedCalculatorAutoResize(document.getElementById('pph22Frame'), 420);
 }
 
 function pph23SelectHTML() {
