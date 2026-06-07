@@ -1,0 +1,3386 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NgolahPajak - Kalkulator Pajak</title>
+  <style>
+:root{
+  --bg:#f5f7fb;
+  --bg-2:#eef2f8;
+  --panel:#ffffff;
+  --panel2:#f8fafc;
+  --panel3:#fffaf0;
+  --text:#263041;
+  --text-strong:#111a44;
+  --muted:#65738a;
+  --muted-2:#9aa7b8;
+  --line:#dbe2ee;
+  --line-strong:#c9d3e2;
+  --navy:#111a44;
+  --navy-2:#1b2456;
+  --navy-3:#2b356d;
+  --gold:#e7bd22;
+  --gold-2:#ffd84d;
+  --gold-3:#fff8dc;
+  --emerald:#087443;
+  --emerald2:#0f9f6e;
+  --blue:#182150;
+  --rose:#dc2626;
+  --cyan:#e7bd22;
+  --shadow:0 26px 70px rgba(17,26,68,.12);
+  --shadow-soft:0 15px 36px rgba(17,26,68,.09);
+  --shadow-mini:0 8px 20px rgba(17,26,68,.07);
+  --radius-xl:28px;
+  --radius-lg:22px;
+  --radius-md:16px;
+}
+.dark:root{
+  --bg:#0b102b;
+  --bg-2:#111a44;
+  --panel:#111a44;
+  --panel2:#182150;
+  --panel3:#241f35;
+  --text:#f8fafc;
+  --text-strong:#ffffff;
+  --muted:#c6cfdd;
+  --muted-2:#98a4b8;
+  --line:rgba(255,255,255,.16);
+  --line-strong:rgba(255,255,255,.24);
+  --navy:#ffffff;
+  --navy-2:#e7ecff;
+  --navy-3:#cbd5ff;
+  --gold:#ffd84d;
+  --gold-2:#ffe27a;
+  --gold-3:rgba(255,216,77,.16);
+  --emerald:#34d399;
+  --emerald2:#7dd3fc;
+  --blue:#ffd84d;
+  --shadow:0 28px 80px rgba(0,0,0,.34);
+  --shadow-soft:0 18px 44px rgba(0,0,0,.24);
+  --shadow-mini:0 10px 24px rgba(0,0,0,.18);
+}
+*{box-sizing:border-box}
+html{min-height:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(640px 360px at 7% -4%,rgba(24,33,80,.105),transparent 64%),
+    radial-gradient(560px 310px at 94% 8%,rgba(231,189,34,.18),transparent 66%),
+    radial-gradient(520px 260px at 52% 100%,rgba(231,189,34,.08),transparent 72%),
+    linear-gradient(180deg,#ffffff 0%,#f6f8fc 45%,#f8fafc 100%);
+  overflow-x:hidden;
+}
+.dark body{
+  background:
+    radial-gradient(640px 360px at 7% -4%,rgba(255,216,77,.12),transparent 64%),
+    radial-gradient(560px 310px at 94% 8%,rgba(255,216,77,.14),transparent 66%),
+    radial-gradient(520px 260px at 52% 100%,rgba(124,58,237,.08),transparent 72%),
+    linear-gradient(180deg,#080d25 0%,#0b102b 55%,#070b1c 100%);
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(17,26,68,.038) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(17,26,68,.038) 1px,transparent 1px);
+  background-size:58px 58px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.58),rgba(0,0,0,.12) 62%,transparent 86%);
+  z-index:0;
+}
+.dark body::before{background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px)}
+body::after{
+  content:"";
+  position:fixed;
+  width:520px;
+  height:520px;
+  right:-270px;
+  top:130px;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(231,189,34,.13),transparent 68%);
+  filter:blur(5px);
+  z-index:0;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+b,strong{color:var(--text-strong)}
+.login-page-accent{
+  position:fixed;
+  inset:auto auto 76px -110px;
+  width:340px;
+  height:340px;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(17,26,68,.075),transparent 70%);
+  z-index:0;
+}
+.dark .login-page-accent{background:radial-gradient(circle,rgba(255,216,77,.095),transparent 70%)}
+.container{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 22px}
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.92),rgba(255,253,246,.88)),
+    radial-gradient(340px 90px at 92% 0%,rgba(255,216,77,.18),transparent 70%);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(201,211,226,.88);
+  box-shadow:0 10px 28px rgba(17,26,68,.06);
+}
+.site-header::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:3px;
+  background:linear-gradient(90deg,#111a44 0%,#192253 48%,#e7bd22 100%);
+  opacity:.92;
+}
+.dark .site-header{background:linear-gradient(90deg,rgba(11,16,43,.84),rgba(17,26,68,.78));border-bottom-color:rgba(255,255,255,.14)}
+.header-row{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:baseline;gap:10px;font-weight:950;font-size:24px;letter-spacing:-.04em;color:var(--text-strong)}
+.brand span span,.brand small,.hero h1 span,.page-title span,.footer b{color:var(--gold)}
+.brand small{font-size:12px;letter-spacing:.02em;font-weight:850;color:var(--muted);text-transform:uppercase}
+.header-actions{display:flex;align-items:center;gap:10px}
+.icon-btn,.logout-btn,.back-btn{
+  min-height:40px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#ffffff,#f8fafc);
+  color:var(--text-strong);
+  border-radius:999px;
+  padding:9px 14px;
+  font-weight:850;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 7px 16px rgba(17,26,68,.06);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.dark .icon-btn,.dark .logout-btn,.dark .back-btn{background:rgba(255,255,255,.08);color:#fff}
+.icon-btn:hover,.logout-btn:hover,.back-btn:hover{transform:translateY(-1px);border-color:rgba(231,189,34,.55);box-shadow:0 10px 22px rgba(231,189,34,.15)}
+.logout-btn:hover{color:var(--gold)}
+.main-area{min-height:calc(100vh - 150px);padding-top:36px}
+.footer{
+  position:relative;
+  overflow:hidden;
+  border-top:1px solid var(--line);
+  padding:32px 0;
+  text-align:center;
+  color:var(--muted);
+  margin-top:60px;
+  background:
+    radial-gradient(360px 120px at 50% 0%,rgba(255,216,77,.16),transparent 68%),
+    linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.58));
+}
+.footer::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
+  width:min(520px,72%);
+  height:3px;
+  border-radius:999px;
+  background:linear-gradient(90deg,transparent,#111a44,#e7bd22,transparent);
+  opacity:.82;
+}
+.dark .footer{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.055))}
+.footer p{margin:0 0 6px}
+.center-screen{min-height:calc(100vh - 210px);display:flex;align-items:center;justify-content:center;padding:24px 0}
+.login-card{
+  position:relative;
+  overflow:hidden;
+  width:min(100%,450px);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(250,252,255,.95)),
+    radial-gradient(260px 150px at 96% 2%,rgba(255,216,77,.18),transparent 66%);
+  border:1px solid rgba(201,211,226,.92);
+  border-radius:30px;
+  padding:36px;
+  box-shadow:0 24px 64px rgba(17,26,68,.12), inset 0 1px 0 rgba(255,255,255,.92);
+  isolation:isolate;
+}
+.dark .login-card{background:linear-gradient(180deg,rgba(17,26,68,.88),rgba(12,18,45,.90));border-color:rgba(255,255,255,.16)}
+.login-card::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:5px;
+  background:linear-gradient(90deg,#111a44 0%,#192253 47%,#e7bd22 100%);
+  z-index:1;
+}
+.login-card::after{
+  content:"";
+  position:absolute;
+  right:-88px;
+  top:-108px;
+  width:270px;
+  height:270px;
+  border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,216,77,.30),rgba(255,244,170,.11));
+  z-index:-1;
+}
+.glow{position:absolute;left:-110px;bottom:-130px;width:260px;height:260px;border-radius:50%;background:rgba(17,26,68,.07);filter:blur(4px);z-index:-1}
+.dark .glow{background:rgba(255,216,77,.11)}
+.login-head{text-align:center;position:relative;margin-bottom:22px}
+.login-watermark{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-size:clamp(74px,13vw,154px);
+  line-height:1;
+  color:rgba(17,26,68,.032);
+  font-weight:950;
+  letter-spacing:-.08em;
+  white-space:nowrap;
+  pointer-events:none;
+  user-select:none;
+  z-index:0;
+}
+.dark .login-watermark{color:rgba(255,255,255,.035)}
+.login-ornament{
+  position:absolute;
+  pointer-events:none;
+  user-select:none;
+  z-index:-1;
+}
+.login-ornament.one{
+  left:-34px;
+  top:78px;
+  width:78px;
+  height:78px;
+  border-radius:28px;
+  border:1px solid rgba(231,189,34,.22);
+  background:linear-gradient(135deg,rgba(255,216,77,.10),rgba(255,255,255,.04));
+  transform:rotate(-12deg);
+}
+.login-ornament.two{
+  right:-38px;
+  bottom:78px;
+  width:92px;
+  height:92px;
+  border-radius:999px;
+  border:1px solid rgba(17,26,68,.10);
+  background:radial-gradient(circle,rgba(17,26,68,.055),transparent 70%);
+}
+.dark .login-ornament.two{border-color:rgba(255,255,255,.10);background:radial-gradient(circle,rgba(255,216,77,.08),transparent 70%)}
+.login-motion{
+  position:absolute;
+  pointer-events:none;
+  user-select:none;
+  z-index:0;
+  opacity:.72;
+}
+.login-motion.left{
+  left:clamp(18px,8vw,150px);
+  top:26%;
+  width:190px;
+  height:190px;
+  border-radius:44px;
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,216,77,.20),transparent 48%),
+    linear-gradient(135deg,rgba(255,255,255,.24),rgba(17,26,68,.045));
+  border:1px solid rgba(231,189,34,.16);
+  box-shadow:0 24px 60px rgba(17,26,68,.06);
+  animation:loginDriftLeft 12s ease-in-out infinite;
+}
+.login-motion.right{
+  right:clamp(18px,8vw,150px);
+  bottom:25%;
+  width:230px;
+  height:230px;
+  border-radius:999px;
+  background:
+    radial-gradient(circle,rgba(231,189,34,.13),transparent 64%),
+    radial-gradient(circle at 30% 70%,rgba(17,26,68,.055),transparent 62%);
+  border:1px solid rgba(17,26,68,.065);
+  box-shadow:inset 0 0 0 26px rgba(255,255,255,.18);
+  animation:loginDriftRight 14s ease-in-out infinite;
+}
+.login-motion.line{
+  left:50%;
+  bottom:12%;
+  width:min(520px,62vw);
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(17,26,68,.14),rgba(231,189,34,.20),transparent);
+  transform:translateX(-50%);
+  animation:loginLinePulse 7s ease-in-out infinite;
+}
+.dark .login-motion.left{
+  background:linear-gradient(135deg,rgba(255,216,77,.12),rgba(255,255,255,.035));
+  border-color:rgba(255,216,77,.14);
+}
+.dark .login-motion.right{
+  border-color:rgba(255,255,255,.07);
+  box-shadow:inset 0 0 0 26px rgba(255,255,255,.035);
+}
+@keyframes loginDriftLeft{
+  0%,100%{transform:translate3d(0,0,0) rotate(-10deg)}
+  50%{transform:translate3d(18px,-18px,0) rotate(-5deg)}
+}
+@keyframes loginDriftRight{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-20px,16px,0) scale(1.04)}
+}
+@keyframes loginLinePulse{
+  0%,100%{opacity:.38;filter:blur(0)}
+  50%{opacity:.88;filter:blur(.4px)}
+}
+.header-clock{
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 14px;
+  border-radius:999px;
+  border:1px solid rgba(201,211,226,.86);
+  background:linear-gradient(180deg,#ffffff,#f8fafc);
+  color:var(--text-strong);
+  font-size:12px;
+  font-weight:850;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 7px 16px rgba(17,26,68,.05);
+  white-space:nowrap;
+}
+.header-clock span{color:var(--gold);font-weight:950}
+.dark .header-clock{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.14)}
+.login-bubble{
+  position:absolute;
+  z-index:0;
+  pointer-events:none;
+  user-select:none;
+  border-radius:999px;
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,255,255,.92),rgba(255,255,255,.36) 32%,rgba(255,216,77,.28) 64%,rgba(231,189,34,.08) 76%,transparent 82%);
+  border:1px solid rgba(231,189,34,.30);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.86),
+    0 18px 46px rgba(17,26,68,.09),
+    0 0 34px rgba(255,216,77,.12);
+  backdrop-filter:blur(2px);
+  animation:loginBubbleFloat var(--dur,12s) ease-in-out infinite;
+  animation-delay:var(--delay,0s);
+  opacity:var(--op,.82);
+}
+.login-bubble.b1{width:46px;height:46px;left:12%;top:21%;--dur:13s;--delay:.2s;--op:.78}
+.login-bubble.b2{width:78px;height:78px;left:18%;bottom:23%;--dur:16s;--delay:1.1s;--op:.72}
+.login-bubble.b3{width:30px;height:30px;left:30%;top:17%;--dur:11s;--delay:2s;--op:.68}
+.login-bubble.b4{width:60px;height:60px;right:17%;top:24%;--dur:14s;--delay:.6s;--op:.76}
+.login-bubble.b5{width:92px;height:92px;right:12%;bottom:21%;--dur:18s;--delay:1.7s;--op:.62}
+.login-bubble.b6{width:38px;height:38px;right:30%;bottom:18%;--dur:12s;--delay:2.4s;--op:.72}
+.login-bubble.b7{width:26px;height:26px;left:38%;bottom:14%;--dur:10s;--delay:1.5s;--op:.66}
+.login-bubble.b8{width:24px;height:24px;left:9%;bottom:42%;--dur:12.5s;--delay:3.1s;--op:.62}
+.login-bubble.b9{width:36px;height:36px;right:9%;top:46%;--dur:15s;--delay:2.8s;--op:.64}
+.login-bubble.b10{width:20px;height:20px;right:37%;top:15%;--dur:10.5s;--delay:3.6s;--op:.60}
+.dark .login-bubble{
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,255,255,.28),rgba(255,255,255,.10) 34%,rgba(255,216,77,.20) 68%,rgba(255,216,77,.06) 78%,transparent 84%);
+  border-color:rgba(255,216,77,.24);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.16),
+    0 18px 44px rgba(0,0,0,.20),
+    0 0 36px rgba(255,216,77,.08);
+}
+@keyframes loginBubbleFloat{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  35%{transform:translate3d(18px,-26px,0) scale(1.07)}
+  70%{transform:translate3d(-14px,18px,0) scale(.96)}
+}
+@media(max-width:980px){
+  .login-motion.left,.login-motion.right{display:none}
+  .login-bubble.b2,.login-bubble.b5,.login-bubble.b8,.login-bubble.b9,.login-bubble.b10{display:none}
+}
+@media(max-width:640px){
+  .header-clock{display:none}
+  .login-bubble{display:none}
+}
+.avatar{
+  width:86px;
+  height:86px;
+  margin:0 auto 18px;
+  border-radius:24px;
+  overflow:hidden;
+  background:linear-gradient(145deg,#ffffff,#fff9e8);
+  border:1.5px solid rgba(231,189,34,.48);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  color:#111a44;
+  box-shadow:0 14px 30px rgba(17,26,68,.13);
+  padding:9px;
+}
+.avatar img{width:100%;height:100%;object-fit:contain;border-radius:14px}
+.login-head h1{margin:0;color:var(--text-strong);font-size:32px;letter-spacing:-.045em;font-weight:950}
+.login-head p,.hero p,.page-title p{color:var(--muted)}
+.form-stack{display:grid;gap:18px}
+label{display:grid;gap:8px;font-size:13px;font-weight:850;color:var(--text);letter-spacing:.005em}
+.field{
+  width:100%;
+  min-height:46px;
+  border:1px solid var(--line);
+  background:#ffffff;
+  color:#111a44;
+  border-radius:14px;
+  padding:12px 14px;
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 2px rgba(17,26,68,.035);
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.dark .field{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.16)}
+.field::placeholder{color:#a3adbc}
+.field:hover{border-color:var(--line-strong)}
+.field:focus{border-color:rgba(24,33,80,.38);box-shadow:0 0 0 4px rgba(24,33,80,.09),0 8px 18px rgba(17,26,68,.07)}
+.dark .field:focus{border-color:rgba(255,216,77,.45);box-shadow:0 0 0 4px rgba(255,216,77,.12)}
+.readonly{opacity:1;background:linear-gradient(180deg,#f8fafc,#f3f6ff);font-weight:900;color:#111a44}
+.dark .readonly{background:rgba(255,255,255,.10);color:#fff}
+.primary-btn,.blue-btn{
+  min-height:48px;
+  border:1px solid rgba(24,33,80,.32);
+  border-radius:16px;
+  padding:14px 18px;
+  color:#fff;
+  background:linear-gradient(135deg,#111a44,#1e285f);
+  font-weight:950;
+  box-shadow:0 14px 30px rgba(17,26,68,.26);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.blue-btn{background:linear-gradient(135deg,#111a44,#1b2456 64%,#2b356d);box-shadow:0 14px 30px rgba(17,26,68,.24)}
+.primary-btn:hover,.blue-btn:hover{transform:translateY(-1px);border-color:rgba(231,189,34,.62);box-shadow:0 16px 34px rgba(17,26,68,.30)}
+.hint{font-size:12px;color:var(--muted);text-align:center;margin:18px 0 0;line-height:1.5}
+.hidden{display:none!important}
+.alert{border-radius:16px;padding:14px 16px;font-size:13px;line-height:1.5}
+.error{background:#fff5f5;border:1px solid #fecaca;color:#991b1b}
+.dark .error{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.34);color:#fecaca}
+.info{background:#fffdf2;border:1px solid rgba(248,211,77,.55);color:#5d4d17;margin-bottom:22px}
+.dark .info{background:rgba(255,216,77,.10);color:#ffeaa0;border-color:rgba(255,216,77,.28)}
+.error-text{color:#dc2626;font-weight:850;font-size:13px;text-align:center;margin:8px 0 0}
+.fade-in{animation:fade .35s ease both}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dashboard{padding-top:18px}.hero{
+  position:relative;
+  overflow:hidden;
+  text-align:left;
+  margin:0 auto 34px;
+  max-width:none;
+  min-height:168px;
+  padding:34px;
+  border:1px solid rgba(201,211,226,.95);
+  border-radius:30px;
+  background:
+    radial-gradient(520px 230px at 92% 28%,rgba(255,216,77,.30),transparent 62%),
+    radial-gradient(420px 220px at 78% 92%,rgba(17,26,68,.08),transparent 68%),
+    linear-gradient(135deg,#ffffff 0%,#fffdf6 55%,#f7f8fb 100%);
+  box-shadow:0 18px 42px rgba(17,26,68,.10);
+  isolation:isolate;
+}
+.dark .hero{background:radial-gradient(520px 230px at 92% 28%,rgba(255,216,77,.18),transparent 62%),linear-gradient(135deg,rgba(17,26,68,.96),rgba(24,33,80,.92));border-color:rgba(255,255,255,.15)}
+.hero::before{content:"";position:absolute;right:72px;top:-96px;width:310px;height:310px;border-radius:50%;background:rgba(17,26,68,.07);z-index:-2}
+.hero::after{content:"TAX CONSOLE";position:absolute;right:26px;bottom:18px;color:rgba(17,26,68,.055);font-weight:950;letter-spacing:.08em;font-size:clamp(34px,6vw,70px);line-height:1;z-index:-1;white-space:nowrap}.dark .hero::after{color:rgba(255,255,255,.07)}
+.hero h1{font-size:clamp(34px,5vw,56px);line-height:1.04;margin:0 0 14px;font-weight:950;letter-spacing:-.055em;color:var(--text-strong);max-width:780px}
+.hero p{font-size:17px;line-height:1.65;max-width:740px;margin:0}
+.menu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.menu-card{
+  position:relative;
+  text-align:left;
+  border:1px solid rgba(201,211,226,.90);
+  background:rgba(255,255,255,.96);
+  border-radius:24px;
+  padding:26px;
+  color:var(--text);
+  box-shadow:var(--shadow-soft);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+  overflow:hidden;
+}
+.dark .menu-card{background:rgba(17,26,68,.78);border-color:rgba(255,255,255,.16)}
+.menu-card::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#111a44 0%,#192253 47%,#e7bd22 100%)}
+.menu-card div{width:56px;height:56px;border-radius:17px;background:linear-gradient(135deg,#fff8dc,#f3f6ff);display:flex;align-items:center;justify-content:center;font-size:27px;margin-bottom:18px;box-shadow:0 8px 20px rgba(17,26,68,.07)}
+.dark .menu-card div{background:rgba(255,216,77,.14)}
+.menu-card h3{font-size:21px;margin:0 0 10px;color:var(--text-strong);letter-spacing:-.02em}.menu-card p{margin:0;color:var(--muted);line-height:1.55}.menu-card:hover{transform:translateY(-4px);border-color:rgba(231,189,34,.66);box-shadow:0 22px 60px rgba(17,26,68,.14)}
+@media (min-width:921px){.menu-grid .menu-card:nth-child(5){grid-column:2}.menu-grid .menu-card:nth-child(6){grid-column:3}}
+.menu-card.coming-soon{cursor:not-allowed;filter:grayscale(.18);background:linear-gradient(135deg,rgba(17,26,68,.88),rgba(24,33,80,.82));border-color:rgba(17,26,68,.38);box-shadow:0 18px 42px rgba(17,26,68,.16);color:#fff;transform:none!important}
+.menu-card.coming-soon::before{height:4px;background:linear-gradient(90deg,#111a44,#4b5563,#e7bd22)}
+.menu-card.coming-soon::after{content:"🔗";position:absolute;right:24px;top:22px;width:46px;height:46px;border-radius:999px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.24);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.menu-card.coming-soon:hover{border-color:rgba(17,26,68,.38);box-shadow:0 18px 42px rgba(17,26,68,.16);transform:none}
+.menu-card.coming-soon div{background:rgba(255,216,77,.16);color:#ffd84d;box-shadow:none}
+.menu-card.coming-soon h3{color:#fff;padding-right:48px}
+.menu-card.coming-soon p{color:rgba(255,255,255,.72)}
+.menu-card.coming-soon .coming-blur-text{display:block;filter:blur(3.2px);opacity:.78;user-select:none;pointer-events:none}
+.dark .menu-card.coming-soon{background:linear-gradient(135deg,#24163f 0%,#1b1738 52%,#132544 100%);border-color:rgba(255,216,77,.20);box-shadow:0 22px 54px rgba(0,0,0,.32);filter:none}
+.dark .menu-card.coming-soon::before{background:linear-gradient(90deg,#7c3aed 0%,#334155 56%,#ffd84d 100%)}
+.dark .menu-card.coming-soon::after{background:rgba(255,255,255,.06);border-color:rgba(255,216,77,.24);color:#ffe27a;box-shadow:0 14px 28px rgba(0,0,0,.24)}
+.dark .menu-card.coming-soon div{background:linear-gradient(135deg,rgba(255,216,77,.18),rgba(124,58,237,.20));color:#ffe27a}
+.dark .menu-card.coming-soon p{color:rgba(255,255,255,.66)}
+.dark .menu-card.coming-soon .coming-label{background:rgba(255,216,77,.10);border-color:rgba(255,216,77,.30);color:#ffe27a}
+.coming-label{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:8px 12px;border-radius:999px;background:rgba(255,216,77,.14);border:1px solid rgba(255,216,77,.42);color:#ffd84d;font-size:11px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+
+.about-floating{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  width:max-content;
+  min-height:46px;
+  margin:28px 0 0 auto;
+  padding:12px 22px;
+  border-radius:999px;
+  border:1px solid rgba(231,189,34,.48);
+  background:linear-gradient(135deg,#111a44,#1b2456 58%,#2b356d);
+  color:#fff;
+  font-weight:950;
+  box-shadow:0 14px 30px rgba(17,26,68,.18),inset 0 1px 0 rgba(255,255,255,.14);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.about-floating:hover{transform:translateY(-2px);border-color:rgba(255,216,77,.78);box-shadow:0 18px 38px rgba(17,26,68,.22)}
+.dark .about-floating{background:linear-gradient(135deg,#ffd84d,#e7bd22);color:#111a44;box-shadow:0 14px 30px rgba(0,0,0,.24)}
+.about-modal-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:80;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(6,10,30,.54);
+  backdrop-filter:blur(10px);
+}
+.about-modal{
+  width:min(100%,560px);
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+  border:1px solid rgba(231,189,34,.50);
+  background:
+    radial-gradient(320px 190px at 100% 0%,rgba(255,216,77,.26),transparent 62%),
+    radial-gradient(300px 180px at 0% 100%,rgba(17,26,68,.10),transparent 70%),
+    linear-gradient(135deg,#ffffff,#fffdf6 62%,#f8fafc);
+  color:#263041;
+  box-shadow:0 32px 90px rgba(0,0,0,.34);
+}
+.dark .about-modal{background:radial-gradient(320px 190px at 100% 0%,rgba(255,216,77,.20),transparent 62%),linear-gradient(135deg,rgba(17,26,68,.98),rgba(24,33,80,.96));color:#f8fafc}
+.about-modal::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#111a44,#e7bd22,#fff0a6)}
+.about-close{
+  position:absolute;
+  top:16px;
+  right:16px;
+  width:38px;
+  height:38px;
+  border-radius:999px;
+  border:1px solid rgba(201,211,226,.88);
+  background:rgba(255,255,255,.82);
+  color:#111a44;
+  font-weight:950;
+  box-shadow:none;
+}
+.dark .about-close{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.18);color:#fff}
+.about-content{padding:30px 30px 26px}
+.about-eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:7px 12px;border-radius:999px;border:1px solid rgba(231,189,34,.40);background:rgba(231,189,34,.11);color:#7c6410;font-size:11px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.dark .about-eyebrow{color:#ffeaa0;background:rgba(255,216,77,.12)}
+.about-content h2{margin:0 48px 8px 0;color:var(--text-strong);font-size:clamp(27px,4vw,36px);line-height:1.05;letter-spacing:-.05em;font-weight:950}
+.about-content h2 span{color:var(--gold)}
+.about-content p{margin:0;color:var(--muted);line-height:1.62;font-size:14px}
+.about-credit-box{margin-top:16px;padding:15px;border-radius:18px;border:1px solid rgba(201,211,226,.86);background:rgba(255,255,255,.62)}
+.dark .about-credit-box{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
+.about-credit-box b{display:block;margin-bottom:8px;color:var(--text-strong)}
+.about-members{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.about-member{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:13px;background:rgba(17,26,68,.045);font-size:13px;color:var(--text)}
+.dark .about-member{background:rgba(255,255,255,.07);color:#f8fafc}
+.about-member span:first-child{font-weight:900;color:var(--text-strong)}
+.about-member span:last-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);font-weight:850;text-align:right}
+.about-note{margin-top:14px!important;font-size:12.5px!important;color:var(--muted)!important}
+@media(max-width:560px){.about-floating{width:100%;margin-top:22px;padding:11px 14px}.about-content{padding:26px 20px 22px}.about-member{flex-direction:column;gap:3px}.about-member span:last-child{text-align:left}}
+
+/* ===== About Us Full Page ===== */
+.about-page{
+  position:relative;
+  overflow:hidden;
+  padding-bottom:34px;
+}
+.about-page::before{
+  content:"";
+  position:absolute;
+  inset:46px -18px auto -18px;
+  height:360px;
+  border-radius:34px;
+  background:
+    radial-gradient(620px 260px at 88% 12%,rgba(255,216,77,.26),transparent 64%),
+    radial-gradient(520px 260px at 8% 86%,rgba(17,26,68,.10),transparent 66%),
+    linear-gradient(135deg,#ffffff 0%,#fffdf7 58%,#f4f7fd 100%);
+  border:1px solid rgba(201,211,226,.72);
+  box-shadow:0 18px 52px rgba(17,26,68,.08);
+  z-index:-2;
+}
+.dark .about-page::before{
+  background:
+    radial-gradient(620px 260px at 88% 12%,rgba(255,216,77,.16),transparent 64%),
+    radial-gradient(520px 260px at 8% 86%,rgba(124,58,237,.18),transparent 66%),
+    linear-gradient(135deg,rgba(17,26,68,.98),rgba(11,16,43,.98));
+  border-color:rgba(255,255,255,.12);
+}
+.about-page::after{
+  content:"NGOLAHTEAM";
+  position:absolute;
+  right:-10px;
+  top:88px;
+  color:rgba(17,26,68,.045);
+  font-size:clamp(46px,10vw,120px);
+  line-height:1;
+  font-weight:950;
+  letter-spacing:.02em;
+  pointer-events:none;
+  z-index:-1;
+}
+.dark .about-page::after{color:rgba(255,255,255,.055)}
+.about-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(300px,.82fr);
+  gap:24px;
+  align-items:center;
+  padding:18px 0 28px;
+}
+.about-hero-copy{animation:aboutRise .58s cubic-bezier(.2,.82,.2,1) both}
+.about-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+  padding:8px 13px;
+  border-radius:999px;
+  border:1px solid rgba(231,189,34,.44);
+  background:rgba(255,216,77,.13);
+  color:#80630a;
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+.dark .about-kicker{color:#ffeaa0;background:rgba(255,216,77,.10)}
+.about-hero h1{
+  margin:0;
+  max-width:760px;
+  color:var(--text-strong);
+  font-size:clamp(42px,7vw,86px);
+  line-height:.95;
+  letter-spacing:-.07em;
+  font-weight:950;
+}
+.about-hero h1 span{color:var(--gold)}
+.about-lead{
+  max-width:680px;
+  margin:18px 0 0;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.75;
+}
+.about-hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.about-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:38px;
+  padding:9px 13px;
+  border-radius:999px;
+  border:1px solid rgba(201,211,226,.8);
+  background:rgba(255,255,255,.72);
+  color:var(--text-strong);
+  font-size:12px;
+  font-weight:900;
+  box-shadow:0 8px 18px rgba(17,26,68,.06);
+}
+.dark .about-pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);color:#fff}
+
+.about-music-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:38px;
+  padding:9px 14px;
+  border-radius:999px;
+  border:1px solid rgba(231,189,34,.50);
+  background:linear-gradient(135deg,#111a44,#1b2456 62%,#2b356d);
+  color:#fff;
+  font-size:12px;
+  font-weight:950;
+  box-shadow:0 10px 22px rgba(17,26,68,.15),inset 0 1px 0 rgba(255,255,255,.14);
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.about-music-btn:hover{transform:translateY(-1px);border-color:rgba(255,216,77,.82);box-shadow:0 14px 28px rgba(17,26,68,.20)}
+.about-music-btn.playing{background:linear-gradient(135deg,#ffd84d,#e7bd22);color:#111a44}
+.dark .about-music-btn{background:linear-gradient(135deg,#ffd84d,#e7bd22);color:#111a44;border-color:rgba(255,216,77,.50);box-shadow:0 12px 26px rgba(0,0,0,.22)}
+.dark .about-music-btn.playing{background:linear-gradient(135deg,#fff3b0,#ffd84d);color:#111a44}
+.about-photo-stage{
+  position:relative;
+  min-height:380px;
+  animation:aboutFloatIn .68s cubic-bezier(.2,.82,.2,1) .08s both;
+}
+.about-photo-stage::before{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  right:-20px;
+  top:4px;
+  border-radius:999px;
+  background:radial-gradient(circle,rgba(255,216,77,.24),transparent 68%);
+  filter:blur(2px);
+}
+.about-photo-card{
+  position:absolute;
+  inset:28px 8px auto auto;
+  width:min(100%,350px);
+  min-height:300px;
+  border-radius:34px;
+  overflow:hidden;
+  border:1px solid rgba(231,189,34,.48);
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,250,240,.72)),
+    radial-gradient(300px 180px at 100% 0%,rgba(255,216,77,.24),transparent 68%);
+  box-shadow:0 28px 70px rgba(17,26,68,.16);
+  transform:rotate(2deg);
+}
+.dark .about-photo-card{background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));box-shadow:0 28px 70px rgba(0,0,0,.32)}
+.about-photo-card img{
+  width:100%;
+  height:238px;
+  display:block;
+  object-fit:cover;
+  background:#eef2f8;
+}
+.about-photo-caption{
+  padding:14px 16px 16px;
+  color:var(--text-strong);
+  font-weight:950;
+  letter-spacing:-.02em;
+}
+.about-photo-caption small{display:block;margin-top:4px;color:var(--muted);font-weight:750;line-height:1.45}
+.about-mini-card{
+  position:absolute;
+  left:0;
+  bottom:28px;
+  width:min(280px,82%);
+  padding:16px;
+  border-radius:22px;
+  border:1px solid rgba(201,211,226,.74);
+  background:rgba(255,255,255,.82);
+  box-shadow:0 18px 42px rgba(17,26,68,.12);
+  backdrop-filter:blur(12px);
+}
+.dark .about-mini-card{background:rgba(17,26,68,.72);border-color:rgba(255,255,255,.14)}
+.about-mini-card b{display:block;margin-bottom:5px;color:var(--text-strong)}
+.about-mini-card span{display:block;color:var(--muted);font-size:12px;line-height:1.55}
+.about-story-zone{
+  position:relative;
+  margin-top:8px;
+  padding:28px 0 10px;
+}
+.about-story-zone::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:36px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.88),rgba(250,248,240,.78)),
+    url('assets/about/about-class-bg.jpg') center/cover no-repeat;
+  background-blend-mode:screen,normal;
+  opacity:.88;
+  border:1px solid rgba(201,211,226,.70);
+  box-shadow:0 18px 48px rgba(17,26,68,.08);
+}
+.about-story-zone::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:36px;
+  background:
+    radial-gradient(560px 280px at 92% 6%,rgba(255,216,77,.22),transparent 58%),
+    radial-gradient(420px 260px at 6% 84%,rgba(17,26,68,.10),transparent 62%),
+    linear-gradient(130deg,rgba(255,255,255,.12),transparent 34%,rgba(255,216,77,.08) 72%,transparent 92%);
+  pointer-events:none;
+}
+.dark .about-story-zone::before{
+  background:
+    linear-gradient(135deg,rgba(11,16,43,.90),rgba(17,26,68,.82)),
+    url('assets/about/about-class-bg.jpg') center/cover no-repeat;
+  background-blend-mode:multiply,normal;
+  opacity:.96;
+  border-color:rgba(255,255,255,.12);
+}
+.dark .about-story-zone::after{
+  background:
+    radial-gradient(560px 280px at 92% 6%,rgba(255,216,77,.16),transparent 58%),
+    radial-gradient(420px 260px at 6% 84%,rgba(124,58,237,.14),transparent 62%),
+    linear-gradient(130deg,rgba(255,255,255,.06),transparent 36%,rgba(255,216,77,.06) 72%,transparent 92%);
+}
+.about-story-inner{
+  position:relative;
+  z-index:1;
+  padding:18px 22px 22px;
+}
+.about-chibi-frame{position:relative;z-index:2;width:100%;max-width:180px;padding:10px;border-radius:24px;background:rgba(255,255,255,.84);border:1px solid rgba(255,255,255,.78);box-shadow:0 18px 44px rgba(17,26,68,.16);backdrop-filter:blur(10px);transform:rotate(4deg);animation:chibiFrameFloat 4.6s ease-in-out infinite;justify-self:center}.about-chibi-frame img{display:block;width:100%;height:138px;object-fit:cover;border-radius:16px;background:#eef2f8}.about-chibi-frame b{display:block;margin-top:8px;color:var(--text-strong);font-size:13px;line-height:1.2}.about-chibi-frame small{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.45}.dark .about-chibi-frame{background:rgba(17,26,68,.78);border-color:rgba(255,255,255,.12);box-shadow:0 18px 44px rgba(0,0,0,.30)}
+.about-flow-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(280px,.82fr);
+  gap:34px;
+  align-items:start;
+}
+.about-freecopy h2,.about-crew h2,.about-support-free h2{
+  margin:0 0 12px;
+  color:var(--text-strong);
+  font-size:clamp(24px,3.2vw,38px);
+  line-height:1.04;
+  letter-spacing:-.045em;
+  font-weight:950;
+}
+.about-freecopy p,.about-crew p,.about-support-free p{margin:0;color:var(--muted);line-height:1.82;font-size:15px;max-width:680px}
+.about-freecopy{
+  position:relative;
+  padding-top:6px;
+  animation:aboutRise .58s cubic-bezier(.2,.82,.2,1) both;
+}
+.about-inline-note{
+  margin-top:18px;
+  max-width:720px;
+  padding-left:18px;
+  border-left:4px solid rgba(231,189,34,.72);
+  color:#6a5512;
+  font-weight:800;
+  line-height:1.78;
+}
+.dark .about-inline-note{color:#ffeaa0;border-left-color:rgba(255,216,77,.58)}
+.about-floating-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.about-floating-tags span,.about-crew-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px;border-radius:999px;
+  background:rgba(255,255,255,.54);
+  border:1px solid rgba(201,211,226,.78);
+  box-shadow:0 12px 30px rgba(17,26,68,.06);
+  color:var(--text-strong);font-size:12px;font-weight:900;
+}
+.dark .about-floating-tags span,.dark .about-crew-badge{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);color:#fff}
+.about-photo-collage{
+  position:relative;
+  min-height:460px;
+  animation:aboutFloatIn .68s cubic-bezier(.2,.82,.2,1) .08s both;
+}
+.about-sticker{
+  position:absolute;
+  width:min(100%,280px);
+  padding:12px;
+  border-radius:28px;
+  background:rgba(255,255,255,.78);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 22px 56px rgba(17,26,68,.12);
+  backdrop-filter:blur(10px);
+}
+.dark .about-sticker{background:rgba(17,26,68,.72);border-color:rgba(255,255,255,.12)}
+.about-sticker img{width:100%;height:170px;display:block;object-fit:cover;border-radius:20px;background:#eef2f8}
+.about-sticker b{display:block;margin-top:10px;color:var(--text-strong);font-size:16px}
+.about-sticker small{display:block;margin-top:4px;color:var(--muted);line-height:1.55;font-size:12px}
+.about-sticker.group-shot{right:6px;top:0;transform:rotate(2.6deg);width:min(100%,278px)}
+.about-sticker.class-shot{left:0;bottom:0;transform:rotate(-3.6deg);width:min(100%,316px)}
+.about-sticker.trio-slot{left:-6px;top:64px;transform:rotate(-4deg);width:min(100%,196px)}
+.about-class-placeholder{
+  height:182px;
+  border-radius:20px;
+  background:
+    linear-gradient(135deg,rgba(17,26,68,.10),rgba(255,216,77,.12)),
+    radial-gradient(120px 80px at 100% 0%,rgba(255,216,77,.18),transparent 70%);
+  border:1.4px dashed rgba(231,189,34,.54);
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:18px;color:#6b7280;font-weight:800;line-height:1.6;
+}
+.dark .about-class-placeholder{background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,216,77,.08));color:rgba(255,255,255,.72);border-color:rgba(255,216,77,.28)}
+.about-trio-placeholder{
+  height:170px;
+  border-radius:20px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,248,220,.78)),
+    radial-gradient(140px 90px at 100% 0%,rgba(255,216,77,.20),transparent 70%);
+  border:1.4px dashed rgba(231,189,34,.58);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:18px;color:#6b7280;font-weight:800;line-height:1.55;
+}
+.about-trio-placeholder strong{display:block;color:var(--text-strong);font-size:16px;margin-bottom:6px}
+.dark .about-trio-placeholder{background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,216,77,.08));color:rgba(255,255,255,.72);border-color:rgba(255,216,77,.30)}
+.dark .about-trio-placeholder strong{color:#fff}
+.about-lower-flow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(240px,.56fr);
+  gap:34px;
+  margin-top:36px;
+  align-items:start;
+}
+.about-crew,.about-support-free{animation:aboutRise .58s cubic-bezier(.2,.82,.2,1) both}
+.about-crew{padding-right:10px}
+.about-crew-badges{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+.about-team-showcase{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:22px;align-items:center}
+.about-member-lines{display:grid;gap:14px}
+.about-member-line{
+  display:block;
+  padding:10px 0 12px;
+  border-bottom:1px solid rgba(17,26,68,.12);
+}
+.dark .about-member-line{border-bottom-color:rgba(255,255,255,.12)}
+.about-member-line b{display:block;color:var(--text-strong);font-size:18px;line-height:1.25}
+.about-member-line small{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+.about-member-line span{display:block;margin-top:6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#6b7895;font-size:12px;font-weight:900;text-align:left;letter-spacing:.03em}
+.dark .about-member-line span{color:rgba(255,255,255,.72)}
+.about-support-free{padding-top:6px;text-align:center}
+.qr-box{
+  width:180px;height:180px;margin:20px auto 16px;padding:13px;border-radius:30px;
+  background:rgba(255,255,255,.88);border:1px solid rgba(231,189,34,.42);box-shadow:0 18px 40px rgba(17,26,68,.10);
+}
+.dark .qr-box{background:rgba(255,255,255,.92)}
+.fake-qr{
+  width:100%;
+  height:100%;
+  border-radius:18px;
+  overflow:hidden;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.fake-qr img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  border-radius:18px;
+}
+.support-note{font-size:12px!important;line-height:1.68!important;max-width:280px;margin:0 auto!important}
+.support-float-links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.support-float-links span,.support-float-links a{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:999px;
+  background:rgba(255,255,255,.54);border:1px solid rgba(201,211,226,.78);color:var(--text-strong);font-size:11px;font-weight:850;text-decoration:none;
+}
+.support-float-links a{cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.support-float-links a:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(17,26,68,.10)}
+.dark .support-float-links span,.dark .support-float-links a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);color:#fff}
+.about-footer-cta{
+  margin-top:28px;padding:18px 2px 0;color:var(--text-strong);display:flex;justify-content:space-between;align-items:center;gap:16px;
+}
+.about-footer-cta b{color:var(--gold);font-size:18px}
+.about-footer-cta span{display:block;color:var(--muted);font-size:13px;margin-top:6px;max-width:760px;line-height:1.7}
+.about-footer-cta button{flex:0 0 auto;box-shadow:0 16px 32px rgba(17,26,68,.12)}
+@keyframes aboutRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes aboutFloatIn{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes chibiFrameFloat{0%,100%{transform:translateY(0) rotate(4deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+@media(max-width:980px){
+  .about-hero,.about-flow-grid,.about-lower-flow{grid-template-columns:1fr}
+  .about-photo-collage{min-height:520px}
+  .about-footer-cta{align-items:flex-start;flex-direction:column}
+  .about-footer-cta button{width:100%}
+  .about-team-showcase{grid-template-columns:1fr}
+  .about-chibi-frame{max-width:170px;margin:10px 0 0 auto}
+}
+@media(max-width:640px){
+  .about-story-inner{padding:18px 16px 18px}
+  .about-photo-collage{min-height:auto}
+  .about-sticker{position:relative;width:100%!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;margin-bottom:14px}
+  .about-member-line span{text-align:left}
+  .about-team-showcase{grid-template-columns:1fr}
+  .about-chibi-frame{position:relative;width:100%;max-width:220px;margin:8px auto 18px;transform:none;animation:chibiFrameFloatMobile 4.4s ease-in-out infinite}
+}
+@media(max-width:560px){.about-hero h1{font-size:42px}.about-photo-stage{min-height:auto}.about-mini-card{position:relative;left:auto;bottom:auto;width:100%;margin-top:12px}}
+@keyframes chibiFrameFloatMobile{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.back-btn{margin-bottom:24px;font-weight:900}.page-title{
+  position:relative;
+  overflow:hidden;
+  margin-bottom:22px;
+  padding:26px;
+  border:1px solid rgba(201,211,226,.90);
+  border-radius:26px;
+  background:
+    radial-gradient(430px 160px at 94% 15%,rgba(255,216,77,.28),transparent 62%),
+    linear-gradient(135deg,#ffffff,#fffdf7 60%,#f8fafc);
+  box-shadow:0 12px 30px rgba(17,26,68,.08);
+}
+.dark .page-title{background:linear-gradient(135deg,rgba(17,26,68,.92),rgba(24,33,80,.86));border-color:rgba(255,255,255,.15)}
+.page-title.center{text-align:left}.page-title h1{font-size:clamp(28px,4vw,42px);margin:0 0 8px;letter-spacing:-.045em;color:var(--text-strong);font-weight:950}.page-title p{margin:0;line-height:1.55}
+.two-col{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.9fr);gap:24px;align-items:start}.card{
+  position:relative;
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(201,211,226,.90);
+  border-radius:22px;
+  padding:24px;
+  box-shadow:var(--shadow-soft);
+  display:grid;
+  gap:18px;
+  overflow:hidden;
+}
+.dark .card{background:rgba(17,26,68,.80);border-color:rgba(255,255,255,.16)}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#111a44 0%,#192253 47%,#e7bd22 100%)}
+.card h2,.result-card h2{display:flex;align-items:center;gap:10px;margin:0;padding-bottom:14px;border-bottom:1px solid var(--line);font-size:19px;color:var(--text-strong);letter-spacing:-.02em}
+.card h2 span,.result-card h2 span{width:28px;height:28px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffd84d,#e7bd22);color:#111a44;font-size:13px;font-weight:950}
+.card h2:not(:has(span))::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--gold);box-shadow:0 0 0 4px rgba(231,189,34,.14)}
+.inline-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.info,.note{background:linear-gradient(180deg,#ffffff,#f8fafc);border:1px solid var(--line);border-radius:16px;padding:14px;color:var(--muted);font-size:13px;line-height:1.55}.dark .info,.dark .note{background:rgba(255,255,255,.06)}.info p{margin:7px 0}
+.result-empty{border:2px dashed var(--line);background:rgba(255,255,255,.70);border-radius:22px;padding:50px 24px;min-height:300px;text-align:center;color:var(--muted);display:flex;flex-direction:column;justify-content:center;box-shadow:var(--shadow-mini)}.dark .result-empty{background:rgba(255,255,255,.04)}.result-empty h2{color:var(--text-strong);margin:0 0 8px}.result-card{
+  position:sticky;top:104px;
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(201,211,226,.90);
+  border-radius:22px;
+  padding:24px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.dark .result-card{background:rgba(17,26,68,.88);border-color:rgba(255,255,255,.16)}
+.result-card::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#111a44 0%,#192253 47%,#e7bd22 100%)}
+.result-lines p{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:11px 0;margin:0;color:var(--muted);border-bottom:1px solid rgba(219,226,238,.75)}
+.dark .result-lines p{border-bottom-color:rgba(255,255,255,.12)}
+.result-lines b{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text-strong);text-align:right}.result-lines .green,.green{color:var(--emerald)!important}.result-lines .rose,.rose{color:var(--rose)!important}.result-lines .total{font-size:19px;font-weight:950;border-top:1px solid var(--line);border-bottom:0;margin-top:8px;color:var(--text-strong)}.narrow{max-width:800px;margin:0 auto}.check{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:850}.check input{width:18px;height:18px;accent-color:var(--gold)}.actions{display:flex;justify-content:center;gap:14px;margin-top:22px;flex-wrap:wrap}.outline-blue,.outline-gray{
+  border:1px solid rgba(231,189,34,.46);
+  background:linear-gradient(180deg,#fffefa 0%,#fff8dc 100%);
+  color:#111a44;
+  border-radius:999px;
+  padding:12px 22px;
+  font-weight:950;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 18px rgba(231,189,34,.10);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.outline-gray{border-color:var(--line);background:linear-gradient(180deg,#ffffff,#f8fafc);color:var(--text)}
+.outline-blue:hover,.outline-gray:hover{transform:translateY(-1px);border-color:rgba(217,171,16,.75);box-shadow:0 12px 24px rgba(231,189,34,.18)}.dark .outline-blue,.dark .outline-gray{background:rgba(255,216,77,.14);color:#fff}
+.detail-box{margin-top:14px;background:#fffdf2;border:1px solid rgba(248,211,77,.55);border-left:5px solid var(--gold);border-radius:16px;padding:14px;color:#5d4d17;line-height:1.55}.dark .detail-box{background:rgba(255,216,77,.10);color:#ffeaa0}.detail-box p{margin:10px 0 6px}.detail-box small{color:var(--muted)}.badge{display:inline-block;border-radius:999px;color:#111a44;background:#fff8dc;border:1px solid rgba(231,189,34,.45);padding:6px 10px;font-size:12px;margin-right:8px;font-weight:900}.purple{background:#fff8dc}.rose-bg{background:#fee2e2;color:#991b1b}.green-bg{background:#ecfdf5;color:#087443}.result-pph23{padding:0}.blue-head{display:flex;justify-content:space-between;gap:20px;background:linear-gradient(135deg,#111a44,#1b2456 64%,#2b356d);color:#fff;padding:24px}.blue-head div:last-child{text-align:right}.blue-head small{display:block;color:#ffeaa0;text-transform:uppercase;font-weight:950;letter-spacing:.05em;font-size:11px;margin-bottom:5px}.blue-head b{font-size:clamp(22px,4vw,32px);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.result-grid{display:grid;grid-template-columns:repeat(2,1fr)}.result-grid p{margin:0;padding:16px;border-bottom:1px solid var(--line)}.result-grid .wide{grid-column:1/-1}.result-grid small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;font-weight:900;letter-spacing:.06em}.result-grid b{display:block;margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text-strong)}.result-grid span{color:var(--muted);font-weight:500}.formula{text-align:center;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;padding:16px;margin:0;background:linear-gradient(180deg,#fffaf0,#f8fafc)}.dark .formula{background:rgba(255,255,255,.06)}
+::selection{background:rgba(231,189,34,.34);color:#111a44}
+@media (max-width:920px){.menu-grid{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}.hero{padding:26px}.result-card{position:static}.blue-head{flex-direction:column}.blue-head div:last-child{text-align:left}.inline-grid{grid-template-columns:1fr}.brand small{display:none}}
+@media (max-width:560px){.container{padding:0 14px}.main-area{padding-top:22px}.header-row{min-height:66px}.brand{font-size:21px}.login-card{padding:26px;border-radius:24px}.hero{padding:22px;border-radius:24px}.hero::after{font-size:38px}.card,.result-card,.page-title{padding:18px;border-radius:20px}.actions button,.primary-btn,.blue-btn{width:100%}.result-grid{grid-template-columns:1fr}}
+
+
+/* ===== Embedded PPh 21 Terpadu from preview ===== */
+.pph21-embed-card{
+  padding:0!important;
+  overflow:hidden;
+  border-radius:28px!important;
+  border:1px solid rgba(231,189,34,.35)!important;
+  background:linear-gradient(135deg,#ffffff,#fffaf0 48%,#f8fafc)!important;
+  box-shadow:0 26px 70px rgba(17,26,68,.14)!important;
+}
+.pph21-embed-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:18px 20px;
+  border-bottom:1px solid rgba(201,211,226,.72);
+  background:
+    radial-gradient(circle at 92% 0%,rgba(231,189,34,.22),transparent 34%),
+    linear-gradient(135deg,#ffffff,#fffdf6 60%,#f7f8fb);
+}
+.pph21-embed-head h2{
+  margin:0;
+  color:#111a44;
+  font-size:18px;
+  letter-spacing:-.025em;
+}
+.pph21-embed-head p{
+  margin:6px 0 0;
+  color:#65738a;
+  font-size:12.5px;
+  line-height:1.45;
+}
+.pph21-embed-badge{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:32px;
+  padding:8px 13px;
+  border-radius:999px;
+  border:1px solid rgba(231,189,34,.42);
+  background:linear-gradient(180deg,#fff8dc,#ffffff);
+  color:#111a44;
+  font-size:11.5px;
+  font-weight:950;
+  white-space:nowrap;
+}
+.pph21-frame-wrap{
+  width:100%;
+  background:#f5f7fb;
+}
+#pph21Frame{
+  display:block;
+  width:100%;
+  height:2450px;
+  border:0;
+  background:#f5f7fb;
+}
+@media(max-width:860px){
+  .pph21-embed-head{align-items:flex-start;flex-direction:column;padding:16px}
+  #pph21Frame{height:3000px}
+}
+@media(max-width:520px){
+  #pph21Frame{height:3400px}
+}
+
+
+
+/* ===== v26 — PPh 21 exact preview layout fix ===== */
+.container.pph21-main-area{
+  max-width:none!important;
+  width:100%!important;
+  padding-left:0!important;
+  padding-right:0!important;
+}
+.pph21-preview-shell{
+  width:100%;
+  margin:0 auto;
+}
+.pph21-floating-back-main{
+  position:fixed!important;
+  left:18px;
+  bottom:18px;
+  z-index:2147483647;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:42px;
+  padding:11px 16px;
+  border-radius:999px;
+  border:1px solid rgba(231,189,34,.55);
+  background:linear-gradient(180deg,#fffefa 0%,#fff8dc 100%);
+  color:#111a44;
+  font-size:12px;
+  font-weight:950;
+  text-decoration:none;
+  box-shadow:0 14px 30px rgba(17,26,68,.16), inset 0 1px 0 rgba(255,255,255,.9);
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.pph21-floating-back-main:hover{
+  transform:translateY(-1px);
+  border-color:rgba(217,171,16,.78);
+  box-shadow:0 18px 36px rgba(231,189,34,.20),0 10px 22px rgba(17,26,68,.10);
+}
+@media(max-width:520px){
+  .pph21-floating-back-main{left:12px;bottom:12px;right:12px;width:auto}
+}
+.pph21-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.pph21-topbar .back-btn{
+  margin:0;
+}
+.pph21-topbar-note{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+  text-align:right;
+}
+.pph21-preview-shell #pph21Frame{
+  display:block;
+  width:100%;
+  min-height:0;
+  height:1400px;
+  border:0;
+  border-radius:0;
+  overflow:hidden;
+  background:#f5f7fb;
+}
+@media(max-width:1180px){
+  .container.pph21-main-area{max-width:none!important;width:100%!important;padding-left:0!important;padding-right:0!important}
+}
+@media(max-width:860px){
+  .pph21-topbar{align-items:flex-start;flex-direction:column}
+  .pph21-topbar-note{text-align:left}
+  .pph21-preview-shell #pph21Frame{min-height:0;height:1600px}
+}
+@media(max-width:520px){
+  .pph21-preview-shell #pph21Frame{min-height:0;height:1800px}
+}
+
+
+/* ===== Embedded PPh Final Pasal 4 Ayat (2) ===== */
+.container.pphfinal-main-area{
+  max-width:1240px!important;
+  padding-left:24px!important;
+  padding-right:24px!important;
+}
+.pphfinal-preview-shell{
+  width:100%;
+  margin:0 auto;
+}
+.pphfinal-preview-shell #pphFinalFrame{
+  display:block;
+  width:100%;
+  min-height:1550px;
+  height:1550px;
+  border:0;
+  border-radius:0;
+  overflow:hidden;
+  background:#f6f8fc;
+}
+@media(max-width:1180px){
+  .container.pphfinal-main-area{max-width:100%!important;padding-left:16px!important;padding-right:16px!important}
+}
+@media(max-width:860px){
+  .pphfinal-preview-shell #pphFinalFrame{min-height:2050px;height:2050px}
+}
+@media(max-width:520px){
+  .pphfinal-preview-shell #pphFinalFrame{min-height:2450px;height:2450px}
+}
+
+
+
+
+/* ===== Embedded PPh Pasal 22 ===== */
+.container.pph22-main-area{
+  max-width:1160px!important;
+  padding-left:24px!important;
+  padding-right:24px!important;
+}
+.pph22-preview-shell{
+  width:100%;
+  margin:0 auto;
+}
+.pph22-preview-shell #pph22Frame{
+  display:block;
+  width:100%;
+  min-height:1350px;
+  height:1350px;
+  border:0;
+  border-radius:0;
+  overflow:hidden;
+  background:#f6f8fc;
+}
+@media(max-width:1180px){
+  .container.pph22-main-area{max-width:100%!important;padding-left:16px!important;padding-right:16px!important}
+}
+@media(max-width:860px){
+  .pph22-preview-shell #pph22Frame{min-height:1850px;height:1850px}
+}
+@media(max-width:520px){
+  .pph22-preview-shell #pph22Frame{min-height:2200px;height:2200px}
+}
+
+
+
+/* ===== v43 — Dark mode sync for embedded PPh pages ===== */
+.dark .pph21-preview-shell #pph21Frame,
+.dark .pphfinal-preview-shell #pphFinalFrame,
+.dark .pph22-preview-shell #pph22Frame{
+  background:#0b102b;
+}
+.dark .pph21-topbar-note{color:rgba(255,255,255,.68)}
+.dark .pph21-floating-back-main{
+  background:linear-gradient(180deg,rgba(255,216,77,.18),rgba(255,216,77,.10));
+  color:#fff8dc;
+  border-color:rgba(255,216,77,.38);
+  box-shadow:0 14px 30px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* ===== NgolahPajak Game Tutorial Overlay ===== */
+.pajak-tour-layer{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  padding:24px;
+  background:rgba(5,8,24,.38);
+  backdrop-filter:blur(1.5px);
+  animation:pajakTourDim .34s ease both;
+}
+.pajak-tour-layer.tour-pos-left{justify-content:flex-start;align-items:center;padding-left:clamp(18px,5vw,72px)}
+.pajak-tour-layer.tour-pos-right{justify-content:flex-end;align-items:center;padding-right:clamp(18px,5vw,72px)}
+.pajak-tour-layer.tour-pos-top{justify-content:center;align-items:flex-start;padding-top:78px}
+.pajak-tour-layer.tour-pos-center{justify-content:center;align-items:center}
+.pajak-tour-layer.tour-pos-bottom-right{justify-content:flex-end;align-items:flex-end}
+.pajak-tour-wrap{
+  width:min(94vw,600px);
+  display:grid;
+  grid-template-columns:150px minmax(0,1fr);
+  align-items:end;
+  gap:0;
+  transform-origin:center bottom;
+  animation:pajakTourPop .32s cubic-bezier(.2,.85,.22,1.12) both;
+}
+.tour-pos-right .pajak-tour-wrap{grid-template-columns:minmax(0,1fr) 150px}
+.tour-pos-right .pajak-tour-mascot,.tour-pos-right .pajak-tour-member-avatar{order:2;margin-left:-18px;margin-right:0;transform:scaleX(-1)}
+.tour-pos-top .pajak-tour-wrap,.tour-pos-center .pajak-tour-wrap,.tour-pos-bottom-right .pajak-tour-wrap{grid-template-columns:140px minmax(0,1fr)}
+.pajak-tour-mascot{
+  position:relative;
+  z-index:2;
+  width:132px;
+  max-width:24vw;
+  margin-right:-18px;
+  filter:drop-shadow(0 16px 22px rgba(0,0,0,.26));
+  user-select:none;
+  pointer-events:none;
+}
+.pajak-tour-member-avatar{
+  position:relative;
+  z-index:2;
+  width:108px;
+  height:108px;
+  margin-right:-14px;
+  border-radius:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#111a44;
+  font-size:30px;
+  font-weight:950;
+  letter-spacing:-.04em;
+  background:linear-gradient(135deg,#fff7c2 0%,#ffd84d 48%,#e7bd22 100%);
+  border:2px solid rgba(255,255,255,.72);
+  box-shadow:0 18px 30px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.65);
+  user-select:none;
+  pointer-events:none;
+}
+.tour-pos-right .pajak-tour-member-avatar span{transform:scaleX(-1)}
+.pajak-tour-member-anim{
+  position:relative;
+  z-index:2;
+  width:160px;
+  height:205px;
+  margin-right:-22px;
+  filter:drop-shadow(0 18px 24px rgba(0,0,0,.26));
+  user-select:none;
+  pointer-events:none;
+  animation:pajakAvatarFloat 2.8s ease-in-out infinite;
+}
+.tour-pos-right .pajak-tour-member-anim{
+  order:2;
+  margin-left:-22px;
+  margin-right:0;
+}
+.tour-pos-top .pajak-tour-member-anim,
+.tour-pos-center .pajak-tour-member-anim,
+.tour-pos-bottom-right .pajak-tour-member-anim{
+  width:150px;
+  height:195px;
+}
+.pajak-tour-member-anim img{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  transform:translateX(-50%) scale(1);
+  transform-origin:center bottom;
+}
+.pajak-tour-member-anim img:nth-child(1){animation:pajakAvatarFirst 4.8s ease-in-out infinite}
+.pajak-tour-member-anim img:nth-child(2){animation:pajakAvatarSecond 4.8s ease-in-out infinite}
+.pajak-tour-member-anim img:nth-child(3){animation:pajakAvatarThird 4.8s ease-in-out infinite}
+@keyframes pajakAvatarFirst{
+  0%,29%{opacity:1;transform:translateX(-50%) scale(1) rotate(0deg)}
+  34%,95%{opacity:0;transform:translateX(-50%) scale(.985) rotate(-1deg)}
+  100%{opacity:1;transform:translateX(-50%) scale(1) rotate(0deg)}
+}
+@keyframes pajakAvatarSecond{
+  0%,29%{opacity:0;transform:translateX(-50%) scale(.985) rotate(1deg)}
+  34%,62%{opacity:1;transform:translateX(-50%) scale(1) rotate(0deg)}
+  67%,100%{opacity:0;transform:translateX(-50%) scale(.985) rotate(1deg)}
+}
+@keyframes pajakAvatarThird{
+  0%,62%{opacity:0;transform:translateX(-50%) scale(.985) rotate(-1deg)}
+  67%,95%{opacity:1;transform:translateX(-50%) scale(1) rotate(0deg)}
+  100%{opacity:0;transform:translateX(-50%) scale(.985) rotate(-1deg)}
+}
+@keyframes pajakAvatarFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+.pajak-tour-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(231,189,34,.54);
+  border-radius:22px;
+  padding:20px 20px 18px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,216,77,.22),transparent 34%),
+    linear-gradient(135deg,rgba(17,26,68,.98),rgba(27,36,86,.97) 58%,rgba(10,16,45,.98));
+  box-shadow:0 22px 58px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.pajak-tour-card::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:4px;
+  background:linear-gradient(90deg,#e7bd22,#fff0a6,#e7bd22);
+}
+.pajak-tour-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:9px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,216,77,.34);
+  background:rgba(255,216,77,.12);
+  color:#ffeaa0;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.pajak-tour-card h2{
+  margin:0 0 8px;
+  font-size:clamp(20px,2.4vw,28px);
+  line-height:1.08;
+  letter-spacing:-.045em;
+  color:#fff;
+}
+.pajak-tour-card h2 span{color:#ffd84d}
+.pajak-tour-card p{
+  margin:0;
+  color:#f7f2dc;
+  font-size:14px;
+  line-height:1.58;
+}
+.pajak-tour-card p b,
+.pajak-tour-card p strong{
+  color:#ffd84d;
+  font-weight:950;
+  background:transparent;
+  border:0;
+  padding:0;
+  box-shadow:none;
+}
+.pajak-tour-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+.pajak-tour-actions button{
+  border:1px solid rgba(255,216,77,.38);
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:950;
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;
+}
+.pajak-tour-next{
+  color:#111a44;
+  background:linear-gradient(180deg,#ffe27a,#e7bd22);
+  box-shadow:0 10px 21px rgba(231,189,34,.20);
+}
+.pajak-tour-skip{
+  color:#fff7c2;
+  background:rgba(255,255,255,.08);
+}
+.pajak-tour-actions button:hover{transform:translateY(-1px);border-color:rgba(255,216,77,.74);box-shadow:0 12px 24px rgba(0,0,0,.18)}
+.pajak-tour-progress{
+  display:flex;
+  gap:6px;
+  margin-top:14px;
+}
+.pajak-tour-dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.24);
+}
+.pajak-tour-dot.active{width:20px;background:#ffd84d}
+.pajak-tour-card.member-tour{
+  min-height:245px;
+  padding:22px 22px 18px;
+  background:
+    radial-gradient(460px 240px at 104% -4%, rgba(255,216,77,.22), transparent 52%),
+    radial-gradient(340px 220px at -6% 106%, rgba(109,138,255,.14), transparent 56%),
+    linear-gradient(126deg, transparent 0 24%, rgba(255,255,255,.085) 34%, rgba(255,255,255,.018) 36%, transparent 47%),
+    linear-gradient(143deg, transparent 0 54%, rgba(255,216,77,.095) 72%, transparent 86%),
+    linear-gradient(180deg, rgba(255,255,255,.035), transparent 32%),
+    linear-gradient(135deg,rgba(17,26,68,.99),rgba(27,36,86,.98) 56%,rgba(13,19,54,.99));
+  box-shadow:0 22px 58px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.12), inset 0 -60px 120px rgba(255,255,255,.02);
+}
+.pajak-tour-card.member-tour::after{
+  content:"KELOMPOK 7";
+  position:absolute;
+  right:18px;
+  bottom:14px;
+  color:rgba(255,255,255,.055);
+  text-shadow:0 1px 0 rgba(255,255,255,.02);
+  font-size:34px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:.06em;
+  pointer-events:none;
+}
+.pajak-tour-card.member-tour p{display:block;max-width:100%}
+.pajak-tour-member-meta{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin:0 0 11px;
+  padding:7px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,216,77,.28);
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.04));
+  color:#fff3b0;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.04em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.pajak-tour-member-meta::before{
+  content:"✦";
+  color:#ffd84d;
+}
+.pajak-tour-member-panel{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:min(100%,420px);
+  margin-top:12px;
+  padding:14px 15px 14px 20px;
+  border-radius:18px;
+  border:1px solid rgba(255,216,77,.22);
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.045)),
+    linear-gradient(118deg, transparent 0 34%, rgba(255,216,77,.05) 72%, transparent 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.10);
+  backdrop-filter:blur(3px);
+}
+.pajak-tour-member-panel::before{
+  content:"";
+  position:absolute;
+  left:11px;
+  top:14px;
+  bottom:14px;
+  width:3px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffe27a,rgba(255,216,77,.15));
+  opacity:.95;
+}
+.pajak-tour-member-name{
+  display:block;
+  color:#ffd84d;
+  font-size:16px;
+  line-height:1.25;
+  font-weight:950;
+  letter-spacing:-.02em;
+}
+.pajak-tour-member-nim{
+  display:inline-flex;
+  width:max-content;
+  max-width:100%;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  color:#ffffff;
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.12);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:13px;
+  font-weight:850;
+  letter-spacing:.01em;
+}
+.pajak-tour-member-quote{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:min(100%,420px);
+  margin-top:10px;
+  color:rgba(255,255,255,.74);
+  font-size:12px;
+  line-height:1.45;
+  text-shadow:0 1px 0 rgba(0,0,0,.10);
+}
+.pajak-tour-member-anim::before{
+  content:"";
+  position:absolute;
+  inset:16px 10px 0;
+  border-radius:999px;
+  background:radial-gradient(circle,rgba(255,216,77,.18),transparent 68%);
+  filter:blur(5px);
+  transform:translateY(12px);
+}
+body.pajak-tour-open{overflow:hidden}
+@keyframes pajakTourDim{from{opacity:0}to{opacity:1}}
+@keyframes pajakTourPop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+@media(max-width:700px){
+  .pajak-tour-layer,.pajak-tour-layer.tour-pos-left,.pajak-tour-layer.tour-pos-right,.pajak-tour-layer.tour-pos-top,.pajak-tour-layer.tour-pos-center,.pajak-tour-layer.tour-pos-bottom-right{
+    align-items:flex-end;
+    justify-content:center;
+    padding:16px;
+  }
+  .pajak-tour-wrap,.tour-pos-right .pajak-tour-wrap,.tour-pos-top .pajak-tour-wrap,.tour-pos-center .pajak-tour-wrap,.tour-pos-bottom-right .pajak-tour-wrap{
+    width:100%;
+    grid-template-columns:84px minmax(0,1fr);
+  }
+  .pajak-tour-mascot,.tour-pos-right .pajak-tour-mascot{
+    order:0;
+    width:104px;
+    max-width:none;
+    margin-right:-16px;
+    margin-left:0;
+    transform:none;
+  }
+  .pajak-tour-member-avatar,.tour-pos-right .pajak-tour-member-avatar{
+    order:0;
+    width:86px;
+    height:86px;
+    margin-right:-12px;
+    margin-left:0;
+    transform:none;
+    border-radius:22px;
+    font-size:24px;
+  }
+  .tour-pos-right .pajak-tour-member-avatar span{transform:none}
+  .pajak-tour-member-anim,.tour-pos-right .pajak-tour-member-anim,.tour-pos-top .pajak-tour-member-anim,.tour-pos-center .pajak-tour-member-anim,.tour-pos-bottom-right .pajak-tour-member-anim{
+    order:0;
+    width:112px;
+    height:144px;
+    margin-right:-16px;
+    margin-left:0;
+  }
+  .pajak-tour-card.member-tour{min-height:auto;padding:18px 16px 16px}
+  .pajak-tour-member-name{font-size:14px}
+  .pajak-tour-member-nim{font-size:12px}
+  .pajak-tour-card{border-radius:20px;padding:18px 16px 16px}
+  .pajak-tour-card p{font-size:13px;line-height:1.5}
+  .pajak-tour-actions{justify-content:stretch}
+  .pajak-tour-actions button{flex:1 1 124px}
+}
+
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+
+/* ===== src/utils/taxData.js ===== */
+const taxData = {
+  bkp_umum: {
+    label: "Jenis BKP Umum",
+    items: [
+      {n:"Barang dagangan / perdagangan umum",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% standar atas seluruh nilai BKP",hk:"UU HPP No.7/2021 Ps.7"},
+      {n:"Bahan baku & bahan penolong industri",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Barang modal / mesin & peralatan pabrik",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%; dapat fasilitas di KEK/kawasan tertentu",hk:"PP 40/2021"},
+      {n:"Peralatan kantor & furnitur",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Pakaian & tekstil",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Kosmetik & produk perawatan diri",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Obat-obatan non-resep (OTC)",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Bahan bakar minyak (BBM) non-subsidi",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% atas penyerahan BBM non-subsidi",hk:"PMK 196/2021"},
+      {n:"Pupuk non-bersubsidi",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%; pupuk bersubsidi dibebaskan",hk:"PMK 44/2022"},
+      {n:"Material bangunan (semen, bata, besi, pasir)",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Suku cadang kendaraan",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+    ]
+  },
+  minuman_alkohol: {
+    label: "Golongan Minuman Beralkohol",
+    items: [
+      {n:"Golongan A — kadar ≤5% (bir, cider ringan)",ppn:12,ppnbm:10,dpp:100,note:"PPN 12% + PPnBM 10%",hk:"PMK 62/2023"},
+      {n:"Golongan B — kadar 5–20% (wine, sake)",ppn:12,ppnbm:20,dpp:100,note:"PPN 12% + PPnBM 20%",hk:"PMK 62/2023"},
+      {n:"Golongan C — kadar >20% (spirits, whisky, vodka)",ppn:12,ppnbm:40,dpp:100,note:"PPN 12% + PPnBM 40%",hk:"PMK 62/2023"},
+      {n:"Minuman fermentasi tradisional (tuak, arak lokal)",ppn:12,ppnbm:10,dpp:100,note:"PPnBM 10% — produk tradisional Gol. A",hk:"PMK 62/2023"},
+    ]
+  },
+  kendaraan: {
+    label: "Jenis Kendaraan Bermotor",
+    items: [
+      {n:"Kendaraan listrik (EV) LCGC roda 4",ppn:1,ppnbm:0,dpp:100,note:"PPN DTP efektif 1%, PPnBM 0% — insentif EV pemerintah",hk:"PP 74/2021 + PMK 38/2023"},
+      {n:"Kendaraan listrik (EV) non-LCGC roda 4",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%, PPnBM 0% — insentif PPnBM EV berlaku",hk:"PP 74/2021"},
+      {n:"Sedan / station wagon — mesin ≤1.500 cc",ppn:12,ppnbm:15,dpp:100,note:"PPN 12% + PPnBM 15%",hk:"PMK 141/2021"},
+      {n:"Sedan / station wagon — mesin 1.500–3.000 cc",ppn:12,ppnbm:40,dpp:100,note:"PPN 12% + PPnBM 40%",hk:"PMK 141/2021"},
+      {n:"Sedan / station wagon — mesin >3.000 cc",ppn:12,ppnbm:125,dpp:100,note:"PPN 12% + PPnBM 125% (tarif tertinggi)",hk:"PMK 141/2021"},
+      {n:"SUV / MPV — mesin ≤1.500 cc",ppn:12,ppnbm:15,dpp:100,note:"PPN 12% + PPnBM 15%",hk:"PMK 141/2021"},
+      {n:"SUV / MPV — mesin 1.500–2.500 cc",ppn:12,ppnbm:20,dpp:100,note:"PPN 12% + PPnBM 20%",hk:"PMK 141/2021"},
+      {n:"SUV / MPV — mesin >2.500 cc",ppn:12,ppnbm:40,dpp:100,note:"PPN 12% + PPnBM 40%",hk:"PMK 141/2021"},
+      {n:"MPV / minibus angkutan umum",ppn:12,ppnbm:0,dpp:100,note:"Tidak kena PPnBM — kendaraan angkutan umum",hk:"PMK 141/2021"},
+      {n:"Pickup / kabin ganda / truk niaga",ppn:12,ppnbm:0,dpp:100,note:"Tidak kena PPnBM — kendaraan niaga",hk:"PMK 141/2021"},
+      {n:"Bus & angkutan umum besar",ppn:12,ppnbm:0,dpp:100,note:"Tidak kena PPnBM",hk:"PMK 141/2021"},
+      {n:"Ambulans / pemadam kebakaran / mobil jenazah",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — kendaraan kepentingan sosial",hk:"PMK 44/2022"},
+      {n:"Sepeda motor — mesin ≤250 cc",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%, tidak kena PPnBM",hk:"PMK 141/2021"},
+      {n:"Sepeda motor — mesin 250–500 cc",ppn:12,ppnbm:60,dpp:100,note:"PPN 12% + PPnBM 60%",hk:"PMK 141/2021"},
+      {n:"Sepeda motor mewah — mesin >500 cc",ppn:12,ppnbm:95,dpp:100,note:"PPN 12% + PPnBM 95%",hk:"PMK 141/2021"},
+      {n:"Yacht / kapal pesiar penumpang",ppn:12,ppnbm:75,dpp:100,note:"PPN 12% + PPnBM 75%",hk:"PMK 141/2021"},
+      {n:"Pesawat terbang pribadi / jet",ppn:12,ppnbm:50,dpp:100,note:"PPN 12% + PPnBM 50%",hk:"PMK 141/2021"},
+    ]
+  },
+  elektronik: {
+    label: "Jenis Elektronik & Barang Mewah",
+    items: [
+      {n:"Smartphone / tablet / laptop",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%, tidak kena PPnBM",hk:"UU HPP"},
+      {n:"Televisi, kulkas, mesin cuci (konsumen umum)",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"AC komersial kapasitas besar (>2 PK)",ppn:12,ppnbm:10,dpp:100,note:"PPN 12% + PPnBM 10%",hk:"PMK 141/2021"},
+      {n:"Kamera & peralatan fotografi profesional",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Perhiasan emas & berlian (toko perhiasan)",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%; ada mekanisme pemungutan khusus toko emas",hk:"PMK 48/2023"},
+      {n:"Jam tangan mewah",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Senjata api & amunisi (non-pemerintah)",ppn:12,ppnbm:50,dpp:100,note:"PPN 12% + PPnBM 50%",hk:"PMK 141/2021"},
+      {n:"Kapal selam / kapal perang (non-negara)",ppn:12,ppnbm:75,dpp:100,note:"PPN 12% + PPnBM 75%",hk:"PMK 141/2021"},
+    ]
+  },
+  properti: {
+    label: "Jenis Properti",
+    items: [
+      {n:"Rumah tapak / rukan harga ≤Rp 2 M",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% — fasilitas DTP telah berakhir 2023",hk:"PMK 120/2023"},
+      {n:"Rumah tapak / rukan harga >Rp 2 M",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Apartemen / kondominium harga ≤Rp 2 M",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Apartemen / kondominium harga Rp 2–30 M",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Apartemen / kondominium super mewah >Rp 30 M",ppn:12,ppnbm:20,dpp:100,note:"PPN 12% + PPnBM 20%",hk:"PMK 86/2021"},
+      {n:"Sewa ruang kantor / ruko / gudang",ppn:12,ppnbm:0,dpp:100,note:"JKP sewa — PPN 12%",hk:"UU HPP"},
+      {n:"Sewa apartemen / hunian jangka panjang",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Tanah kosong (jual beli murni)",ppn:0,ppnbm:0,dpp:100,note:"BUKAN objek PPN — tanah bukan BKP",hk:"Ps.4A(2) UU PPN"},
+      {n:"Rumah sederhana bersubsidi (FLPP)",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — program rumah subsidi pemerintah",hk:"PMK 44/2022"},
+    ]
+  },
+  makmin: {
+    label: "Jenis Makanan & Minuman",
+    items: [
+      {n:"Makanan / minuman di restoran, kafe, warung makan",ppn:0,ppnbm:0,dpp:100,note:"Tidak kena PPN Pusat — dikenakan PBJT Daerah 10% (UU HKPD)",hk:"UU HKPD No.1/2022"},
+      {n:"Makanan kemasan pabrik (snack, mie instan, dll)",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% — BKP makanan olahan kemasan pabrik",hk:"UU HPP"},
+      {n:"Beras & gabah",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — bahan pangan pokok",hk:"PMK 44/2022"},
+      {n:"Jagung & kedelai",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — bahan pangan pokok",hk:"PMK 44/2022"},
+      {n:"Gula konsumsi / gula pasir",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — sembako",hk:"PMK 44/2022"},
+      {n:"Susu segar (sebelum diolah)",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Daging segar (tidak diolah)",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — sembako",hk:"PMK 44/2022"},
+      {n:"Ikan, udang & hasil laut segar",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Telur ayam / itik",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — sembako",hk:"PMK 44/2022"},
+      {n:"Sayuran & buah-buahan segar",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Minyak goreng curah bersubsidi",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Minuman energi / kesehatan kemasan non-alkohol",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% — produk olahan kemasan",hk:"UU HPP"},
+    ]
+  },
+  jkp: {
+    label: "Jenis Jasa Kena Pajak (JKP)",
+    items: [
+      {n:"Jasa konsultansi (hukum, bisnis, IT, manajemen)",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% atas seluruh nilai jasa",hk:"UU HPP"},
+      {n:"Jasa konstruksi — perencana / pengawas",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% (PPh final konstruksi terpisah)",hk:"PP 9/2022"},
+      {n:"Jasa konstruksi — pelaksana semua kualifikasi",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"PP 9/2022"},
+      {n:"Jasa biro perjalanan / agen wisata",ppn:12,ppnbm:0,dpp:50,note:"DPP = 50% dari tagihan (Nilai Lain). PPN efektif = 6%",hk:"PMK 71/2022"},
+      {n:"Jasa pengiriman paket / kurir",ppn:12,ppnbm:0,dpp:10,note:"DPP = 10% dari tagihan. PPN efektif = 1,2%",hk:"PMK 71/2022"},
+      {n:"Jasa tenaga kerja outsourcing",ppn:12,ppnbm:0,dpp:20,note:"DPP = 20% dari nilai kontrak. PPN efektif = 2,4%",hk:"PMK 71/2022"},
+      {n:"Jasa iklan & periklanan",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Jasa pemeliharaan & servis (bengkel, servis AC)",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Jasa hiburan — karaoke, nightclub, diskotek",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% + PBJT Daerah 40–75% (terpisah dari PPN)",hk:"UU HKPD + UU HPP"},
+      {n:"Jasa parkir kendaraan",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Jasa kebersihan / cleaning service",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Jasa keamanan / security",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Jasa persewaan kendaraan",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+      {n:"Jasa internet & telekomunikasi",ppn:12,ppnbm:0,dpp:100,note:"PPN 12%",hk:"UU HPP"},
+    ]
+  },
+  ekspor: {
+    label: "Jenis Ekspor",
+    items: [
+      {n:"Ekspor BKP berwujud (barang fisik ke luar negeri)",ppn:0,ppnbm:0,dpp:100,note:"PPN 0% — Pajak Masukan tetap dapat dikreditkan",hk:"UU HPP Ps.7(2)"},
+      {n:"Ekspor BKP tidak berwujud (hak, lisensi, paten)",ppn:0,ppnbm:0,dpp:100,note:"PPN 0%",hk:"UU HPP"},
+      {n:"Ekspor JKP (jasa dikonsumsi di luar Indonesia)",ppn:0,ppnbm:0,dpp:100,note:"PPN 0% — syarat: pemanfaatan di luar wilayah RI",hk:"PMK 32/2019"},
+    ]
+  },
+  impor: {
+    label: "Jenis Impor",
+    items: [
+      {n:"Impor BKP umum",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% × Nilai Impor (harga CIF + bea masuk + cukai)",hk:"UU HPP Ps.7"},
+      {n:"Impor kendaraan CBU mewah (sedan/SUV >3.000 cc)",ppn:12,ppnbm:125,dpp:100,note:"PPN 12% + PPnBM 125% + bea masuk hingga 40%",hk:"PMK 141/2021"},
+      {n:"Impor barang bawaan penumpang >USD 500",ppn:12,ppnbm:0,dpp:100,note:"PPN 12% atas kelebihan threshold USD 500",hk:"PMK 203/2017"},
+      {n:"Impor bahan baku industri dengan fasilitas",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN — harus memiliki izin fasilitas impor",hk:"PMK 44/2022"},
+    ]
+  },
+  bebas: {
+    label: "Jenis BKP/JKP yang Dibebaskan",
+    items: [
+      {n:"Vaksin & obat tertentu (daftar pemerintah)",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Alat kesehatan tertentu (tercantum dalam daftar PMK)",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Buku pelajaran & buku ilmu pengetahuan",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Kitab suci semua agama",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Pupuk bersubsidi",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Listrik rumah tangga ≤6.600 VA",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Air bersih / air minum PDAM",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN",hk:"PMK 44/2022"},
+      {n:"Kapal laut / pesawat udara — keperluan negara/TNI",ppn:0,ppnbm:0,dpp:100,note:"Dibebaskan PPN atas pengadaan pertahanan negara",hk:"PMK 44/2022"},
+    ]
+  },
+  tidak_kena: {
+    label: "Jenis yang Tidak Kena PPN",
+    items: [
+      {n:"Jasa pendidikan — sekolah, universitas formal",ppn:0,ppnbm:0,dpp:100,note:"BUKAN JKP — tidak masuk objek PPN sama sekali",hk:"Ps.4A(3) UU PPN"},
+      {n:"Jasa kesehatan medik (dokter, RS, klinik, bidan)",ppn:0,ppnbm:0,dpp:100,note:"BUKAN JKP — tidak kena PPN",hk:"Ps.4A(3) UU PPN"},
+      {n:"Jasa keuangan & perbankan",ppn:0,ppnbm:0,dpp:100,note:"BUKAN JKP — tidak kena PPN",hk:"Ps.4A(3) UU PPN"},
+      {n:"Jasa asuransi",ppn:0,ppnbm:0,dpp:100,note:"BUKAN JKP — tidak kena PPN",hk:"Ps.4A(3) UU PPN"},
+      {n:"Jasa angkutan umum darat, laut & udara",ppn:0,ppnbm:0,dpp:100,note:"BUKAN JKP — tidak kena PPN",hk:"Ps.4A(3) UU PPN"},
+      {n:"Jasa tenaga kerja / ketenagakerjaan",ppn:0,ppnbm:0,dpp:100,note:"BUKAN JKP — tidak kena PPN",hk:"Ps.4A(3) UU PPN"},
+      {n:"Jasa sosial & keagamaan nirlaba",ppn:0,ppnbm:0,dpp:100,note:"BUKAN JKP — tidak kena PPN",hk:"Ps.4A(3) UU PPN"},
+      {n:"Uang, emas batangan investasi, surat berharga",ppn:0,ppnbm:0,dpp:100,note:"BUKAN BKP — tidak kena PPN",hk:"Ps.4A(2) UU PPN"},
+      {n:"Barang hasil pertambangan langsung dari sumber (bahan mentah)",ppn:0,ppnbm:0,dpp:100,note:"BUKAN BKP — tidak kena PPN",hk:"Ps.4A(2) UU PPN"},
+      {n:"Tanah (termasuk tanah + bangunan jika jual tanah murni)",ppn:0,ppnbm:0,dpp:100,note:"BUKAN BKP — penyerahan tanah bukan objek PPN",hk:"Ps.4A(2) UU PPN"},
+    ]
+  }
+};
+
+/* ===== src/utils/taxCalculator.js ===== */
+const formatCurrency = (n) => {
+  return "Rp\u00A0" + Math.round(n).toLocaleString("id-ID");
+};
+
+const calculateTax = (rawPrice, qty, method, taxRule) => {
+  if (!rawPrice || rawPrice <= 0 || !taxRule) return null;
+
+  const tpn = taxRule.ppn / 100;
+  const tpm = taxRule.ppnbm / 100;
+  const dp = taxRule.dpp / 100;
+  const ht = rawPrice * qty;
+
+  let pk, dpp, ppn, ppnbm, tot;
+
+  if (method === "excl") {
+    pk = ht;
+    dpp = ht * dp;
+    ppn = dpp * tpn;
+    ppnbm = dpp * tpm;
+    tot = ht + ppn + ppnbm;
+  } else {
+    const f = 1 + tpn + tpm;
+    pk = ht / f;
+    dpp = pk * dp;
+    ppn = dpp * tpn;
+    ppnbm = dpp * tpm;
+    tot = ht;
+  }
+
+  const p = [];
+  if (taxRule.dpp !== 100) p.push(`DPP ${taxRule.dpp}% = ${formatCurrency(dpp)}`);
+  p.push(`PPN ${taxRule.ppn}% = ${formatCurrency(ppn)}`);
+  if (taxRule.ppnbm > 0) p.push(`PPnBM ${taxRule.ppnbm}% = ${formatCurrency(ppnbm)}`);
+  if (taxRule.ppn === 0 && taxRule.ppnbm === 0) p.push("Transaksi ini bebas PPN & PPnBM");
+
+  return {
+    pk,
+    dpp,
+    ppn,
+    ppnbm,
+    total: tot,
+    notes: p.join("   ·   "),
+    taxRule
+  };
+};
+
+/* ===== src/utils/pph21Data.js ===== */
+/**
+ * pph21Data.js — Data referensi PPh 21 LENGKAP
+ * Berdasarkan: UU HPP No.7/2021, PMK 168/2023, PER-2/PJ/2024,
+ *              PER-16/PJ/2016, KEP-606/PJ/2001
+ */
+
+// ─────────────────────────────────────────────────────────────────
+// KODE OBJEK PAJAK PPh 21/26 (sesuai PER-14/PJ/2013 & PER-2/PJ/2024)
+// ─────────────────────────────────────────────────────────────────
+const KODE_OBJEK_PAJAK = [
+  // ── Karyawan Tetap ──
+  { kode:'21-100-01', label:'Penghasilan Pegawai Tetap (reguler)',           tipe:['tetap'],         metodeHitung:'progresif_ter' },
+  { kode:'21-100-02', label:'Penerimaan dalam Bentuk Natura/Kenikmatan',    tipe:['tetap'],         metodeHitung:'progresif_ter' },
+  // ── Karyawan Tidak Tetap ──
+  { kode:'21-100-03', label:'Upah Pegawai Tidak Tetap / Tenaga Kerja Lepas',tipe:['tidak_tetap','harian'], metodeHitung:'ter_harian' },
+  // ── Bukan Karyawan ──
+  { kode:'21-100-04', label:'Imbalan kepada Distributor MLM / Direct Selling',tipe:['bukan_karyawan'], metodeHitung:'bukan_karyawan' },
+  { kode:'21-100-05', label:'Imbalan kepada Peserta Kegiatan',               tipe:['bukan_karyawan'], metodeHitung:'bukan_karyawan' },
+  { kode:'21-100-06', label:'Imbalan kepada Tenaga Ahli (konsultan dll)',    tipe:['bukan_karyawan'], metodeHitung:'bukan_karyawan' },
+  { kode:'21-100-07', label:'Honorarium / Komisi kepada Penjaja Barang',    tipe:['bukan_karyawan'], metodeHitung:'bukan_karyawan' },
+  { kode:'21-100-08', label:'Honorarium kepada Seniman / Olahragawan',      tipe:['bukan_karyawan'], metodeHitung:'bukan_karyawan' },
+  { kode:'21-100-09', label:'Imbalan kepada Penasihat / Pengajar',          tipe:['bukan_karyawan'], metodeHitung:'bukan_karyawan' },
+  // ── Pensiun ──
+  { kode:'21-100-10', label:'Uang Pensiun Berkala dari Dana Pensiun',        tipe:['pensiun'],       metodeHitung:'pensiun' },
+  { kode:'21-100-11', label:'Pesangon / Uang Manfaat Pensiun (sekaligus)',  tipe:['pesangon'],      metodeHitung:'pesangon' },
+  // ── Pejabat Negara / PNS ──
+  { kode:'21-100-12', label:'Penghasilan PNS / Anggota TNI-Polri (gaji dll)',tipe:['pns'],          metodeHitung:'pns' },
+  { kode:'21-100-13', label:'Honorarium PNS dari APBN/APBD',                tipe:['pns'],           metodeHitung:'pns_honor' },
+  // ── Mantan Karyawan / Jasa Produksi ──
+  { kode:'21-100-14', label:'Jasa Produksi, Tantiem, Bonus Mantan Pegawai', tipe:['mantan'],        metodeHitung:'progresif' },
+  // ── PPh 26 (WP LN) ──
+  { kode:'21-100-15', label:'PPh 26 — Penghasilan WP Luar Negeri (tarif 20%/P3B)', tipe:['wp_ln'], metodeHitung:'pph26' },
+]
+
+// ─────────────────────────────────────────────────────────────────
+// TIPE PENERIMA PENGHASILAN
+// ─────────────────────────────────────────────────────────────────
+const TIPE_KARYAWAN = [
+  { value:'tetap',          label:'Pegawai Tetap (bulanan)',           kodeDefault:'21-100-01' },
+  { value:'tidak_tetap',    label:'Pegawai Tidak Tetap (bulanan)',     kodeDefault:'21-100-03' },
+  { value:'harian',         label:'Pegawai Harian / Lepas',           kodeDefault:'21-100-03' },
+  { value:'bukan_karyawan', label:'Bukan Pegawai (jasa/honorarium)',  kodeDefault:'21-100-06' },
+  { value:'pensiun',        label:'Penerima Pensiun Berkala',         kodeDefault:'21-100-10' },
+  { value:'pesangon',       label:'Penerima Pesangon / Sekaligus',    kodeDefault:'21-100-11' },
+  { value:'pns',            label:'PNS / TNI / Polri',                kodeDefault:'21-100-12' },
+  { value:'mantan',         label:'Mantan Pegawai (jasa produksi)',   kodeDefault:'21-100-14' },
+]
+
+// ─────────────────────────────────────────────────────────────────
+// SKEMA PERHITUNGAN
+// ─────────────────────────────────────────────────────────────────
+const SKEMA_PERHITUNGAN = {
+  tetap: [
+    { value:'ter',       label:'TER Bulanan (Jan–Nov)',          desc:'Tarif Efektif Rata-rata PMK 168/2023. Digunakan Januari s.d. November.' },
+    { value:'progresif', label:'Progresif Ps.17 (Desember / Rekonsiliasi)', desc:'Tarif progresif tahunan. Wajib digunakan masa Desember atau bila ingin rekonsiliasi.' },
+  ],
+  tidak_tetap: [
+    { value:'ter',       label:'TER Bulanan',                   desc:'Penghasilan kumulatif sebulan, tarif TER Kat.A atau B.' },
+    { value:'harian',    label:'TER Harian (Kat. C)',            desc:'Upah harian/satuan, tidak lebih dari 10 hari dalam sebulan.' },
+  ],
+  harian: [
+    { value:'harian',    label:'TER Harian (Kat. C)',            desc:'Tarif TER khusus penghasilan harian sesuai PMK 168/2023.' },
+  ],
+  bukan_karyawan: [
+    { value:'50persen',  label:'50% × Bruto × Tarif Ps.17',    desc:'Berkesinambungan tanpa PTKP: DPP 50% bruto, tarif progresif.' },
+    { value:'berkesimbg_ptkp', label:'50% × (Bruto–PTKP) × Tarif Ps.17', desc:'Berkesinambungan dengan PTKP: DPP 50% bruto dikurangi PTKP.' },
+    { value:'tidak_berkesimbg', label:'Tidak Berkesinambungan (5% flat)', desc:'Tidak berkesinambungan: DPP 50% bruto, tarif flat 5%.' },
+  ],
+  pensiun: [
+    { value:'pensiun_berkala', label:'Pensiun Berkala (bulanan)', desc:'5% dari penghasilan bruto dikurangi biaya pensiun, lalu dikalikan tarif progresif.' },
+  ],
+  pesangon: [
+    { value:'pesangon',  label:'Pesangon / Sekaligus',           desc:'Tarif progresif khusus: 0%, 5%, 15%, 25% atas lapisan pesangon.' },
+  ],
+  pns: [
+    { value:'pns_gaji',  label:'Gaji/Tunjangan PNS (ditanggung pemerintah)', desc:'PPh 21 ditanggung pemerintah (DTP). Tarif progresif atas penghasilan netto.' },
+    { value:'pns_honor', label:'Honorarium APBN/APBD (15% final)', desc:'Tarif 15% final atas honorarium yang dibayar dari APBN/APBD.' },
+  ],
+  mantan: [
+    { value:'progresif', label:'Progresif Ps.17 (tahunan)',      desc:'Jasa produksi, tantiem, bonus, gratifikasi mantan pegawai.' },
+  ],
+}
+
+// ─────────────────────────────────────────────────────────────────
+// PTKP (Penghasilan Tidak Kena Pajak) — PMK 101/PMK.010/2016
+// ─────────────────────────────────────────────────────────────────
+const PTKP = {
+  TK0: { label:'TK/0 — Tidak Kawin, 0 tanggungan',            nilai:54_000_000, komponenDiri:54_000_000, komponenKawin:0, komponenTanggungan:0 },
+  TK1: { label:'TK/1 — Tidak Kawin, 1 tanggungan',            nilai:58_500_000, komponenDiri:54_000_000, komponenKawin:0, komponenTanggungan:4_500_000 },
+  TK2: { label:'TK/2 — Tidak Kawin, 2 tanggungan',            nilai:63_000_000, komponenDiri:54_000_000, komponenKawin:0, komponenTanggungan:9_000_000 },
+  TK3: { label:'TK/3 — Tidak Kawin, 3 tanggungan',            nilai:67_500_000, komponenDiri:54_000_000, komponenKawin:0, komponenTanggungan:13_500_000 },
+  K0:  { label:'K/0 — Kawin, 0 tanggungan',                   nilai:58_500_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:0 },
+  K1:  { label:'K/1 — Kawin, 1 tanggungan',                   nilai:63_000_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:4_500_000 },
+  K2:  { label:'K/2 — Kawin, 2 tanggungan',                   nilai:67_500_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:9_000_000 },
+  K3:  { label:'K/3 — Kawin, 3 tanggungan',                   nilai:72_000_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:13_500_000 },
+  KI0: { label:'K/I/0 — Kawin, istri berkerja, 0 tanggungan', nilai:112_500_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:0,  komponenIstri:54_000_000 },
+  KI1: { label:'K/I/1 — Kawin, istri bekerja, 1 tanggungan',  nilai:117_000_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:4_500_000, komponenIstri:54_000_000 },
+  KI2: { label:'K/I/2 — Kawin, istri bekerja, 2 tanggungan',  nilai:121_500_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:9_000_000, komponenIstri:54_000_000 },
+  KI3: { label:'K/I/3 — Kawin, istri bekerja, 3 tanggungan',  nilai:126_000_000, komponenDiri:54_000_000, komponenKawin:4_500_000, komponenTanggungan:13_500_000,komponenIstri:54_000_000 },
+}
+
+// ─────────────────────────────────────────────────────────────────
+// TARIF PROGRESIF Pasal 17 — UU HPP No.7/2021
+// ─────────────────────────────────────────────────────────────────
+const TARIF_PROGRESIF = [
+  { dari:0,           sampai:60_000_000,    tarif:0.05, label:'s.d. Rp 60 jt' },
+  { dari:60_000_000,  sampai:250_000_000,   tarif:0.15, label:'Rp 60 jt – Rp 250 jt' },
+  { dari:250_000_000, sampai:500_000_000,   tarif:0.25, label:'Rp 250 jt – Rp 500 jt' },
+  { dari:500_000_000, sampai:5_000_000_000, tarif:0.30, label:'Rp 500 jt – Rp 5 M' },
+  { dari:5_000_000_000, sampai:Infinity,    tarif:0.35, label:'di atas Rp 5 M' },
+]
+
+// Tarif khusus Pesangon (PP 68/2009)
+const TARIF_PESANGON = [
+  { dari:0,           sampai:50_000_000,    tarif:0.00 },
+  { dari:50_000_000,  sampai:100_000_000,   tarif:0.05 },
+  { dari:100_000_000, sampai:500_000_000,   tarif:0.15 },
+  { dari:500_000_000, sampai:Infinity,      tarif:0.25 },
+]
+
+// ─────────────────────────────────────────────────────────────────
+// TER — PMK 168/2023
+// ─────────────────────────────────────────────────────────────────
+const TER_A = [
+  { max:5_400_000,tarif:0.00 },{ max:5_650_000,tarif:0.0025 },{ max:5_950_000,tarif:0.005 },
+  { max:6_300_000,tarif:0.0075 },{ max:6_750_000,tarif:0.01 },{ max:7_500_000,tarif:0.0125 },
+  { max:8_550_000,tarif:0.015 },{ max:9_650_000,tarif:0.0175 },{ max:10_050_000,tarif:0.02 },
+  { max:10_350_000,tarif:0.0225 },{ max:10_700_000,tarif:0.025 },{ max:11_050_000,tarif:0.03 },
+  { max:11_600_000,tarif:0.035 },{ max:12_500_000,tarif:0.04 },{ max:13_750_000,tarif:0.05 },
+  { max:15_100_000,tarif:0.06 },{ max:16_950_000,tarif:0.07 },{ max:19_750_000,tarif:0.08 },
+  { max:24_150_000,tarif:0.09 },{ max:26_450_000,tarif:0.10 },{ max:28_000_000,tarif:0.11 },
+  { max:30_050_000,tarif:0.12 },{ max:32_400_000,tarif:0.13 },{ max:35_400_000,tarif:0.14 },
+  { max:39_100_000,tarif:0.15 },{ max:43_850_000,tarif:0.16 },{ max:47_800_000,tarif:0.17 },
+  { max:51_400_000,tarif:0.18 },{ max:56_300_000,tarif:0.19 },{ max:62_200_000,tarif:0.20 },
+  { max:74_950_000,tarif:0.21 },{ max:89_000_000,tarif:0.22 },{ max:99_000_000,tarif:0.23 },
+  { max:125_000_000,tarif:0.24 },{ max:141_000_000,tarif:0.25 },{ max:157_000_000,tarif:0.26 },
+  { max:206_000_000,tarif:0.27 },{ max:337_000_000,tarif:0.28 },{ max:454_000_000,tarif:0.29 },
+  { max:550_000_000,tarif:0.30 },{ max:695_000_000,tarif:0.31 },{ max:910_000_000,tarif:0.32 },
+  { max:1_400_000_000,tarif:0.33 },{ max:Infinity,tarif:0.34 },
+]
+const TER_B = [
+  { max:6_200_000,tarif:0.00 },{ max:6_500_000,tarif:0.0025 },{ max:6_850_000,tarif:0.005 },
+  { max:7_300_000,tarif:0.0075 },{ max:9_200_000,tarif:0.01 },{ max:10_750_000,tarif:0.015 },
+  { max:11_250_000,tarif:0.02 },{ max:11_600_000,tarif:0.025 },{ max:12_600_000,tarif:0.03 },
+  { max:13_600_000,tarif:0.04 },{ max:14_950_000,tarif:0.05 },{ max:16_400_000,tarif:0.06 },
+  { max:18_450_000,tarif:0.07 },{ max:21_850_000,tarif:0.08 },{ max:26_000_000,tarif:0.09 },
+  { max:27_700_000,tarif:0.10 },{ max:29_350_000,tarif:0.11 },{ max:31_450_000,tarif:0.12 },
+  { max:33_950_000,tarif:0.13 },{ max:37_100_000,tarif:0.14 },{ max:41_100_000,tarif:0.15 },
+  { max:45_800_000,tarif:0.16 },{ max:49_500_000,tarif:0.17 },{ max:53_800_000,tarif:0.18 },
+  { max:58_500_000,tarif:0.19 },{ max:64_000_000,tarif:0.20 },{ max:71_000_000,tarif:0.21 },
+  { max:80_000_000,tarif:0.22 },{ max:96_000_000,tarif:0.23 },{ max:124_000_000,tarif:0.24 },
+  { max:136_000_000,tarif:0.25 },{ max:150_000_000,tarif:0.26 },{ max:192_000_000,tarif:0.27 },
+  { max:321_000_000,tarif:0.28 },{ max:438_000_000,tarif:0.29 },{ max:530_000_000,tarif:0.30 },
+  { max:670_000_000,tarif:0.31 },{ max:880_000_000,tarif:0.32 },{ max:1_360_000_000,tarif:0.33 },
+  { max:Infinity,tarif:0.34 },
+]
+const TER_C = [
+  { max:450_000,tarif:0.00 },
+  { max:2_500_000,tarif:0.005 },
+  { max:Infinity,tarif:0.015 },
+]
+
+function getTerKategori(ptkpKey, tipeKaryawan) {
+  if (tipeKaryawan === 'harian') return 'C'
+  if (['TK0','TK1','TK2','TK3','K0'].includes(ptkpKey)) return 'A'
+  return 'B'
+}
+function getTerTabel(kategori) {
+  if (kategori === 'A') return TER_A
+  if (kategori === 'B') return TER_B
+  return TER_C
+}
+
+// ─────────────────────────────────────────────────────────────────
+// KONSTANTA
+// ─────────────────────────────────────────────────────────────────
+const BIAYA_JABATAN_PCT  = 0.05
+const BIAYA_JABATAN_MAX  = 6_000_000
+const BIAYA_PENSIUN_PCT  = 0.05
+const BIAYA_PENSIUN_MAX  = 2_400_000
+const FAKTOR_NON_NPWP   = 1.20
+const TARIF_PPH26        = 0.20   // WP LN tanpa P3B
+const TARIF_PNS_HONOR    = 0.15   // Honorarium PNS final
+
+
+/* ===== src/utils/pph21Calculator.js ===== */
+/**
+ * pph21Calculator.js — Logika perhitungan PPh 21 LENGKAP
+ * Mencakup: TER, Progresif, Gross/Gross-Up/Net,
+ *           Pensiun, Pesangon, PNS, Bukan Karyawan, PPh 26
+ */
+const fmtRp  = n  => 'Rp\u00A0' + Math.round(n).toLocaleString('id-ID')
+const fmtPct = n  => (n * 100).toFixed(2).replace('.',',') + '%'
+
+// ─── Tarif Progresif umum ───────────────────────────────────────
+function hitungProgresif(pkp, tarifTabel = TARIF_PROGRESIF) {
+  let sisa = pkp, prev = 0, pajak = 0
+  const lapisan = []
+  for (const l of tarifTabel) {
+    if (sisa <= 0) break
+    const batas = l.sampai ?? l.batas ?? Infinity
+    const kena  = Math.min(sisa, batas - prev)
+    const pph   = kena * l.tarif
+    lapisan.push({ dari: prev, sampai: Math.min(pkp, batas), tarif: l.tarif, dasar: kena, pajak: pph })
+    pajak += pph; sisa -= kena; prev = batas
+  }
+  return { pajak, lapisan }
+}
+
+// ─── Cari TER dari tabel ─────────────────────────────────────────
+function getTarifTer(bruto, tabel) {
+  for (const r of tabel) if (bruto <= r.max) return r.tarif
+  return tabel[tabel.length - 1].tarif
+}
+
+// ─── GROSS UP — iteratif ─────────────────────────────────────────
+function hitungGrossUp(params) {
+  let tp = 0
+  for (let i = 0; i < 60; i++) {
+    const p = { ...params, tunjanganLain: (params.tunjanganLain || 0) + tp }
+    const { pph21Bulanan } = _progresifBulanan(p)
+    if (Math.abs(pph21Bulanan - tp) < 1) break
+    tp = pph21Bulanan
+  }
+  return tp
+}
+
+// ─── Helper: progresif bulanan (internal) ────────────────────────
+function _progresifBulanan(params) {
+  const { gajiPokok=0, tunjanganLain=0, iuranJabatan=0, iuranPensiun=0,
+          ptkpKey='TK0', npwp=true, masa=12 } = params
+  const ptkpNilai   = PTKP[ptkpKey]?.nilai ?? 54_000_000
+  const brutoSebulan= gajiPokok + tunjanganLain
+  const brutoSetahun= brutoSebulan * masa
+  const bj          = Math.min(brutoSetahun * BIAYA_JABATAN_PCT, BIAYA_JABATAN_MAX)
+  const ij          = iuranJabatan * masa
+  const ip          = Math.min(iuranPensiun * masa, BIAYA_PENSIUN_MAX)
+  const netto       = brutoSetahun - bj - ij - ip
+  const pkp         = Math.max(0, Math.floor((netto - ptkpNilai) / 1000) * 1000)
+  let { pajak, lapisan } = hitungProgresif(pkp)
+  if (!npwp) pajak = Math.round(pajak * FAKTOR_NON_NPWP)
+  const pph21Bulanan = Math.round(pajak / masa)
+  return { pph21Bulanan, pajak, lapisan, brutoSebulan, brutoSetahun, bj, ij, ip, netto, ptkpNilai, pkp }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 1. KARYAWAN TETAP — TER (Jan–Nov)
+// ═══════════════════════════════════════════════════════════════════
+function hitungTetapTER(params) {
+  const { gajiPokok=0, tunjanganLain=0, brutoSebelumnya=0,
+          ptkpKey='TK0', npwp=true, metodePajak='gross', masa=1 } = params
+  const terKat  = getTerKategori(ptkpKey, 'tetap')
+  const tabel   = getTerTabel(terKat)
+  const brutoSebulan = gajiPokok + tunjanganLain
+  const tarifTer = getTarifTer(brutoSebulan, tabel)
+  let pph21 = Math.round(brutoSebulan * tarifTer)
+  if (!npwp) pph21 = Math.round(pph21 * FAKTOR_NON_NPWP)
+  const thp = brutoSebulan - (metodePajak === 'gross' ? pph21 : 0)
+  const brutoKumulatif = brutoSebelumnya + brutoSebulan
+
+  return {
+    metodePerhitungan: 'TER Bulanan',
+    terKategori: terKat,
+    tarifTer,
+    brutoSebulan,
+    brutoSebelumnya,
+    brutoKumulatif,
+    pph21Bulanan: pph21,
+    thp,
+    isGrossUp: false,
+    ptkpDetail: PTKP[ptkpKey],
+    breakdown: [
+      { label:'Penghasilan Bruto Sebelumnya (akumulasi)',nilai:brutoSebelumnya },
+      { label:'Gaji Pokok Bulan Ini',                   nilai:gajiPokok },
+      { label:'Tunjangan Lain Bulan Ini',               nilai:tunjanganLain },
+      { label:'Penghasilan Bruto Bulan Ini',            nilai:brutoSebulan, bold:true },
+      { label:'Penghasilan Bruto Kumulatif s.d. Bulan Ini', nilai:brutoKumulatif, bold:true },
+      { label:`Tarif TER Kat.${terKat} (${fmtPct(tarifTer)} × bruto)`, nilai:pph21, color:'red', bold:true },
+      { label:'PPh 21 Dipotong Bulan Ini',              nilai:pph21, color:'red', bold:true },
+      { label:'Take Home Pay (THP)',                    nilai:thp,  color:'green', bold:true },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 2. KARYAWAN TETAP — Progresif (Desember / Rekonsiliasi)
+// ═══════════════════════════════════════════════════════════════════
+function hitungTetapProgresif(params) {
+  const { gajiPokok=0, tunjanganLain=0, iuranJabatan=0, iuranPensiun=0,
+          brutoSebelumnya=0, pph21Sebelumnya=0,
+          ptkpKey='TK0', npwp=true, masa=12, metodePajak='gross' } = params
+
+  const ptkpData    = PTKP[ptkpKey] ?? PTKP.TK0
+  const ptkpNilai   = ptkpData.nilai
+  const brutoSebulan= gajiPokok + tunjanganLain
+  const brutoSetahun= brutoSebulan * masa
+  const brutoKumulatif = brutoSebelumnya + brutoSebulan
+
+  const bj  = Math.min(brutoSetahun * BIAYA_JABATAN_PCT, BIAYA_JABATAN_MAX)
+  const ij  = iuranJabatan * masa
+  const ip  = Math.min(iuranPensiun * masa, BIAYA_PENSIUN_MAX)
+  const netto = brutoSetahun - bj - ij - ip
+  const pkp   = Math.max(0, Math.floor((netto - ptkpNilai) / 1000) * 1000)
+
+  let { pajak: pphSetahun, lapisan } = hitungProgresif(pkp)
+  if (!npwp) pphSetahun = Math.round(pphSetahun * FAKTOR_NON_NPWP)
+
+  const pph21BulanIni = Math.max(0, pphSetahun - pph21Sebelumnya)
+  const pph21Bulanan  = Math.round(pphSetahun / masa)
+  const thp = brutoSebulan - (metodePajak === 'gross' ? pph21BulanIni : 0)
+
+  return {
+    metodePerhitungan: 'Progresif Ps.17',
+    brutoSebulan,
+    brutoSebelumnya,
+    brutoKumulatif,
+    brutoSetahun,
+    biayaJabatan: bj,
+    iuranJabatanTahun: ij,
+    iuranPensiunTahun: ip,
+    netto,
+    ptkpNilai,
+    ptkpDetail: ptkpData,
+    pkp,
+    lapisan,
+    pphSetahun,
+    pph21Sebelumnya,
+    pph21BulanIni,
+    pph21Bulanan,
+    thp,
+    isGrossUp: false,
+    breakdown: [
+      { label:'Penghasilan Bruto Sebelumnya (Jan s.d. bulan lalu)', nilai:brutoSebelumnya },
+      { label:'Gaji Pokok Bulan Ini',                               nilai:gajiPokok },
+      { label:'Tunjangan Lain Bulan Ini',                           nilai:tunjanganLain },
+      { label:'Penghasilan Bruto Bulan Ini',                        nilai:brutoSebulan, bold:true },
+      { label:'Penghasilan Bruto Kumulatif',                        nilai:brutoKumulatif },
+      { label:`Penghasilan Bruto Setahun (× ${masa} bulan)`,        nilai:brutoSetahun },
+      { label:'(-) Biaya Jabatan 5% maks Rp 6 jt/thn',             nilai:bj, color:'amber' },
+      { label:'(-) Iuran JHT/Jabatan (karyawan)',                   nilai:ij, color:'amber' },
+      { label:'(-) Iuran Pensiun maks Rp 2,4 jt/thn',              nilai:ip, color:'amber' },
+      { label:'Penghasilan Netto Setahun',                          nilai:netto, bold:true },
+      { label:`(-) PTKP ${ptkpKey}`,                                nilai:ptkpNilai, color:'blue' },
+      { label:'PKP (dibulatkan ke Rp 1.000)',                       nilai:pkp, bold:true },
+      { label:'PPh 21 Setahun (Progresif Ps.17)',                   nilai:pphSetahun, color:'red', bold:true },
+      { label:'(-) PPh 21 Sudah Dipotong Jan s.d. Bulan Lalu',      nilai:pph21Sebelumnya, color:'amber' },
+      { label:'PPh 21 Terutang Bulan Ini',                          nilai:pph21BulanIni, color:'red', bold:true },
+      { label:'Take Home Pay (THP)',                                 nilai:thp, color:'green', bold:true },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 3. GROSS UP
+// ═══════════════════════════════════════════════════════════════════
+function hitungGrossUpFull(params) {
+  const { gajiPokok=0, tunjanganLain=0, metodePerhitungan='ter', ptkpKey, npwp=true } = params
+  const tunjanganPajak = hitungGrossUp(params)
+  const paramsGU = { ...params, tunjanganLain: tunjanganLain + tunjanganPajak }
+
+  const hasil = metodePerhitungan === 'ter'
+    ? hitungTetapTER(paramsGU)
+    : hitungTetapProgresif(paramsGU)
+
+  hasil.isGrossUp      = true
+  hasil.tunjanganPajak = tunjanganPajak
+  hasil.brutoGrossUp   = gajiPokok + tunjanganLain + tunjanganPajak
+  hasil.thp            = gajiPokok + tunjanganLain
+
+  hasil.breakdown = [
+    { label:'Gaji Pokok',                      nilai:gajiPokok },
+    { label:'Tunjangan Lain-lain',             nilai:tunjanganLain },
+    { label:'Tunjangan Pajak (Gross Up)',       nilai:tunjanganPajak, color:'purple', bold:true },
+    { label:'Penghasilan Bruto Total',         nilai:hasil.brutoGrossUp, bold:true },
+    { label:'PPh 21 (= Tunjangan Pajak)',      nilai:hasil.pph21Bulanan||hasil.pph21BulanIni, color:'red', bold:true },
+    { label:'Take Home Pay (Gaji + Tunjangan)',nilai:hasil.thp, color:'green', bold:true },
+  ]
+  return hasil
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 4. KARYAWAN HARIAN / TIDAK TETAP
+// ═══════════════════════════════════════════════════════════════════
+function hitungHarian(params) {
+  const { upahHarian=0, jumlahHari=1, npwp=true, brutoSebelumnya=0 } = params
+  const tabel    = getTerTabel('C')
+  const tarifTer = getTarifTer(upahHarian, tabel)
+  let pph21Hari  = Math.round(upahHarian * tarifTer)
+  if (!npwp) pph21Hari = Math.round(pph21Hari * FAKTOR_NON_NPWP)
+  const upahTotal = upahHarian * jumlahHari
+  const pph21Total= pph21Hari * jumlahHari
+  const thp       = upahTotal - pph21Total
+  const brutoKumulatif = brutoSebelumnya + upahTotal
+
+  return {
+    metodePerhitungan: 'TER Harian Kat.C',
+    tarifTer,
+    upahHarian,
+    upahTotal,
+    brutoSebelumnya,
+    brutoKumulatif,
+    pph21Harian: pph21Hari,
+    pph21Bulanan: pph21Total,
+    thp,
+    breakdown: [
+      { label:'Penghasilan Bruto Sebelumnya',  nilai:brutoSebelumnya },
+      { label:'Upah Harian',                   nilai:upahHarian },
+      { label:`Tarif TER Kat.C (${fmtPct(tarifTer)})`, nilai:pph21Hari, color:'red' },
+      { label:'PPh 21 per Hari',               nilai:pph21Hari, bold:true, color:'red' },
+      { label:`Jumlah Hari (${jumlahHari} hari)`, nilai:jumlahHari },
+      { label:'Upah Total',                    nilai:upahTotal, bold:true },
+      { label:'Penghasilan Bruto Kumulatif',   nilai:brutoKumulatif },
+      { label:'PPh 21 Total',                  nilai:pph21Total, bold:true, color:'red' },
+      { label:'Take Home Pay',                 nilai:thp, bold:true, color:'green' },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 5. BUKAN KARYAWAN
+// ═══════════════════════════════════════════════════════════════════
+function hitungBukanKaryawan(params) {
+  const { honorarium=0, skema='tidak_berkesimbg', ptkpKey='TK0', npwp=true, brutoSebelumnya=0 } = params
+  const brutoKumulatif = brutoSebelumnya + honorarium
+  let dpp, pph21, metodePerhitungan, lapisan = []
+
+  if (skema === 'tidak_berkesimbg') {
+    dpp  = honorarium * 0.50
+    pph21= Math.round(dpp * 0.05)
+    metodePerhitungan = 'Tidak Berkesinambungan (5% flat)'
+  } else if (skema === '50persen') {
+    dpp  = honorarium * 0.50
+    const r = hitungProgresif(dpp)
+    pph21 = Math.round(r.pajak); lapisan = r.lapisan
+    metodePerhitungan = 'Berkesinambungan 50% × Progresif'
+  } else { // berkesimbg_ptkp
+    const ptkpBulan = (PTKP[ptkpKey]?.nilai ?? 54_000_000) / 12
+    dpp  = Math.max(0, honorarium * 0.50 - ptkpBulan)
+    const r = hitungProgresif(dpp)
+    pph21 = Math.round(r.pajak); lapisan = r.lapisan
+    metodePerhitungan = 'Berkesinambungan 50% × (Bruto–PTKP/12) × Progresif'
+  }
+  if (!npwp) pph21 = Math.round(pph21 * FAKTOR_NON_NPWP)
+  const thp = honorarium - pph21
+
+  return {
+    metodePerhitungan,
+    honorarium,
+    dpp,
+    brutoSebelumnya,
+    brutoKumulatif,
+    pph21Bulanan: pph21,
+    lapisan,
+    thp,
+    breakdown: [
+      { label:'Penghasilan Bruto Sebelumnya',  nilai:brutoSebelumnya },
+      { label:'Honorarium Bruto',              nilai:honorarium, bold:true },
+      { label:'Penghasilan Bruto Kumulatif',   nilai:brutoKumulatif },
+      { label:'DPP (Dasar Pengenaan Pajak)',   nilai:dpp, bold:true },
+      { label:'PPh 21',                        nilai:pph21, color:'red', bold:true },
+      { label:'Take Home Pay',                 nilai:thp, color:'green', bold:true },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 6. PENSIUN BERKALA
+// ═══════════════════════════════════════════════════════════════════
+function hitungPensiun(params) {
+  const { pensiunBulanan=0, iuranPensiun=0, ptkpKey='TK0', npwp=true, masa=12, brutoSebelumnya=0 } = params
+  const ptkpNilai  = PTKP[ptkpKey]?.nilai ?? 54_000_000
+  const brutoSetahun = pensiunBulanan * masa
+  const biayaPensiun = Math.min(brutoSetahun * BIAYA_PENSIUN_PCT, BIAYA_PENSIUN_MAX)
+  const netto  = brutoSetahun - biayaPensiun - (iuranPensiun * masa)
+  const pkp    = Math.max(0, Math.floor((netto - ptkpNilai) / 1000) * 1000)
+  let { pajak, lapisan } = hitungProgresif(pkp)
+  if (!npwp) pajak = Math.round(pajak * FAKTOR_NON_NPWP)
+  const pph21Bulanan = Math.round(pajak / masa)
+  const brutoKumulatif = brutoSebelumnya + pensiunBulanan
+
+  return {
+    metodePerhitungan: 'Pensiun Berkala (Progresif)',
+    brutoSebelumnya, brutoKumulatif,
+    brutoSebulan: pensiunBulanan, brutoSetahun,
+    biayaPensiun, netto, ptkpNilai, pkp, lapisan,
+    pphSetahun: pajak, pph21Bulanan, thp: pensiunBulanan - pph21Bulanan,
+    breakdown: [
+      { label:'Penghasilan Pensiun Sebelumnya', nilai:brutoSebelumnya },
+      { label:'Uang Pensiun Bulanan',           nilai:pensiunBulanan, bold:true },
+      { label:'Penghasilan Bruto Kumulatif',    nilai:brutoKumulatif },
+      { label:`Pensiun Setahun (× ${masa})`,   nilai:brutoSetahun },
+      { label:'(-) Biaya Pensiun 5% maks Rp 2,4 jt/thn', nilai:biayaPensiun, color:'amber' },
+      { label:'(-) Iuran Pensiun',             nilai:iuranPensiun * masa, color:'amber' },
+      { label:'Penghasilan Netto',             nilai:netto, bold:true },
+      { label:`(-) PTKP ${ptkpKey}`,           nilai:ptkpNilai, color:'blue' },
+      { label:'PKP',                           nilai:pkp, bold:true },
+      { label:'PPh 21 Setahun',                nilai:pajak, color:'red', bold:true },
+      { label:`PPh 21/bulan (÷${masa})`,       nilai:pph21Bulanan, color:'red', bold:true },
+      { label:'Take Home Pay',                 nilai:pensiunBulanan - pph21Bulanan, color:'green', bold:true },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 7. PESANGON / SEKALIGUS
+// ═══════════════════════════════════════════════════════════════════
+function hitungPesangon(params) {
+  const { pesangon=0, npwp=true } = params
+  let { pajak, lapisan } = hitungProgresif(pesangon, TARIF_PESANGON)
+  if (!npwp) pajak = Math.round(pajak * FAKTOR_NON_NPWP)
+  return {
+    metodePerhitungan: 'Pesangon (PP 68/2009)',
+    brutoSebulan: pesangon, brutoSebelumnya: 0, brutoKumulatif: pesangon,
+    pph21Bulanan: pajak, lapisan, thp: pesangon - pajak,
+    breakdown: [
+      { label:'Uang Pesangon / Manfaat Pensiun', nilai:pesangon, bold:true },
+      { label:'PPh 21 Final (tarif pesangon)',    nilai:pajak, color:'red', bold:true },
+      { label:'Pesangon Diterima (netto)',        nilai:pesangon - pajak, color:'green', bold:true },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 8. PNS / TNI / POLRI
+// ═══════════════════════════════════════════════════════════════════
+function hitungPNS(params) {
+  const { gajiPokok=0, tunjanganLain=0, iuranPensiun=0, skema='pns_gaji',
+          ptkpKey='TK0', npwp=true, masa=12, brutoSebelumnya=0 } = params
+  const brutoSebulan = gajiPokok + tunjanganLain
+  const brutoKumulatif = brutoSebelumnya + brutoSebulan
+
+  if (skema === 'pns_honor') {
+    const pph21 = Math.round(brutoSebulan * TARIF_PNS_HONOR)
+    return {
+      metodePerhitungan: 'Honorarium PNS 15% Final',
+      brutoSebulan, brutoSebelumnya, brutoKumulatif,
+      pph21Bulanan: pph21, thp: brutoSebulan - pph21,
+      breakdown: [
+        { label:'Penghasilan Bruto Sebelumnya', nilai:brutoSebelumnya },
+        { label:'Honorarium',                  nilai:brutoSebulan, bold:true },
+        { label:'Bruto Kumulatif',             nilai:brutoKumulatif },
+        { label:'PPh 21 Final (15%)',          nilai:pph21, color:'red', bold:true },
+        { label:'Diterima (netto)',            nilai:brutoSebulan - pph21, color:'green', bold:true },
+      ],
+    }
+  }
+
+  // Gaji PNS — progresif, ditanggung pemerintah
+  const ptkpNilai   = PTKP[ptkpKey]?.nilai ?? 54_000_000
+  const brutoSetahun= brutoSebulan * masa
+  const bj = Math.min(brutoSetahun * BIAYA_JABATAN_PCT, BIAYA_JABATAN_MAX)
+  const ip = Math.min(iuranPensiun * masa, BIAYA_PENSIUN_MAX)
+  const netto = brutoSetahun - bj - ip
+  const pkp   = Math.max(0, Math.floor((netto - ptkpNilai) / 1000) * 1000)
+  let { pajak, lapisan } = hitungProgresif(pkp)
+  if (!npwp) pajak = Math.round(pajak * FAKTOR_NON_NPWP)
+  const pph21Bulanan = Math.round(pajak / masa)
+
+  return {
+    metodePerhitungan: 'PNS — Ditanggung Pemerintah (DTP)',
+    brutoSebulan, brutoSebelumnya, brutoKumulatif,
+    brutoSetahun, biayaJabatan: bj, iuranPensiunTahun: ip,
+    netto, ptkpNilai, pkp, lapisan, pphSetahun: pajak, pph21Bulanan,
+    thp: brutoSebulan, // THP = bruto (pajak ditanggung pemerintah)
+    breakdown: [
+      { label:'Penghasilan Bruto Sebelumnya',    nilai:brutoSebelumnya },
+      { label:'Gaji Pokok + Tunjangan/bulan',    nilai:brutoSebulan, bold:true },
+      { label:'Bruto Kumulatif',                 nilai:brutoKumulatif },
+      { label:`Bruto Setahun (× ${masa})`,       nilai:brutoSetahun },
+      { label:'(-) Biaya Jabatan 5%',            nilai:bj, color:'amber' },
+      { label:'(-) Iuran Pensiun',               nilai:ip, color:'amber' },
+      { label:'Penghasilan Netto Setahun',       nilai:netto, bold:true },
+      { label:`(-) PTKP ${ptkpKey}`,             nilai:ptkpNilai, color:'blue' },
+      { label:'PKP',                             nilai:pkp, bold:true },
+      { label:'PPh 21 Setahun (ditanggung Pem.)', nilai:pajak, color:'red', bold:true },
+      { label:'PPh 21/bulan',                    nilai:pph21Bulanan, color:'red', bold:true },
+      { label:'Take Home Pay (pajak DTP)',        nilai:brutoSebulan, color:'green', bold:true },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 9. PPh 26 — WP Luar Negeri
+// ═══════════════════════════════════════════════════════════════════
+function hitungPPh26(params) {
+  const { penghasilan=0, tarifP3B=0.20 } = params
+  const pph26 = Math.round(penghasilan * tarifP3B)
+  return {
+    metodePerhitungan: `PPh 26 (tarif ${fmtPct(tarifP3B)})`,
+    brutoSebulan: penghasilan, brutoSebelumnya: 0, brutoKumulatif: penghasilan,
+    pph21Bulanan: pph26, thp: penghasilan - pph26,
+    breakdown: [
+      { label:'Penghasilan Bruto WP LN',         nilai:penghasilan, bold:true },
+      { label:`PPh 26 (${fmtPct(tarifP3B)} × bruto)`, nilai:pph26, color:'red', bold:true },
+      { label:'Penghasilan Netto (setelah PPh 26)', nilai:penghasilan - pph26, color:'green', bold:true },
+    ],
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ENTRY POINT
+// ═══════════════════════════════════════════════════════════════════
+function hitungPPh21(params) {
+  const { tipeKaryawan, metodePajak, metodePerhitungan } = params
+
+  if (tipeKaryawan === 'harian')   return hitungHarian(params)
+  if (tipeKaryawan === 'pensiun')  return hitungPensiun(params)
+  if (tipeKaryawan === 'pesangon') return hitungPesangon(params)
+  if (tipeKaryawan === 'pns')      return hitungPNS(params)
+  if (tipeKaryawan === 'bukan_karyawan') return hitungBukanKaryawan(params)
+  if (tipeKaryawan === 'mantan')   {
+    const { honorarium=0, npwp=true } = params
+    let { pajak, lapisan } = hitungProgresif(honorarium)
+    if (!npwp) pajak = Math.round(pajak * FAKTOR_NON_NPWP)
+    return { metodePerhitungan:'Mantan Pegawai (Progresif)', brutoSebulan:honorarium, brutoSebelumnya:0, brutoKumulatif:honorarium, pph21Bulanan:pajak, lapisan, thp:honorarium-pajak, breakdown:[{label:'Jasa Produksi / Bonus',nilai:honorarium,bold:true},{label:'PPh 21 (Progresif)',nilai:pajak,color:'red',bold:true},{label:'Diterima (netto)',nilai:honorarium-pajak,color:'green',bold:true}] }
+  }
+  if (tipeKaryawan === 'wp_ln')    return hitungPPh26(params)
+
+  // Karyawan Tetap / Tidak Tetap
+  if (metodePajak === 'gross_up')  return hitungGrossUpFull({ ...params, metodePerhitungan })
+
+  return metodePerhitungan === 'ter'
+    ? hitungTetapTER(params)
+    : hitungTetapProgresif(params)
+}
+
+
+const PPH23_OPTIONS = [{"group": "── Tarif 15% ──", "kode": "24-101-01", "nama": "Dividen", "tarif": 15, "ket": "Dividen kepada WP Badan/OP dalam negeri", "hk": "Ps.23(1)a UU PPh No.36/2008", "label": "24-101-01 (Dividen)"}, {"group": "── Tarif 15% ──", "kode": "24-102-01", "nama": "Bunga", "tarif": 15, "ket": "Termasuk premium, diskonto & imbalan karena jaminan utang", "hk": "Ps.23(1)a UU PPh No.36/2008", "label": "24-102-01 (Bunga)"}, {"group": "── Tarif 15% ──", "kode": "24-103-01", "nama": "Royalti", "tarif": 15, "ket": "Atas penggunaan hak kekayaan intelektual (paten, merek, hak cipta, know-how)", "hk": "Ps.23(1)a UU PPh No.36/2008", "label": "24-103-01 (Royalti)"}, {"group": "── Tarif 15% ──", "kode": "24-100-01", "nama": "Hadiah, Penghargaan, Bonus", "tarif": 15, "ket": "Selain yang sudah dipotong PPh 21 (dibayar ke WP Badan / rekanan)", "hk": "Ps.23(1)a UU PPh No.36/2008", "label": "24-100-01 (Hadiah, Penghargaan, Bonus)"}, {"group": "── Tarif 15% ──", "kode": "24-100-02", "nama": "Sewa Harta Selain Tanah/Bangunan", "tarif": 15, "ket": "Sewa kendaraan, mesin, peralatan, kapal, dll — bukan tanah/bangunan (final)", "hk": "Ps.23(1)c UU PPh No.36/2008", "label": "24-100-02 (Sewa Harta Selain Tanah/Bangunan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-01", "nama": "Jasa Teknik", "tarif": 2, "ket": "Pemberian jasa berupa keahlian teknis / rekayasa", "hk": "PMK 141/2015", "label": "24-104-01 (Jasa Teknik)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-02", "nama": "Jasa Manajemen", "tarif": 2, "ket": "Jasa pengelolaan / manajemen operasional", "hk": "PMK 141/2015", "label": "24-104-02 (Jasa Manajemen)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-03", "nama": "Jasa Konsultan", "tarif": 2, "ket": "Semua jenis jasa konsultansi (bisnis, strategis, dll)", "hk": "PMK 141/2015", "label": "24-104-03 (Jasa Konsultan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-04", "nama": "Jasa Penilai", "tarif": 2, "ket": "Penilaian aset, bisnis, properti (appraisal)", "hk": "PMK 141/2015", "label": "24-104-04 (Jasa Penilai)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-05", "nama": "Jasa Aktuaris", "tarif": 2, "ket": "Jasa perhitungan aktuaria (asuransi, dana pensiun)", "hk": "PMK 141/2015", "label": "24-104-05 (Jasa Aktuaris)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-06", "nama": "Jasa Akuntansi dan Pembukuan", "tarif": 2, "ket": "Termasuk audit laporan keuangan oleh KAP", "hk": "PMK 141/2015", "label": "24-104-06 (Jasa Akuntansi dan Pembukuan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-07", "nama": "Jasa Hukum", "tarif": 2, "ket": "Advokat, notaris, pengacara, konsultan hukum", "hk": "PMK 141/2015", "label": "24-104-07 (Jasa Hukum)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-08", "nama": "Jasa Arsitektur", "tarif": 2, "ket": "Perancangan bangunan dan struktur", "hk": "PMK 141/2015", "label": "24-104-08 (Jasa Arsitektur)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-09", "nama": "Jasa Perencanaan Kota dan Lanskap", "tarif": 2, "ket": "Urban planning, landscape architecture", "hk": "PMK 141/2015", "label": "24-104-09 (Jasa Perencanaan Kota dan Lanskap)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-10", "nama": "Jasa Perancang/Design", "tarif": 2, "ket": "Desain grafis, interior, fashion, produk, dll", "hk": "PMK 141/2015", "label": "24-104-10 (Jasa Perancang/Design)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-11", "nama": "Jasa Pengeboran Migas", "tarif": 2, "ket": "Drilling di bidang minyak dan gas bumi", "hk": "PMK 141/2015", "label": "24-104-11 (Jasa Pengeboran Migas)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-12", "nama": "Jasa Penunjang Migas/Panas Bumi", "tarif": 2, "ket": "Jasa pendukung operasi migas & geothermal", "hk": "PMK 141/2015", "label": "24-104-12 (Jasa Penunjang Migas/Panas Bumi)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-13", "nama": "Jasa Penambangan Migas/Panas Bumi", "tarif": 2, "ket": "Jasa penambangan minyak, gas, panas bumi", "hk": "PMK 141/2015", "label": "24-104-13 (Jasa Penambangan Migas/Panas Bumi)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-14", "nama": "Jasa Penunjang Penerbangan", "tarif": 2, "ket": "Ground handling, catering pesawat, dll", "hk": "PMK 141/2015", "label": "24-104-14 (Jasa Penunjang Penerbangan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-15", "nama": "Jasa Penebangan Hutan", "tarif": 2, "ket": "Logging dan jasa kehutanan", "hk": "PMK 141/2015", "label": "24-104-15 (Jasa Penebangan Hutan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-16", "nama": "Jasa Pengolahan Limbah", "tarif": 2, "ket": "Waste management, pengolahan sampah & air limbah", "hk": "PMK 141/2015", "label": "24-104-16 (Jasa Pengolahan Limbah)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-17", "nama": "Jasa Outsourcing", "tarif": 2, "ket": "Penyediaan tenaga kerja — atas fee/margin penyedia", "hk": "PMK 141/2015", "label": "24-104-17 (Jasa Outsourcing)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-18", "nama": "Jasa Perantara/Keagenan", "tarif": 2, "ket": "Broker, agen, distributor, makelar", "hk": "PMK 141/2015", "label": "24-104-18 (Jasa Perantara/Keagenan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-19", "nama": "Jasa Perdagangan Surat Berharga", "tarif": 2, "ket": "Jasa di bidang pasar modal & sekuritas", "hk": "PMK 141/2015", "label": "24-104-19 (Jasa Perdagangan Surat Berharga)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-20", "nama": "Jasa Kustodian", "tarif": 2, "ket": "Penitipan, penyimpanan, safe deposit", "hk": "PMK 141/2015", "label": "24-104-20 (Jasa Kustodian)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-21", "nama": "Jasa Dubbing/Sulih Suara", "tarif": 2, "ket": "Pengisian suara untuk film/konten", "hk": "PMK 141/2015", "label": "24-104-21 (Jasa Dubbing/Sulih Suara)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-22", "nama": "Jasa Mixing Film", "tarif": 2, "ket": "Post-production audio/video mixing", "hk": "PMK 141/2015", "label": "24-104-22 (Jasa Mixing Film)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-23", "nama": "Jasa Promosi Film/Iklan", "tarif": 2, "ket": "Produksi & promosi konten film/iklan", "hk": "PMK 141/2015", "label": "24-104-23 (Jasa Promosi Film/Iklan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-24", "nama": "Jasa IT dan Perawatan Komputer", "tarif": 2, "ket": "IT support, maintenance hardware/software", "hk": "PMK 141/2015", "label": "24-104-24 (Jasa IT dan Perawatan Komputer)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-25", "nama": "Jasa Pengelolaan Website", "tarif": 2, "ket": "Web management, hosting management", "hk": "PMK 141/2015", "label": "24-104-25 (Jasa Pengelolaan Website)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-26", "nama": "Jasa Internet", "tarif": 2, "ket": "Jasa konektivitas & layanan internet", "hk": "PMK 141/2015", "label": "24-104-26 (Jasa Internet)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-27", "nama": "Jasa Pengolahan Data", "tarif": 2, "ket": "Data processing, data entry, database management", "hk": "PMK 141/2015", "label": "24-104-27 (Jasa Pengolahan Data)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-28", "nama": "Jasa Instalasi Mesin/Perangkat", "tarif": 2, "ket": "Pemasangan mesin, listrik, AC, CCTV, lift, dll", "hk": "PMK 141/2015", "label": "24-104-28 (Jasa Instalasi Mesin/Perangkat)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-29", "nama": "Jasa Perawatan Mesin/Perangkat", "tarif": 2, "ket": "Maintenance & perbaikan mesin/peralatan", "hk": "PMK 141/2015", "label": "24-104-29 (Jasa Perawatan Mesin/Perangkat)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-30", "nama": "Jasa Perawatan Kendaraan", "tarif": 2, "ket": "Servis kendaraan bermotor", "hk": "PMK 141/2015", "label": "24-104-30 (Jasa Perawatan Kendaraan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-31", "nama": "Jasa Maklon", "tarif": 2, "ket": "Produksi barang atas pesanan pihak lain (toll manufacturing)", "hk": "PMK 141/2015", "label": "24-104-31 (Jasa Maklon)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-32", "nama": "Jasa Keamanan", "tarif": 2, "ket": "Satpam, security, investigasi", "hk": "PMK 141/2015", "label": "24-104-32 (Jasa Keamanan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-33", "nama": "Jasa Event Organizer", "tarif": 2, "ket": "Penyelenggara kegiatan / acara", "hk": "PMK 141/2015", "label": "24-104-33 (Jasa Event Organizer)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-34", "nama": "Jasa Periklanan", "tarif": 2, "ket": "Media placement, media buying, jasa iklan", "hk": "PMK 141/2015", "label": "24-104-34 (Jasa Periklanan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-35", "nama": "Jasa Pembasmian Hama", "tarif": 2, "ket": "Pest control, fumigasi", "hk": "PMK 141/2015", "label": "24-104-35 (Jasa Pembasmian Hama)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-36", "nama": "Jasa Cleaning Service", "tarif": 2, "ket": "Kebersihan gedung, kantor, industri", "hk": "PMK 141/2015", "label": "24-104-36 (Jasa Cleaning Service)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-37", "nama": "Jasa Sedot Septic Tank", "tarif": 2, "ket": "Penyedotan & pengolahan tangki septik", "hk": "PMK 141/2015", "label": "24-104-37 (Jasa Sedot Septic Tank)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-38", "nama": "Jasa Pemeliharaan Kolam", "tarif": 2, "ket": "Maintenance kolam renang, kolam ikan, dll", "hk": "PMK 141/2015", "label": "24-104-38 (Jasa Pemeliharaan Kolam)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-39", "nama": "Jasa Katering", "tarif": 2, "ket": "Penyediaan makanan & minuman", "hk": "PMK 141/2015", "label": "24-104-39 (Jasa Katering)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-40", "nama": "Jasa Freight Forwarding", "tarif": 2, "ket": "Ekspedisi pengiriman barang internasional", "hk": "PMK 141/2015", "label": "24-104-40 (Jasa Freight Forwarding)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-41", "nama": "Jasa Logistik", "tarif": 2, "ket": "Pengelolaan rantai pasok & distribusi barang", "hk": "PMK 141/2015", "label": "24-104-41 (Jasa Logistik)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-42", "nama": "Jasa Pengurusan Dokumen", "tarif": 2, "ket": "PPJK, bea cukai, perizinan", "hk": "PMK 141/2015", "label": "24-104-42 (Jasa Pengurusan Dokumen)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-43", "nama": "Jasa Pengepakan", "tarif": 2, "ket": "Packing, wrapping, packaging", "hk": "PMK 141/2015", "label": "24-104-43 (Jasa Pengepakan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-44", "nama": "Jasa Loading/Unloading", "tarif": 2, "ket": "Bongkar muat barang", "hk": "PMK 141/2015", "label": "24-104-44 (Jasa Loading/Unloading)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-45", "nama": "Jasa Laboratorium/Pengujian", "tarif": 2, "ket": "Uji mutu, kalibrasi, pengujian produk", "hk": "PMK 141/2015", "label": "24-104-45 (Jasa Laboratorium/Pengujian)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-46", "nama": "Jasa Pengelolaan Parkir", "tarif": 2, "ket": "Manajemen area parkir", "hk": "PMK 141/2015", "label": "24-104-46 (Jasa Pengelolaan Parkir)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-47", "nama": "Jasa Penyondiran Tanah", "tarif": 2, "ket": "Soil testing, sondir tanah", "hk": "PMK 141/2015", "label": "24-104-47 (Jasa Penyondiran Tanah)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-48", "nama": "Jasa Pengolahan Lahan", "tarif": 2, "ket": "Land clearing, pengolahan tanah pertanian", "hk": "PMK 141/2015", "label": "24-104-48 (Jasa Pengolahan Lahan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-49", "nama": "Jasa Pembibitan", "tarif": 2, "ket": "Penyediaan & perawatan bibit tanaman", "hk": "PMK 141/2015", "label": "24-104-49 (Jasa Pembibitan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-50", "nama": "Jasa Pemeliharaan Tanaman", "tarif": 2, "ket": "Perawatan tanaman/perkebunan", "hk": "PMK 141/2015", "label": "24-104-50 (Jasa Pemeliharaan Tanaman)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-51", "nama": "Jasa Pemanenan", "tarif": 2, "ket": "Harvesting tanaman/perkebunan", "hk": "PMK 141/2015", "label": "24-104-51 (Jasa Pemanenan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-52", "nama": "Jasa Pengolahan Hasil Pertanian", "tarif": 2, "ket": "Post-harvest processing", "hk": "PMK 141/2015", "label": "24-104-52 (Jasa Pengolahan Hasil Pertanian)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-53", "nama": "Jasa Dekorasi", "tarif": 2, "ket": "Dekorasi acara, interior, dll", "hk": "PMK 141/2015", "label": "24-104-53 (Jasa Dekorasi)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-54", "nama": "Jasa Pencetakan", "tarif": 2, "ket": "Percetakan, printing, penerbitan", "hk": "PMK 141/2015", "label": "24-104-54 (Jasa Pencetakan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-55", "nama": "Jasa Penerjemahan", "tarif": 2, "ket": "Translation & interpretasi", "hk": "PMK 141/2015", "label": "24-104-55 (Jasa Penerjemahan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-56", "nama": "Jasa Pengangkutan", "tarif": 2, "ket": "Transportasi barang darat/laut/udara", "hk": "PMK 141/2015", "label": "24-104-56 (Jasa Pengangkutan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-57", "nama": "Jasa Pelayanan Pelabuhan", "tarif": 2, "ket": "Jasa kepelabuhanan & terminal", "hk": "PMK 141/2015", "label": "24-104-57 (Jasa Pelayanan Pelabuhan)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-58", "nama": "Jasa Pengangkutan Pipa", "tarif": 2, "ket": "Pipeline transportation", "hk": "PMK 141/2015", "label": "24-104-58 (Jasa Pengangkutan Pipa)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-59", "nama": "Jasa Penitipan Anak", "tarif": 2, "ket": "Daycare, TPA, babysitter (badan)", "hk": "PMK 141/2015", "label": "24-104-59 (Jasa Penitipan Anak)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-60", "nama": "Jasa Pelatihan/Kursus", "tarif": 2, "ket": "Training, workshop, kursus (badan)", "hk": "PMK 141/2015", "label": "24-104-60 (Jasa Pelatihan/Kursus)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-61", "nama": "Jasa Pengisian ATM", "tarif": 2, "ket": "Cash replenishment mesin ATM", "hk": "PMK 141/2015", "label": "24-104-61 (Jasa Pengisian ATM)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-62", "nama": "Jasa Sertifikasi", "tarif": 2, "ket": "Penerbitan sertifikat, akreditasi", "hk": "PMK 141/2015", "label": "24-104-62 (Jasa Sertifikasi)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-63", "nama": "Jasa Survey", "tarif": 2, "ket": "Survei lapangan, riset pasar, survei tanah", "hk": "PMK 141/2015", "label": "24-104-63 (Jasa Survey)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-64", "nama": "Jasa Tester", "tarif": 2, "ket": "Quality testing, product testing", "hk": "PMK 141/2015", "label": "24-104-64 (Jasa Tester)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-65", "nama": "Jasa Dibebankan APBN/APBD", "tarif": 2, "ket": "Jasa yang pembayarannya dari APBN/APBD", "hk": "PMK 141/2015", "label": "24-104-65 (Jasa Dibebankan APBN/APBD)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-66", "nama": "Jasa Transaksi Token", "tarif": 2, "ket": "Jasa penerbitan / pengelolaan token", "hk": "PMK 141/2015", "label": "24-104-66 (Jasa Transaksi Token)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-67", "nama": "Jasa Pemasaran Voucher", "tarif": 2, "ket": "Marketing & distribusi voucher", "hk": "PMK 141/2015", "label": "24-104-67 (Jasa Pemasaran Voucher)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-68", "nama": "Jasa Distribusi Voucher", "tarif": 2, "ket": "Distribusi voucher kepada konsumen", "hk": "PMK 141/2015", "label": "24-104-68 (Jasa Distribusi Voucher)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-69", "nama": "Jasa Program Loyalitas", "tarif": 2, "ket": "Pengelolaan program loyalty/reward", "hk": "PMK 141/2015", "label": "24-104-69 (Jasa Program Loyalitas)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-70", "nama": "Jasa Lain Umum", "tarif": 2, "ket": "Jasa lain yang ditetapkan Dirjen Pajak", "hk": "PMK 141/2015", "label": "24-104-70 (Jasa Lain Umum)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-71", "nama": "Jasa Distribusi Voucher Penyelenggara", "tarif": 2, "ket": "Distribusi voucher oleh penyelenggara", "hk": "PMK 141/2015", "label": "24-104-71 (Jasa Distribusi Voucher Penyelenggara)"}, {"group": "── Tarif 2% — Imbalan Jasa ──", "kode": "24-104-72", "nama": "Jasa Loyalitas Voucher", "tarif": 2, "ket": "Pengelolaan program loyalitas berbasis voucher", "hk": "PMK 141/2015", "label": "24-104-72 (Jasa Loyalitas Voucher)"}];
+
+const AUTH_SESSION_KEY = 'ngolahPajakLoggedIn';
+const RETURN_PAGE_KEY = 'ngolahPajakReturnPage';
+const SUPPRESS_DASHBOARD_TUTORIAL_KEY = 'ngolahPajakSuppressDashboardTutorial';
+
+function safeSessionGet(key) {
+  try { return sessionStorage.getItem(key); } catch (e) { return null; }
+}
+function safeSessionSet(key, value) {
+  try { sessionStorage.setItem(key, value); } catch (e) {}
+}
+function safeSessionRemove(key) {
+  try { sessionStorage.removeItem(key); } catch (e) {}
+}
+
+const initialUrlParams = new URLSearchParams(window.location.search);
+const initialPageRequest = initialUrlParams.get('page') || (window.location.hash || '').replace('#', '');
+const skipDashboardTutorialOnReturn = safeSessionGet(SUPPRESS_DASHBOARD_TUTORIAL_KEY) === '1';
+const shouldOpenDashboard = safeSessionGet(AUTH_SESSION_KEY) === '1'
+  && (safeSessionGet(RETURN_PAGE_KEY) === 'dashboard' || initialPageRequest === 'dashboard');
+if (skipDashboardTutorialOnReturn) safeSessionRemove(SUPPRESS_DASHBOARD_TUTORIAL_KEY);
+if (shouldOpenDashboard) {
+  safeSessionRemove(RETURN_PAGE_KEY);
+  if (window.location.search || window.location.hash) {
+    history.replaceState(null, '', 'index.html');
+  }
+}
+
+const state = {
+  page: shouldOpenDashboard ? 'dashboard' : 'login',
+  dark: false,
+  ppnResult: null,
+  pph21Result: { dpp: 0, tarif: 0, pph21: 0 },
+  pph23Detail: null,
+  pph23Result: null,
+  pph23Error: ''
+};
+
+const app = document.getElementById('app');
+
+const ABOUT_MUSIC_SRC = 'assets/about/safe-and-sound-60s-fade.mp3';
+const ABOUT_MUSIC_LIMIT_SECONDS = 60;
+let aboutMusicAudio = null;
+let aboutMusicTimer = null;
+
+function aboutMusicTimeLabel(seconds) {
+  const safe = Math.max(0, Math.floor(seconds || 0));
+  const m = Math.floor(safe / 60);
+  const s = String(safe % 60).padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+function updateAboutMusicButton() {
+  const btn = document.getElementById('aboutMusicBtn');
+  if (!btn) return;
+  const isPlaying = aboutMusicAudio && !aboutMusicAudio.paused && !aboutMusicAudio.ended;
+  btn.classList.toggle('playing', !!isPlaying);
+  btn.textContent = isPlaying
+    ? `⏸ Music ${aboutMusicTimeLabel(aboutMusicAudio.currentTime)}`
+    : '▶ Play Music';
+}
+
+function stopAboutMusic() {
+  if (aboutMusicTimer) {
+    clearInterval(aboutMusicTimer);
+    aboutMusicTimer = null;
+  }
+  if (aboutMusicAudio) {
+    try { aboutMusicAudio.pause(); } catch (e) {}
+    try { aboutMusicAudio.currentTime = 0; } catch (e) {}
+    try { aboutMusicAudio.volume = 0.82; } catch (e) {}
+  }
+  updateAboutMusicButton();
+}
+
+function startAboutMusic() {
+  if (!aboutMusicAudio) {
+    aboutMusicAudio = new Audio(ABOUT_MUSIC_SRC);
+    aboutMusicAudio.preload = 'auto';
+    aboutMusicAudio.volume = 0.82;
+    aboutMusicAudio.addEventListener('ended', stopAboutMusic);
+  }
+  if (aboutMusicTimer) clearInterval(aboutMusicTimer);
+  aboutMusicAudio.currentTime = 0;
+  aboutMusicAudio.volume = 0.82;
+  aboutMusicAudio.play().then(() => {
+    updateAboutMusicButton();
+    aboutMusicTimer = setInterval(() => {
+      if (!aboutMusicAudio) return;
+      if (aboutMusicAudio.currentTime >= ABOUT_MUSIC_LIMIT_SECONDS) {
+        stopAboutMusic();
+        return;
+      }
+      updateAboutMusicButton();
+    }, 250);
+  }).catch(() => {
+    updateAboutMusicButton();
+  });
+}
+
+function toggleAboutMusic() {
+  if (aboutMusicAudio && !aboutMusicAudio.paused && !aboutMusicAudio.ended) stopAboutMusic();
+  else startAboutMusic();
+}
+
+function initAboutMusicControls() {
+  const btn = document.getElementById('aboutMusicBtn');
+  if (!btn) return;
+  btn.addEventListener('click', toggleAboutMusic);
+  updateAboutMusicButton();
+}
+
+window.addEventListener('message', event => {
+  const data = event && event.data;
+  if (!data || data.type !== 'ngolahPajakNavigate') return;
+  if (data.page === 'dashboard') setPage('dashboard');
+});
+
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function val(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+function checked(id) { const el = document.getElementById(id); return !!(el && el.checked); }
+function fmt(n) { return 'Rp\u00A0' + Math.round(Number(n || 0)).toLocaleString('id-ID'); }
+function fmtPlain(n) { return Math.round(Number(n || 0)).toLocaleString('id-ID'); }
+
+
+const tutorialState = {
+  loginDone: false,
+  dashboardDone: skipDashboardTutorialOnReturn,
+  active: false,
+  steps: [],
+  index: 0,
+  timer: null
+};
+
+const BU_LAKSMI_IMAGES = [
+  'assets/tutorial/bu-laksmi-1.png',
+  'assets/tutorial/bu-laksmi-2.png',
+  'assets/tutorial/bu-laksmi-3.png',
+  'assets/tutorial/bu-laksmi-4.png'
+];
+
+const MEMBER_AVATAR_IMAGES = {
+  davin: ['assets/tutorial/davin-2.png', 'assets/tutorial/davin-1.png', 'assets/tutorial/davin-3.png'],
+  rifaldi: ['assets/tutorial/rifaldi-1.png', 'assets/tutorial/rifaldi-2.png', 'assets/tutorial/rifaldi-3.png'],
+  wahyu: ['assets/tutorial/wahyu-2.png', 'assets/tutorial/wahyu-1.png', 'assets/tutorial/wahyu-3.png']
+};
+
+function tutorialIntroChoiceSteps() {
+  return [
+    {
+      pos: 'right',
+      img: BU_LAKSMI_IMAGES[0],
+      kicker: 'Tutorial NgolahPajak',
+      title: 'Selamat datang di <span>NgolahPajak</span>',
+      text: 'Platform yang akan memudahkan teman-teman dalam menghitung pajak dengan tampilan yang praktis, rapi, dan mudah digunakan.',
+      primary: 'Lanjut'
+    },
+    {
+      pos: 'bottom-right',
+      img: BU_LAKSMI_IMAGES[1],
+      kicker: 'Tentang NgolahPajak',
+      title: 'Proyek Kelompok 7',
+      text: 'NgolahPajak merupakan proyek dari <b>Kelompok 7</b> untuk memenuhi tugas akhir mata kuliah <b>Praktikum Komputer Perpajakan</b>.',
+      primary: 'Lanjut Perkenalan',
+      secondary: 'Skip Perkenalan',
+      nextAction: () => startTutorial([...tutorialMemberSteps(), ...tutorialLoginHelpSteps()], 'login'),
+      secondaryAction: () => startTutorial(tutorialLoginHelpSteps(), 'login')
+    }
+  ];
+}
+
+function tutorialMemberSteps() {
+  return [
+    {
+      pos: 'left',
+      images: MEMBER_AVATAR_IMAGES.davin,
+      kicker: 'Kelompok 7',
+      title: 'Perkenalan Anggota 1',
+      memberMeta: 'Anggota Kelompok 7',
+      text: '<span class="pajak-tour-member-panel"><span class="pajak-tour-member-name">Wahyu Davin Andhika Saputra</span><span class="pajak-tour-member-nim">40011423620009</span></span><span class="pajak-tour-member-quote">Proyek tugas akhir mata kuliah Praktikum Komputer Perpajakan.</span>',
+      primary: 'Lanjut'
+    },
+    {
+      pos: 'right',
+      images: MEMBER_AVATAR_IMAGES.rifaldi,
+      kicker: 'Kelompok 7',
+      title: 'Perkenalan Anggota 2',
+      memberMeta: 'Anggota Kelompok 7',
+      text: '<span class="pajak-tour-member-panel"><span class="pajak-tour-member-name">Rifaldi Tegar Dwi Saputra</span><span class="pajak-tour-member-nim">40011423620029</span></span><span class="pajak-tour-member-quote">Proyek tugas akhir mata kuliah Praktikum Komputer Perpajakan.</span>',
+      primary: 'Lanjut'
+    },
+    {
+      pos: 'top',
+      images: MEMBER_AVATAR_IMAGES.wahyu,
+      kicker: 'Kelompok 7',
+      title: 'Perkenalan Anggota 3',
+      memberMeta: 'Anggota Kelompok 7',
+      text: '<span class="pajak-tour-member-panel"><span class="pajak-tour-member-name">Wahyu Aryo Nughroho</span><span class="pajak-tour-member-nim">40011423620030</span></span><span class="pajak-tour-member-quote">Proyek tugas akhir mata kuliah Praktikum Komputer Perpajakan.</span>',
+      primary: 'Ke Cara Login'
+    }
+  ];
+}
+
+function tutorialLoginHelpSteps() {
+  return [{
+    pos: 'bottom-right',
+    img: BU_LAKSMI_IMAGES[2],
+    kicker: 'Cara Login',
+    title: 'Masuk ke halaman utama',
+    text: 'Isi kolom <b>Username</b> dengan <b>kelompok7</b>, lalu isi <b>Password</b> dengan <b>simut123</b>. Setelah itu klik tombol <b>Masuk Sekarang</b> untuk mulai menggunakan kalkulator pajak.',
+    primary: 'Selesai'
+  }];
+}
+
+function tutorialDashboardSteps() {
+  return [{
+    pos: 'bottom-right',
+    img: BU_LAKSMI_IMAGES[3],
+    kicker: 'NgolahPajak Siap Digunakan',
+    title: 'Selamat menjelajahi fitur-fitur kami ^^',
+    text: 'Di halaman ini teman-teman bisa memilih fitur kalkulator PPN & PPnBM, PPh 21, PPh 22, PPh 23, PPh Final, atau Rekonsiliasi Fiskal sesuai kebutuhan perhitungan pajak.',
+    primary: 'Siap Mulai'
+  }];
+}
+
+function scheduleLoginTutorial() {
+  clearTimeout(tutorialState.timer);
+  if (tutorialState.loginDone || tutorialState.active || state.page !== 'login') return;
+  tutorialState.timer = setTimeout(() => {
+    if (!tutorialState.loginDone && !tutorialState.active && state.page === 'login') {
+      startTutorial(tutorialIntroChoiceSteps(), 'intro-choice');
+    }
+  }, 650);
+}
+
+function scheduleDashboardTutorial() {
+  clearTimeout(tutorialState.timer);
+  if (tutorialState.dashboardDone || tutorialState.active || state.page !== 'dashboard') return;
+  tutorialState.timer = setTimeout(() => {
+    if (!tutorialState.dashboardDone && !tutorialState.active && state.page === 'dashboard') {
+      startTutorial(tutorialDashboardSteps(), 'dashboard');
+    }
+  }, 500);
+}
+
+function startTutorial(steps, mode) {
+  removeTutorialLayer(false);
+  tutorialState.steps = steps;
+  tutorialState.mode = mode;
+  tutorialState.index = 0;
+  tutorialState.active = true;
+  document.body.classList.add('pajak-tour-open');
+  renderTutorialStep();
+}
+
+function renderTutorialStep() {
+  const step = tutorialState.steps[tutorialState.index];
+  if (!step) { finishTutorial(); return; }
+  let layer = document.getElementById('pajakTourLayer');
+  if (!layer) {
+    layer = document.createElement('div');
+    layer.id = 'pajakTourLayer';
+    document.body.appendChild(layer);
+  }
+  const dots = tutorialState.steps.length > 1
+    ? `<div class="pajak-tour-progress">${tutorialState.steps.map((_, i) => `<span class="pajak-tour-dot ${i === tutorialState.index ? 'active' : ''}"></span>`).join('')}</div>`
+    : '';
+  const secondary = step.secondary
+    ? `<button class="pajak-tour-skip" type="button" id="pajakTourSecondary">${esc(step.secondary)}</button>`
+    : '';
+  layer.className = `pajak-tour-layer tour-pos-${step.pos || 'center'}`;
+  const visual = Array.isArray(step.images) && step.images.length
+    ? `<div class="pajak-tour-member-anim" aria-hidden="true">${step.images.map(src => `<img src="${esc(src)}" alt="">`).join('')}</div>`
+    : step.avatar
+      ? `<div class="pajak-tour-member-avatar" aria-hidden="true"><span>${esc(step.avatar)}</span></div>`
+      : `<img class="pajak-tour-mascot" src="${esc(step.img || BU_LAKSMI_IMAGES[0])}" alt="Bu Laksmi">`;
+  layer.innerHTML = `
+    <div class="pajak-tour-wrap" role="dialog" aria-live="polite" aria-label="Tutorial NgolahPajak">
+      ${visual}
+      <div class="pajak-tour-card ${Array.isArray(step.images) && step.images.length ? 'member-tour' : ''}">
+        <div class="pajak-tour-kicker">${esc(step.kicker || 'Tutorial')}</div>
+        <h2>${step.title || ''}</h2>
+        ${step.memberMeta ? `<div class="pajak-tour-member-meta">${esc(step.memberMeta)}</div>` : ''}
+        <p>${step.text || ''}</p>
+        ${dots}
+        <div class="pajak-tour-actions">
+          ${secondary}
+          <button class="pajak-tour-next" type="button" id="pajakTourNext">${esc(step.primary || 'Lanjut')}</button>
+        </div>
+      </div>
+    </div>`;
+  const nextBtn = document.getElementById('pajakTourNext');
+  const secondaryBtn = document.getElementById('pajakTourSecondary');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    if (typeof step.nextAction === 'function') {
+      step.nextAction();
+      return;
+    }
+    tutorialState.index += 1;
+    if (tutorialState.index >= tutorialState.steps.length) finishTutorial();
+    else renderTutorialStep();
+  });
+  if (secondaryBtn) secondaryBtn.addEventListener('click', () => {
+    if (typeof step.secondaryAction === 'function') step.secondaryAction();
+    else finishTutorial();
+  });
+}
+
+function finishTutorial() {
+  if (tutorialState.mode === 'dashboard') tutorialState.dashboardDone = true;
+  else tutorialState.loginDone = true;
+  removeTutorialLayer(true);
+}
+
+function removeTutorialLayer(markInactive) {
+  const layer = document.getElementById('pajakTourLayer');
+  if (layer) layer.remove();
+  document.body.classList.remove('pajak-tour-open');
+  if (markInactive) tutorialState.active = false;
+}
+
+
+function scrollPageToTop() {
+  requestAnimationFrame(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  });
+}
+
+function setPage(page) {
+  if (state.page === 'about' && page !== 'about') stopAboutMusic();
+  if (page === 'dashboard' || page === 'pph21' || page === 'pphFinal' || page === 'pph22' || page === 'pph23' || page === 'ppn' || page === 'about') {
+    safeSessionSet(AUTH_SESSION_KEY, '1');
+  }
+  if (page === 'dashboard') {
+    safeSessionRemove(RETURN_PAGE_KEY);
+    safeSessionRemove(SUPPRESS_DASHBOARD_TUTORIAL_KEY);
+  }
+  state.page = page;
+  state.ppnResult = null;
+  state.pph23Result = null;
+  state.pph23Error = '';
+  render();
+  scrollPageToTop();
+}
+function logout() {
+  stopAboutMusic();
+  safeSessionRemove(AUTH_SESSION_KEY);
+  safeSessionRemove(RETURN_PAGE_KEY);
+  state.page = 'login'; state.ppnResult = null; state.pph23Result = null; render(); scrollPageToTop();
+}
+function toggleTheme() { state.dark = !state.dark; render(); }
+function embeddedThemeParam() { return state.dark ? 'dark' : 'light'; }
+function applyEmbeddedFrameTheme(frame) {
+  if (!frame) return;
+  const theme = embeddedThemeParam();
+  try {
+    if (frame.contentWindow) frame.contentWindow.postMessage({ type:'ngolahPajakTheme', theme }, '*');
+  } catch (e) {}
+  try {
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    if (doc && doc.documentElement) doc.documentElement.classList.toggle('dark', state.dark);
+    if (doc && doc.body) {
+      doc.body.classList.toggle('dark-mode', state.dark);
+      doc.body.setAttribute('data-theme', theme);
+    }
+  } catch (e) {}
+}
+
+function shell(content) {
+  document.documentElement.classList.toggle('dark', state.dark);
+  const logged = state.page !== 'login';
+  const pph21FloatingBack = state.page === 'pph21'
+    ? '<button class="pph21-floating-back-main" id="pph21FloatBack" type="button">← Kembali ke Dashboard</button>'
+    : '';
+  app.innerHTML = `
+    <header class="site-header">
+      <div class="container header-row">
+        <div class="brand"><span>Ngolah<span>Pajak</span></span><small>Universitas Diponegoro</small></div>
+        <div class="header-actions">
+          <div class="header-clock" id="headerClock">⏱ <span>--:--:--</span></div>
+          <button class="icon-btn" id="themeBtn" title="Ubah Tema">${state.dark ? '☀️' : '🌙'}</button>
+          ${logged ? '<button class="logout-btn" id="logoutBtn">↪ Logout</button>' : ''}
+        </div>
+      </div>
+    </header>
+    <main class="container main-area${state.page === 'pph21' ? ' pph21-main-area' : state.page === 'pphFinal' ? ' pphfinal-main-area' : state.page === 'pph22' ? ' pph22-main-area' : ''}">${content}</main>
+    ${pph21FloatingBack}
+    <footer class="footer"><div class="container"><p>&copy; ${new Date().getFullYear()} <b>Kelompok 7</b>. All rights reserved.</p><small>Tugas Project Praktikum Komputer Perpajakan</small></div></footer>
+  `;
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  if (logged) document.getElementById('logoutBtn').addEventListener('click', logout);
+}
+
+
+function updateHeaderClock() {
+  const el = document.getElementById('headerClock');
+  if (!el) return;
+  const now = new Date();
+  const formatted = new Intl.DateTimeFormat('id-ID', {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }).format(now);
+  el.innerHTML = `⏱ <span>${formatted}</span>`;
+}
+setInterval(updateHeaderClock, 1000);
+
+function render() {
+  if (state.page === 'login') renderLogin();
+  if (state.page === 'dashboard') renderDashboard();
+  if (state.page === 'ppn') renderPPN();
+  if (state.page === 'pph21') renderPPh21();
+  if (state.page === 'pph23') renderPPh23();
+  if (state.page === 'pphFinal') renderPPhFinal();
+  if (state.page === 'pph22') renderPPh22();
+  if (state.page === 'about') renderAboutUs();
+  updateHeaderClock();
+}
+
+function renderLogin() {
+  shell(`
+    <section class="center-screen fade-in">
+      <div class="login-page-accent"></div>
+      <div class="login-watermark">NP</div>
+      <div class="login-motion left"></div>
+      <div class="login-motion right"></div>
+      <div class="login-motion line"></div>
+      <div class="login-bubble b1"></div>
+      <div class="login-bubble b2"></div>
+      <div class="login-bubble b3"></div>
+      <div class="login-bubble b4"></div>
+      <div class="login-bubble b5"></div>
+      <div class="login-bubble b6"></div>
+      <div class="login-bubble b7"></div>
+      <div class="login-bubble b8"></div>
+      <div class="login-bubble b9"></div>
+      <div class="login-bubble b10"></div>
+      <div class="login-card">
+        <div class="glow"></div>
+        <div class="login-ornament one"></div>
+        <div class="login-ornament two"></div>
+        <div class="login-head">
+          <div class="avatar"><img src="assets/brand/ngolahpajak-logo.png" alt="Logo NgolahPajak" onerror="this.style.display='none';this.parentNode.textContent='NP';"></div>
+          <h1>WELCOME</h1>
+          <p>Silahkan Masuk</p>
+        </div>
+        <form id="loginForm" class="form-stack">
+          <label>Username<input id="username" class="field" type="text" placeholder="Masukkan username" required></label>
+          <label>Password<input id="password" class="field" type="password" placeholder="••••••••" required></label>
+          <div id="loginError" class="alert error hidden">Username atau password salah!</div>
+          <button class="primary-btn" type="submit">Masuk Sekarang</button>
+        </form>
+        <p class="hint">Username: <b>kelompok7</b> &nbsp; Password: <b>simut123</b></p>
+      </div>
+    </section>`);
+  document.getElementById('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (val('username') === 'kelompok7' && val('password') === 'simut123') {
+      safeSessionSet(AUTH_SESSION_KEY, '1');
+      setPage('dashboard');
+    }
+    else document.getElementById('loginError').classList.remove('hidden');
+  });
+  scheduleLoginTutorial();
+}
+
+function renderDashboard() {
+  shell(`
+    <section class="dashboard fade-in">
+      <div class="hero">
+        <h1>Selamat Datang di <span>NgolahPajak</span></h1>
+        <p>Portal pintar untuk menghitung berbagai kebutuhan perpajakan Anda dengan cepat, akurat, dan mudah digunakan.</p>
+      </div>
+      <div class="menu-grid">
+        <button class="menu-card" data-page="ppn"><div>📊</div><h3>Kalkulator PPN & PPnBM</h3><p>Hitung PPN 12%, DPP Nilai Lain, dan Pajak Barang Mewah.</p></button>
+        <button class="menu-card" data-page="pph21"><div>💼</div><h3>Kalkulator PPh 21</h3><p>Hitung PPh 21 lengkap: pegawai tetap, tidak tetap, dan PPh 21 lainnya.</p></button>
+        <button class="menu-card" data-page="pph22"><div>🧾</div><h3>Kalkulator PPh 22</h3><p>Hitung PPh 22 untuk impor, pembelian barang, BBM/BBG, industri tertentu, kripto, dan transaksi terkait.</p></button>
+        <button class="menu-card" data-page="pph23"><div>📄</div><h3>Kalkulator PPh 23</h3><p>Hitung pemotongan atas dividen, bunga, royalti, sewa, dan jasa.</p></button>
+        <button class="menu-card" data-page="pphFinal"><div>🏛️</div><h3>Kalkulator PPh Final Pasal 4 Ayat (2)</h3><p>Hitung PPh Final untuk UMKM, sewa, konstruksi, bunga, dividen, dan objek final lainnya.</p></button>
+        <button class="menu-card coming-soon" type="button" disabled aria-disabled="true"><div>🔒</div><h3>Rekonsiliasi Fiskal</h3><p class="coming-blur-text">Fitur rekonsiliasi fiskal sedang disiapkan untuk versi berikutnya.</p><span class="coming-label">Coming Soon</span></button>
+      </div>
+      <button class="about-floating" type="button" id="aboutBtn">✨ About Us</button>
+    </section>`);
+  document.querySelectorAll('.menu-card[data-page]').forEach(btn => btn.addEventListener('click', () => setPage(btn.dataset.page)));
+  document.getElementById('aboutBtn').addEventListener('click', () => setPage('about'));
+  scheduleDashboardTutorial();
+}
+
+function renderAboutUs() {
+  shell(`
+    <section class="about-page fade-in">
+      ${backButton()}
+      <div class="about-hero">
+        <div class="about-hero-copy">
+          <div class="about-kicker">✨ About Us · Project Credit</div>
+          <h1>Special Thanks from <span>NgolahPajak</span></h1>
+          <p class="about-lead">Halaman ini menjadi ruang apresiasi untuk pihak yang telah membantu, membimbing, dan mendukung kelancaran proyek akhir <b>Praktikum Komputer Perpajakan</b> Kelompok 7.</p>
+          <div class="about-hero-actions">
+            <span class="about-pill">🎓 Universitas Diponegoro</span>
+            <span class="about-pill">💛 Kelompok 7</span>
+            <span class="about-pill">🧾 Tax Calculator Application</span>
+            <button class="about-music-btn" type="button" id="aboutMusicBtn">▶ Play Music</button>
+          </div>
+        </div>
+        <div class="about-photo-stage" aria-label="Foto kelompok">
+          <div class="about-photo-card">
+            <img src="foto-kelompok-v35.jpg" alt="Foto Kelompok 7" onerror="this.style.display='none';this.parentNode.querySelector('.about-photo-caption').innerHTML='Foto Kelompok<br><small>Foto dokumentasi kelompok dapat ditempatkan pada area ini.</small>'">
+            <div class="about-photo-caption">Foto Kelompok 7<small>Dokumentasi kelompok ditampilkan sebagai identitas visual proyek.</small></div>
+          </div>
+          <div class="about-mini-card"><b>NgolahPajak</b><span>Dibuat sebagai aplikasi bantu hitung pajak dengan tampilan praktis, rapi, dan mudah digunakan.</span></div>
+        </div>
+      </div>
+
+      <section class="about-story-zone">
+        <div class="about-story-inner">
+          <div class="about-flow-grid">
+            <div class="about-freecopy">
+              <h2>Ucapan Terima Kasih 💛</h2>
+              <p>NgolahPajak disusun sebagai proyek akhir Praktikum Komputer Perpajakan dengan harapan dapat menjadi media bantu belajar yang praktis, interaktif, dan mudah digunakan.</p>
+              <div class="about-inline-note">Terima kasih kepada dosen pengampu mata kuliah Praktikum Komputer Perpajakan atas arahan, ilmu, masukan, dan dukungan selama proses penyusunan proyek ini.</div>
+              <div class="about-floating-tags">
+                <span>💛 Special Thanks</span>
+                <span>📚 Praktikum Perpajakan</span>
+                <span>✨ NgolahPajak Project</span>
+              </div>
+            </div>
+
+            <div class="about-photo-collage" aria-label="Kolase foto">
+              <div class="about-sticker trio-slot">
+                <img src="assets/about/about-third-photo.jpg" alt="Foto tambahan momen kelompok">
+                <b>Little Moments</b>
+                <small>Potret kecil yang merekam kebersamaan dalam perjalanan proyek ini.</small>
+              </div>
+              <div class="about-sticker group-shot">
+                <img src="assets/about/about-group-friends.jpg" alt="Foto circle kelompok">
+                <b>Circle Stories</b>
+                <small>Suasana hangat yang menjadi bagian dari perjalanan NgolahPajak.</small>
+              </div>
+              <div class="about-sticker class-shot">
+                <img src="assets/about/about-class-photo.jpg" alt="Foto teman-teman sekelas">
+                <b>Class Memories</b>
+                <small>Kenangan kelas yang memberi warna pada proses belajar bersama.</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-lower-flow">
+            <div class="about-crew">
+              <h2>Meet Our Team ✨</h2>
+              <p>Anggota Kelompok 7 yang terlibat dalam penyusunan dan pengembangan aplikasi <b>NgolahPajak</b>.</p>
+              <div class="about-crew-badges">
+                <span class="about-crew-badge">💛 Kelompok 7</span>
+                <span class="about-crew-badge">📚 Praktikum Komputer Perpajakan</span>
+              </div>
+              <div class="about-team-showcase">
+                <div class="about-member-lines">
+                  <div class="about-member-line"><b>Wahyu Davin Andhika Saputra</b><small>Anggota Kelompok 7</small><span>40011423620009</span></div>
+                  <div class="about-member-line"><b>Rifaldi Tegar Dwi Saputra</b><small>Anggota Kelompok 7</small><span>40011423620029</span></div>
+                  <div class="about-member-line"><b>Wahyu Aryo Nughroho</b><small>Anggota Kelompok 7</small><span>40011423620030</span></div>
+                </div>
+                <div class="about-chibi-frame" aria-hidden="true">
+                  <img src="assets/about/about-chibi-class.png" alt="">
+                  <b>Class Vibes ✨</b>
+                  <small>Kelas A kalau terlalu dianime-animekan.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="about-support-free">
+              <h2>Support Us ☕</h2>
+              <p>Pindai QR untuk memberikan dukungan sukarela bagi pengembangan NgolahPajak. Setiap bentuk dukungan menjadi apresiasi untuk proses belajar dan penyempurnaan aplikasi ini.</p>
+              <div class="qr-box"><div class="fake-qr"><img src="assets/about/support-qr.png" alt="QR Support NgolahPajak"></div></div>
+              <p class="support-note">Terima kasih atas dukungan dan apresiasi yang diberikan untuk NgolahPajak.</p>
+              <div class="support-float-links"><span>💛 Support by QR</span><a href="https://wa.me/6281288871720" target="_blank" rel="noopener noreferrer">📞 Contact Us</a></div>
+            </div>
+          </div>
+
+          <div class="about-footer-cta">
+            <div><b>Thank you for visiting NgolahPajak 💛</b><span>Semoga aplikasi ini dapat menjadi media pembelajaran perpajakan yang lebih praktis, interaktif, dan mudah dipahami.</span></div>
+            <button class="outline-blue" type="button" id="aboutBackBottom">Kembali ke Dashboard</button>
+          </div>
+        </div>
+      </section>
+    </section>`);
+  wireBack();
+  initAboutMusicControls();
+  document.getElementById('aboutBackBottom').addEventListener('click', () => setPage('dashboard'));
+}
+
+function backButton() { return '<button class="back-btn" id="backBtn">← Kembali ke Dashboard</button>'; }
+function wireBack() { document.getElementById('backBtn').addEventListener('click', () => setPage('dashboard')); }
+
+function ppnResultHTML() {
+  const r = state.ppnResult;
+  if (!r) return `<div class="result-empty"><h2>Langkah 3: Hasil Perhitungan</h2><p>Lengkapi langkah 1 dan 2, lalu klik Hitung Pajak.</p></div>`;
+  return `<div class="result-card">
+    <h2><span>3</span>Rincian Perhitungan</h2>
+    <div class="result-lines">
+      <p><span>Harga Pokok</span><b>${fmt(r.pk)}</b></p>
+      <p><span>Dasar Pengenaan Pajak (DPP)</span><b>${fmt(r.dpp)}</b></p>
+      <p class="green"><span>PPN Terutang</span><b>${fmt(r.ppn)}</b></p>
+      ${r.ppnbm > 0 ? `<p class="rose"><span>PPnBM Terutang</span><b>${fmt(r.ppnbm)}</b></p>` : ''}
+      <p class="total"><span>Total yang Harus Dibayar</span><b>${fmt(r.total)}</b></p>
+    </div>
+    <div class="note"><b>Catatan:</b> ${esc(r.notes)}</div>
+  </div>`;
+}
+
+function renderPPN() {
+  const selectedGroup = val('ppnGroup') || '';
+  const selectedSub = val('ppnSub') || '';
+  const groupOptions = Object.keys(taxData).map(k => `<option value="${esc(k)}" ${selectedGroup===k?'selected':''}>${esc(taxData[k].label)}</option>`).join('');
+  let subOptions = '';
+  if (selectedGroup && taxData[selectedGroup]) {
+    subOptions = taxData[selectedGroup].items.map((item, i) => `<option value="${i}" ${selectedSub==String(i)?'selected':''}>${esc(item.n)}</option>`).join('');
+  }
+  const selectedRule = selectedGroup && selectedSub !== '' && taxData[selectedGroup] ? taxData[selectedGroup].items[Number(selectedSub)] : null;
+  shell(`
+    ${backButton()}
+    <section class="fade-in">
+      <div class="page-title"><h1>Kalkulator <span>PPN & PPnBM</span></h1><p>Pilih kategori barang/jasa dan masukkan nilai transaksi.</p></div>
+      <div class="two-col">
+        <div class="form-stack">
+          <div class="card"><h2><span>1</span>Pilih Kategori Barang / Jasa</h2>
+            <label>Kelompok Kategori<select id="ppnGroup" class="field"><option value="">— Pilih kelompok —</option>${groupOptions}</select></label>
+            ${selectedGroup ? `<label>Sub-Kategori<select id="ppnSub" class="field"><option value="">— Pilih sub-kategori —</option>${subOptions}</select></label>` : ''}
+            ${selectedRule ? `<div class="info"><b>Info Tarif:</b><p>${esc(selectedRule.note)}</p><small>Dasar Hukum: ${esc(selectedRule.hk)}</small></div>` : ''}
+          </div>
+          <div class="card"><h2><span>2</span>Input Nilai Transaksi</h2>
+            <label>Metode Harga<select id="ppnMethod" class="field"><option value="excl">Belum termasuk PPN (Eksklusif)</option><option value="incl">Sudah termasuk PPN (Inklusif)</option></select></label>
+            <div class="inline-grid"><label>Harga Satuan (Rp)<input id="ppnPrice" class="field" type="number" placeholder="0"></label><label>Kuantitas<input id="ppnQty" class="field" type="number" min="1" value="1"></label></div>
+            <button id="ppnCalc" class="primary-btn">Hitung Pajak</button><p id="ppnError" class="error-text"></p>
+          </div>
+        </div>
+        <div>${ppnResultHTML()}</div>
+      </div>
+    </section>`);
+  wireBack();
+  const groupEl = document.getElementById('ppnGroup');
+  const subEl = document.getElementById('ppnSub');
+  if (groupEl) groupEl.addEventListener('change', () => { state.ppnResult = null; renderPPN(); setTimeout(()=>{document.getElementById('ppnGroup').value=groupEl.value},0); });
+  if (subEl) subEl.addEventListener('change', () => { state.ppnResult = null; renderPPN(); });
+  document.getElementById('ppnCalc').addEventListener('click', () => {
+    const g = val('ppnGroup'), s = val('ppnSub'), price = parseFloat(val('ppnPrice')), qty = parseFloat(val('ppnQty') || 1), method = val('ppnMethod');
+    const err = document.getElementById('ppnError');
+    if (!g || s === '') { err.textContent = '⚠ Pilih kelompok dan sub-kategori terlebih dahulu.'; return; }
+    if (!price || price <= 0) { err.textContent = '⚠ Masukkan harga satuan yang valid.'; return; }
+    state.ppnResult = calculateTax(price, qty, method, taxData[g].items[Number(s)]);
+    renderPPN();
+  });
+}
+
+function renderPPh21() {
+  shell(`
+    <section class="fade-in pph21-preview-shell">
+      <iframe id="pph21Frame" src="pph21_terpadu.html?embed=1&theme=${embeddedThemeParam()}" title="Kalkulator PPh 21 Terpadu"></iframe>
+    </section>`);
+  const pph21FloatBack = document.getElementById('pph21FloatBack');
+  if (pph21FloatBack) pph21FloatBack.addEventListener('click', () => {
+    tutorialState.dashboardDone = true;
+    setPage('dashboard');
+  });
+  const frame = document.getElementById('pph21Frame');
+  let pph21ResizeObserver = null;
+  const resizeFrame = () => {
+    if (!frame) return;
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      const win = frame.contentWindow;
+      const wrap = doc.querySelector('.wrap');
+      let height = 0;
+
+      if (wrap) {
+        const rect = wrap.getBoundingClientRect();
+        const wrapStyle = win.getComputedStyle(wrap);
+        const marginBottom = parseFloat(wrapStyle.marginBottom || '0') || 0;
+        height = Math.ceil(rect.top + wrap.scrollHeight + marginBottom);
+      }
+
+      if (!height && doc.body) {
+        const children = Array.from(doc.body.children || []).filter(el => {
+          if (!el || !el.getBoundingClientRect) return false;
+          if (el.classList && el.classList.contains('backToMainApp')) return false;
+          const tag = (el.tagName || '').toLowerCase();
+          return tag !== 'script' && tag !== 'style';
+        });
+        height = Math.ceil(children.reduce((max, el) => {
+          const r = el.getBoundingClientRect();
+          return Math.max(max, r.bottom);
+        }, 0));
+      }
+
+      // v45: tinggi iframe PPh 21 dibuat mengikuti konten aktif.
+      // Sebelumnya minimum 900px membuat tab Pegawai Tak Tetap dan PPh 21 Lainnya
+      // menyisakan ruang kosong panjang di bawah konten.
+      frame.style.height = Math.max(height + 4, 280) + 'px';
+    } catch (e) {
+      // Local offline file: fallback height is already set in CSS.
+    }
+  };
+  if (frame) {
+    frame.addEventListener('load', () => {
+      applyEmbeddedFrameTheme(frame);
+      try {
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        const innerBack = doc.querySelector('.backToMainApp');
+        if (innerBack) innerBack.style.display = 'none';
+        if (doc.body) doc.body.classList.add('embedded-mode');
+      } catch (e) {}
+      resizeFrame();
+      try {
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        const wrap = doc.querySelector('.wrap');
+        if (pph21ResizeObserver) pph21ResizeObserver.disconnect();
+        pph21ResizeObserver = new ResizeObserver(() => requestAnimationFrame(resizeFrame));
+        if (wrap) pph21ResizeObserver.observe(wrap);
+        if (doc.body) pph21ResizeObserver.observe(doc.body);
+        doc.querySelectorAll('#tab_tetap,#tab_tak,#tab_lain').forEach(btn => {
+          btn.addEventListener('click', () => {
+            requestAnimationFrame(resizeFrame);
+            setTimeout(resizeFrame, 80);
+            setTimeout(resizeFrame, 220);
+          });
+        });
+        window.addEventListener('resize', resizeFrame);
+      } catch (e) {}
+    });
+  }
+}
+
+
+function renderPPhFinal() {
+  shell(`
+    <section class="fade-in pphfinal-preview-shell">
+      <div class="pph21-topbar">
+        ${backButton()}
+        <div class="pph21-topbar-note">Kalkulator PPh Final Pasal 4 Ayat (2) ditambahkan dari file perhitungan yang disiapkan.</div>
+      </div>
+      <iframe id="pphFinalFrame" src="pph_final_pasal_4_ayat_2.html?theme=${embeddedThemeParam()}" title="Kalkulator PPh Final Pasal 4 Ayat (2)"></iframe>
+    </section>`);
+  wireBack();
+  const frame = document.getElementById('pphFinalFrame');
+  const resizeFrame = () => {
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      const height = Math.max(
+        doc.body ? doc.body.scrollHeight : 0,
+        doc.documentElement ? doc.documentElement.scrollHeight : 0,
+        1550
+      );
+      frame.style.height = (height + 12) + 'px';
+    } catch (e) {
+      // Local offline file: fallback height is already set in CSS.
+    }
+  };
+  frame.addEventListener('load', () => {
+    applyEmbeddedFrameTheme(frame);
+    resizeFrame();
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      const ro = new ResizeObserver(resizeFrame);
+      ro.observe(doc.body);
+      window.addEventListener('resize', resizeFrame);
+    } catch (e) {}
+  });
+}
+
+
+function renderPPh22() {
+  shell(`
+    <section class="fade-in pph22-preview-shell">
+      <div class="pph21-topbar">
+        ${backButton()}
+        <div class="pph21-topbar-note">Kalkulator PPh Pasal 22 ditambahkan dari file perhitungan yang disiapkan.</div>
+      </div>
+      <iframe id="pph22Frame" src="pph22.html?theme=${embeddedThemeParam()}" title="Kalkulator PPh Pasal 22"></iframe>
+    </section>`);
+  wireBack();
+  const frame = document.getElementById('pph22Frame');
+  const resizeFrame = () => {
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      const height = Math.max(
+        doc.body ? doc.body.scrollHeight : 0,
+        doc.documentElement ? doc.documentElement.scrollHeight : 0,
+        1350
+      );
+      frame.style.height = (height + 12) + 'px';
+    } catch (e) {
+      // Local offline file: fallback height is already set in CSS.
+    }
+  };
+  frame.addEventListener('load', () => {
+    applyEmbeddedFrameTheme(frame);
+    resizeFrame();
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      const ro = new ResizeObserver(resizeFrame);
+      ro.observe(doc.body);
+      window.addEventListener('resize', resizeFrame);
+    } catch (e) {}
+  });
+}
+
+function pph23SelectHTML() {
+  let html = '<option value="">-- Pilih Kode Objek Pajak --</option>';
+  let last = null;
+  PPH23_OPTIONS.forEach((o, idx) => {
+    if (o.group !== last) { if (last !== null) html += '</optgroup>'; html += `<optgroup label="${esc(o.group || 'Lainnya')}">`; last = o.group; }
+    html += `<option value="${idx}">${esc(o.label)}</option>`;
+  });
+  if (last !== null) html += '</optgroup>';
+  return html;
+}
+
+function renderPPh23() {
+  shell(`
+    ${backButton()}
+    <section class="narrow fade-in">
+      <div class="page-title center"><h1>Kalkulator PPh Pasal 23</h1><p>Hitung pemotongan PPh 23 otomatis — sesuai PMK 141/2015.</p></div>
+      <div class="alert info">PPh Pasal 23 dipotong oleh <b>pihak yang membayar</b> atas penghasilan berupa dividen, bunga, royalti, hadiah, sewa, dan imbalan jasa tertentu.</div>
+      <div class="card"><h2><span>1</span>Pilih Kode Objek Pajak</h2>
+        <label>Kode Objek Pajak<select id="p23Kode" class="field">${pph23SelectHTML()}</select></label>
+        <div id="p23Detail"></div>
+      </div>
+      <div class="card"><h2><span>2</span>Status NPWP & Penghasilan Bruto</h2>
+        <label>Status NPWP Penerima Penghasilan<select id="p23Npwp" class="field"><option value="ber">Ber-NPWP — tarif normal</option><option value="tidak">Tidak Ber-NPWP — tarif lebih tinggi 100%</option></select></label>
+        <label>Jenis penghasilan bruto<select id="p23JenisBruto" class="field"><option value="tunai">Penghasilan tunai / transfer</option><option value="natura">Natura / kenikmatan (UU HPP 2022)</option></select></label>
+        <div class="inline-grid"><label>Mata uang<select id="p23Currency" class="field"><option value="IDR">IDR — Rupiah</option><option value="USD">USD — Dolar AS</option><option value="EUR">EUR — Euro</option><option value="SGD">SGD — Dolar Singapura</option></select></label><label>Penghasilan bruto<input id="p23Bruto" class="field" type="number" placeholder="0"></label></div>
+        <label id="kursWrap" class="hidden">Kurs KMK (Rp per 1 unit valas)<input id="p23Kurs" class="field" type="number" placeholder="Masukkan kurs KMK..."></label>
+        <button id="p23Calc" class="blue-btn">Hitung PPh 23 →</button>
+        <p class="error-text">${esc(state.pph23Error)}</p>
+      </div>
+      <div id="p23ResultWrap">${pph23ResultHTML()}</div>
+    </section>`);
+  wireBack();
+  const detailDiv = document.getElementById('p23Detail');
+  const kodeEl = document.getElementById('p23Kode');
+  kodeEl.addEventListener('change', () => {
+    const idx = kodeEl.value;
+    state.pph23Detail = idx === '' ? null : PPH23_OPTIONS[Number(idx)];
+    state.pph23Result = null; state.pph23Error = '';
+    if (state.pph23Detail) detailDiv.innerHTML = detailCardHTML(state.pph23Detail); else detailDiv.innerHTML = '';
+    document.getElementById('p23ResultWrap').innerHTML = '';
+  });
+  document.getElementById('p23Currency').addEventListener('change', e => document.getElementById('kursWrap').classList.toggle('hidden', e.target.value === 'IDR'));
+  document.getElementById('p23Calc').addEventListener('click', () => {
+    const o = state.pph23Detail;
+    if (!o) { state.pph23Error = '⚠ Pilih kode objek pajak terlebih dahulu.'; renderPPh23(); return; }
+    const rawBruto = parseFloat(val('p23Bruto'));
+    if (!rawBruto || rawBruto <= 0) { state.pph23Error = '⚠ Masukkan penghasilan bruto yang valid.'; renderPPh23(); return; }
+    let brutoIDR = rawBruto;
+    const currency = val('p23Currency');
+    if (currency !== 'IDR') {
+      const kursVal = parseFloat(val('p23Kurs'));
+      if (!kursVal || kursVal <= 0) { state.pph23Error = '⚠ Masukkan kurs KMK untuk valas.'; renderPPh23(); return; }
+      brutoIDR = rawBruto * kursVal;
+    }
+    const tarifN = o.tarif;
+    const tarifE = val('p23Npwp') === 'tidak' ? tarifN * 2 : tarifN;
+    const pph = brutoIDR * (tarifE / 100);
+    const neto = brutoIDR - pph;
+    state.pph23Error = '';
+    state.pph23Result = { brutoIDR, rawBruto, tarifN, tarifE, pph, neto, currency, npwp: val('p23Npwp') };
+    document.getElementById('p23ResultWrap').innerHTML = pph23ResultHTML();
+  });
+}
+
+function detailCardHTML(o) {
+  return `<div class="detail-box"><div><b class="badge purple">${esc(o.kode)}</b><b class="badge ${o.tarif==15?'rose-bg':'green-bg'}">Tarif ${esc(o.tarif)}%</b></div><p><b>${esc(o.nama)}</b> — ${esc(o.ket)}</p><small>Dasar hukum: ${esc(o.hk)}</small></div>`;
+}
+function pph23ResultHTML() {
+  const h = state.pph23Result, o = state.pph23Detail;
+  if (!h || !o) return '';
+  return `<div class="card result-pph23">
+    <div class="blue-head"><div><small>PPh 23 Dipotong</small><b>${fmt(h.pph)}</b></div><div><small>Neto Diterima</small><b>${fmt(h.neto)}</b></div></div>
+    <div class="result-grid"><p><small>Kode Objek Pajak</small><b>${esc(o.kode)}</b></p><p><small>Jenis Objek</small><b>${esc(o.nama)}</b></p><p><small>Tarif Normal</small><b>${esc(h.tarifN)}%</b></p><p><small>Tarif Efektif</small><b>${esc(h.tarifE)}%</b></p><p class="wide"><small>Penghasilan Bruto (IDR)</small><b>${fmt(h.brutoIDR)} ${h.currency !== 'IDR' ? `<span>(${esc(h.currency)} ${fmtPlain(h.rawBruto)})</span>` : ''}</b></p></div>
+    <p class="formula">Rumus: ${esc(h.tarifE)}% × ${fmt(h.brutoIDR)} = ${fmt(h.pph)}</p>
+  </div>`;
+}
+
+render();
+
+  </script>
+</body>
+</html>

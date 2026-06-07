@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kalkulator PPh Final Pasal 4 Ayat (2)</title>
+  <script>
+    (function(){
+      try {
+        if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    :root{
+      --navy:#111a44;
+      --navy-2:#1d275f;
+      --gold:#e7bd22;
+      --gold-soft:#fff7d7;
+      --bg:#f6f8fc;
+      --surface:#ffffff;
+      --soft:#f8fafc;
+      --line:#dbe2ee;
+      --line-strong:#c9d3e2;
+      --text:#273247;
+      --muted:#667085;
+      --green:#087443;
+      --red:#dc2626;
+      --amber:#9a6700;
+      --shadow:0 18px 42px rgba(17,26,68,.10);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 0% 0%,rgba(17,26,68,.09),transparent 30%),
+        radial-gradient(circle at 100% 6%,rgba(231,189,34,.18),transparent 25%),
+        linear-gradient(180deg,#fff 0%,var(--bg) 54%,#f8fafc 100%);
+    }
+    .wrap{width:min(100%,1180px);margin:0 auto;padding:24px}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:18px;
+      padding:18px 20px;border:1px solid rgba(201,211,226,.9);border-radius:26px;
+      background:linear-gradient(135deg,#fff 0%,#fffdf6 62%,#f8fafc 100%);
+      box-shadow:var(--shadow);
+      overflow:hidden;position:relative;
+    }
+    .top::after{content:"";position:absolute;right:-70px;top:-88px;width:220px;height:220px;border-radius:50%;background:rgba(231,189,34,.28)}
+    .brand{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+    .mark{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,#ffd84d 0 48%,var(--navy) 49% 100%);box-shadow:0 10px 22px rgba(17,26,68,.18);flex:0 0 auto}
+    h1{margin:0;color:var(--navy);font-size:clamp(22px,3vw,31px);line-height:1.05;letter-spacing:-.04em;font-weight:950}
+    .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.55;max-width:790px}
+    .badge{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid rgba(231,189,34,.55);color:var(--navy);font-size:12px;font-weight:900;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:minmax(310px,.95fr) minmax(380px,1.05fr);gap:16px;margin-top:16px;align-items:start}
+    .panel{border:1px solid rgba(201,211,226,.92);border-radius:var(--radius);background:rgba(255,255,255,.97);box-shadow:var(--shadow);overflow:hidden}
+    .panelHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fffaf0,#fff)}
+    .panelHead h2{margin:0;color:var(--navy);font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:950}
+    .panelHead h2::before{content:"";display:inline-block;width:7px;height:7px;margin-right:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(231,189,34,.14);vertical-align:1px}
+    .panelBody{padding:16px}
+    label{display:block;margin:12px 0 6px;color:#536176;font-size:12px;font-weight:850}
+    input,select,textarea{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--navy);outline:none;font:inherit;font-size:14px;transition:.16s ease;box-shadow:0 1px 2px rgba(17,26,68,.03)}
+    input:focus,select:focus,textarea:focus{border-color:rgba(17,26,68,.42);box-shadow:0 0 0 4px rgba(17,26,68,.08)}
+    input[readonly]{background:#f6f8fc;font-weight:900;color:var(--navy)}
+    textarea{min-height:72px;resize:vertical;line-height:1.45}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .hint{margin-top:7px;color:var(--muted);font-size:11.5px;line-height:1.48}
+    .extra{margin-top:12px;padding:12px;border:1px dashed var(--line-strong);border-radius:18px;background:#fbfcff}
+    .check{display:flex;gap:10px;align-items:flex-start;margin-top:10px;color:var(--text);font-size:12px;line-height:1.45;font-weight:750}
+    .check input{width:18px;min-height:18px;margin-top:1px;box-shadow:none;flex:0 0 auto}
+    .resultBox{display:grid;gap:10px}
+    .metric{padding:13px 14px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#fff,#f8fafc)}
+    .metric .t{color:var(--muted);font-size:11.5px;font-weight:850;text-transform:uppercase;letter-spacing:.04em}
+    .metric .v{margin-top:6px;color:var(--navy);font-size:18px;font-weight:950;font-variant-numeric:tabular-nums;word-break:break-word}
+    .metric.tax{background:radial-gradient(circle at 100% 0%,rgba(231,189,34,.20),transparent 42%),linear-gradient(180deg,#fff,#fffdf3)}
+    .metric.tax .v{font-size:clamp(28px,4vw,42px);color:var(--green);letter-spacing:-.035em}
+    .formula{margin-top:12px;padding:12px;border-radius:18px;border:1px solid rgba(231,189,34,.42);background:#fffdf2;color:#5d4d17;font-size:12.5px;line-height:1.55}
+    .formula b{color:var(--navy)}
+    .note{margin-top:10px;padding:12px;border-radius:18px;background:#f8fafc;border:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.55}
+    .note.warn{background:#fff7ed;border-color:#fed7aa;color:#7c2d12}
+    .note.danger{background:#fff5f5;border-color:#fecaca;color:#7f1d1d}
+    .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+    button{min-height:42px;padding:10px 14px;border:1px solid rgba(201,211,226,.95);border-radius:14px;background:#fff;color:var(--navy);font-size:12px;font-weight:900;cursor:pointer;transition:.16s ease}
+    button:hover{transform:translateY(-1px);box-shadow:0 9px 18px rgba(17,26,68,.09)}
+    .primary{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;border-color:rgba(17,26,68,.45)}
+    .gold{background:linear-gradient(180deg,#ffe178,#ffd84d);border-color:#d7a414;color:var(--navy)}
+    .ghost{background:#fff;color:#526177}
+    .tablePanel{margin-top:16px}
+    .summaryHead{width:100%;display:flex;align-items:center;gap:12px;padding:15px 18px;border:0;border-bottom:1px solid transparent;background:linear-gradient(180deg,#fffaf0,#fff);color:var(--navy);text-align:left;cursor:pointer;user-select:none;box-shadow:none;border-radius:0}
+    .summaryHead:hover{transform:none;box-shadow:none;background:linear-gradient(180deg,#fff6db,#fffaf0)}
+    .summaryArrow{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:18px;height:18px;color:var(--navy);font-size:16px;font-weight:950;transition:transform .18s ease}
+    .summaryLabel{display:block;color:var(--navy);font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:950}
+    .summaryMeta{display:block;margin-top:3px;color:var(--muted);font-size:11.5px;font-weight:700;letter-spacing:0;text-transform:none}
+    .tablePanel.open .summaryHead{border-bottom-color:var(--line)}
+    .tablePanel.open .summaryArrow{transform:rotate(90deg)}
+    .summaryIntro{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.5}
+    .tableTools{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .search{width:min(100%,390px)}
+    .tableWrap{overflow:auto;border-radius:18px;border:1px solid var(--line);background:#fff}
+    table{width:100%;min-width:840px;border-collapse:separate;border-spacing:0}
+    th,td{padding:10px 12px;border-bottom:1px solid #edf1f7;text-align:left;vertical-align:top;font-size:12px;line-height:1.45}
+    th{position:sticky;top:0;background:linear-gradient(180deg,#fffaf0,#f6f8fc);color:var(--navy);font-weight:950;z-index:1;white-space:nowrap}
+    td:first-child{font-weight:850;color:var(--navy)}
+    td.rate{font-variant-numeric:tabular-nums;font-weight:950;color:var(--green);white-space:nowrap}
+    tbody tr:nth-child(even) td{background:#fbfcff}
+    tbody tr:hover td{background:#fff8dc}
+    .small{font-size:11px;color:#8a94a6;line-height:1.5}
+    .footer{text-align:center;margin:16px 0 4px;color:#8a94a6;font-size:11px;line-height:1.5}
+    .hidden{display:none!important}
+    .red{color:var(--red)!important}.amber{color:var(--amber)!important}.green{color:var(--green)!important}
+    @media(max-width:900px){.wrap{padding:16px}.top{align-items:flex-start;flex-direction:column}.layout{grid-template-columns:1fr}.row{grid-template-columns:1fr}.badge{align-self:flex-start}}
+    @media(max-width:520px){.wrap{padding:12px}.top{padding:16px;border-radius:22px}.brand{align-items:flex-start}.mark{width:38px;height:38px;border-radius:13px}.panelBody{padding:14px}.actions button{width:100%}.metric.tax .v{font-size:30px}}
+
+
+/* ===== v43 — Dark mode, mengikuti tombol tema dashboard ===== */
+html.dark{color-scheme:dark}
+html.dark body{
+  color:#dbe4f0;
+  background:
+    radial-gradient(circle at 0% 0%,rgba(255,216,77,.10),transparent 30%),
+    radial-gradient(circle at 100% 6%,rgba(255,216,77,.12),transparent 25%),
+    linear-gradient(180deg,#070b1d 0%,#0b102b 54%,#111a44 100%);
+}
+html.dark .top,
+html.dark .panel,
+html.dark .metric,
+html.dark .extra,
+html.dark .note,
+html.dark .formula,
+html.dark .tableWrap{
+  background:linear-gradient(180deg,rgba(17,26,68,.92),rgba(12,18,45,.90));
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 18px 42px rgba(0,0,0,.30);
+}
+html.dark .panelHead,
+html.dark .summaryHead,
+html.dark .summaryHead:hover{background:linear-gradient(180deg,rgba(255,216,77,.12),rgba(255,255,255,.05));border-color:rgba(255,255,255,.14)}
+html.dark h1,
+html.dark .panelHead h2,
+html.dark .summaryLabel,
+html.dark .summaryArrow,
+html.dark .metric .v,
+html.dark .formula b,
+html.dark td:first-child{color:#f8fafc}
+html.dark .sub,
+html.dark label,
+html.dark .hint,
+html.dark .small,
+html.dark .summaryMeta,
+html.dark .summaryIntro,
+html.dark .metric .t,
+html.dark .note,
+html.dark .check{color:rgba(226,232,240,.70)}
+html.dark input,
+html.dark select,
+html.dark textarea{
+  background:rgba(255,255,255,.07);
+  color:#f8fafc;
+  border-color:rgba(255,255,255,.16);
+  box-shadow:none;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder{color:rgba(226,232,240,.44)}
+html.dark input[readonly]{background:rgba(255,255,255,.09);color:#f8fafc}
+html.dark select option{color:#111a44;background:#ffffff}
+html.dark .badge{
+  background:rgba(255,216,77,.12);
+  color:#ffeaa0;
+  border-color:rgba(255,216,77,.34);
+}
+html.dark .metric.tax{
+  background:radial-gradient(circle at 100% 0%,rgba(255,216,77,.18),transparent 42%),linear-gradient(180deg,rgba(17,26,68,.92),rgba(12,18,45,.90));
+}
+html.dark .metric.tax .v,
+html.dark td.rate{color:#5ee0a3}
+html.dark .formula{color:#ffeaa0;border-color:rgba(255,216,77,.28)}
+html.dark .note.warn{background:rgba(251,146,60,.10);border-color:rgba(251,146,60,.30);color:#fed7aa}
+html.dark .note.danger{background:rgba(248,113,113,.10);border-color:rgba(248,113,113,.30);color:#fecaca}
+html.dark button{background:rgba(255,255,255,.08);color:#f8fafc;border-color:rgba(255,255,255,.16)}
+html.dark .primary,
+html.dark .gold{background:linear-gradient(135deg,#ffd84d,#e7bd22);color:#111a44;border-color:rgba(255,216,77,.60)}
+html.dark .ghost{background:rgba(255,255,255,.07);color:#f8fafc}
+html.dark th{background:linear-gradient(180deg,rgba(255,216,77,.12),rgba(255,255,255,.06));color:#f8fafc;border-bottom-color:rgba(255,255,255,.14)}
+html.dark td{color:#dbe4f0;border-bottom-color:rgba(255,255,255,.10)}
+html.dark tbody tr:nth-child(even) td{background:rgba(255,255,255,.035)}
+html.dark tbody tr:hover td{background:rgba(255,216,77,.09)}
+html.dark .footer{color:rgba(226,232,240,.60)}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Kalkulator PPh Final Pasal 4 Ayat (2)</h1>
+          <div class="sub">Gunakan kalkulator ini sebagai panduan pengisian PPh Final Pasal 4 ayat (2). Pilih jenis PPh Final, masukkan dasar pengenaan pajak, lalu sistem akan menampilkan tarif dan estimasi PPh yang harus dipotong atau disetor.</div>
+        </div>
+      </div>
+      <div class="badge">Mode Hitung Terpandu</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel" aria-labelledby="inputTitle">
+        <div class="panelHead">
+          <h2 id="inputTitle">Input Perhitungan</h2>
+        </div>
+        <div class="panelBody">
+          <div class="row">
+            <div>
+              <label for="npwpStatus">Status NPWP / NIK</label>
+              <select id="npwpStatus">
+                <option value="valid">NPWP / NIK valid</option>
+                <option value="non">Tidak memiliki NPWP</option>
+              </select>
+            </div>
+            <div>
+              <label for="taxYear">Tahun Pajak</label>
+              <input id="taxYear" inputmode="numeric" placeholder="2026" />
+            </div>
+          </div>
+
+          <label for="taxType">Objek PPh Final</label>
+          <select id="taxType"></select>
+
+          <label for="dppInput" id="dppLabel">Dasar Pengenaan Pajak</label>
+          <input id="dppInput" inputmode="numeric" placeholder="Masukkan nominal DPP" />
+          <div class="hint" id="dppHint">Isi nominal sesuai objek pajak yang dipilih, misalnya jumlah bruto, nilai sewa, nilai transaksi, atau nilai pengalihan.</div>
+
+          <div id="extraFields" class="extra hidden"></div>
+
+          <div class="actions">
+            <button class="primary" id="copyBtn" type="button">Salin hasil perhitungan</button>
+            <button class="ghost" id="resetBtn" type="button">Kosongkan isian</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="resultTitle">
+        <div class="panelHead">
+          <h2 id="resultTitle">Ringkasan Perhitungan</h2>
+          <span class="small" id="statusText">Lengkapi isian untuk menghitung</span>
+        </div>
+        <div class="panelBody">
+          <div class="resultBox">
+            <div class="metric">
+              <div class="t">Tarif yang digunakan</div>
+              <div class="v" id="rateOut">0%</div>
+            </div>
+            <div class="metric">
+              <div class="t">DPP kena pajak</div>
+              <div class="v" id="taxableOut">Rp0</div>
+            </div>
+            <div class="metric tax">
+              <div class="t">PPh Final Pasal 4 ayat (2)</div>
+              <div class="v" id="taxOut">Rp0</div>
+            </div>
+          </div>
+          <div class="formula" id="formulaOut"><b>Rumus:</b> Pilih jenis PPh Final dan isi DPP untuk melihat rumus.</div>
+          <div class="note" id="noteOut">Catatan pengisian dan ketentuan khusus akan tampil di sini.</div>
+        </div>
+      </section>
+    </main>
+
+    <section class="panel tablePanel" id="tariffPanel" aria-labelledby="tableTitle">
+      <button class="summaryHead" id="tariffToggle" type="button" aria-controls="tariffContent" aria-expanded="false">
+        <span class="summaryArrow" aria-hidden="true">▶</span>
+        <span>
+          <span class="summaryLabel" id="tableTitle">Daftar Tarif Referensi</span>
+          <span class="summaryMeta" id="tariffToggleText">Klik untuk membuka daftar tarif</span>
+        </span>
+      </button>
+      <div class="panelBody hidden" id="tariffContent">
+        <p class="summaryIntro">Gunakan daftar ini sebagai referensi cepat. Ketik kata kunci pada kolom pencarian untuk menemukan jenis PPh Final yang sesuai.</p>
+        <input class="search" id="searchInput" placeholder="Cari objek pajak, tarif, DPP, atau catatan..." />
+        <div class="tableWrap" style="margin-top:12px">
+          <table>
+            <thead>
+              <tr>
+                <th>Objek PPh Final</th>
+                <th>Tarif</th>
+                <th>DPP</th>
+                <th>Catatan</th>
+              </tr>
+            </thead>
+            <tbody id="tariffBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">Catatan: kalkulator ini hanya alat bantu perhitungan. Pastikan kembali jenis objek pajak, dasar pengenaan pajak, fasilitas, dan ketentuan yang berlaku sebelum melakukan penyetoran atau pelaporan.</div>
+  </div>
+
+<script>
+(function(){
+  const GROUPS = [
+    'Usaha/UMKM',
+    'Bunga & Instrumen Keuangan',
+    'Saham, Sekuritas & Investasi',
+    'Tanah/Bangunan & Real Estat',
+    'Jasa Konstruksi',
+    'Dividen & Penghasilan Khusus',
+    'Lainnya / Catatan'
+  ];
+
+  const items = [
+    {id:'umkm', group:'Usaha/UMKM', label:'Penghasilan usaha WP dengan peredaran bruto tertentu / UMKM', rate:0.005, type:'umkm', dpp:'Peredaran bruto bulan/transaksi', tariff:'0,5%', note:'Untuk peredaran bruto tertentu. Bagi WP orang pribadi, dapat memperhitungkan bagian omzet sampai Rp500 juta setahun yang tidak dikenai PPh Final bila memenuhi syarat.'},
+
+    {id:'deposito', group:'Bunga & Instrumen Keuangan', label:'Bunga deposito, tabungan, jasa giro, dan diskonto SBI', rate:0.20, type:'flat', dpp:'Jumlah bruto bunga/diskonto', tariff:'20%', note:'Umumnya 20% dari jumlah bruto untuk WP dalam negeri/BUT. WP luar negeri mengikuti ketentuan P3B bila berlaku.'},
+    {id:'koperasi', group:'Bunga & Instrumen Keuangan', label:'Bunga simpanan koperasi kepada anggota orang pribadi', rate:0.10, type:'koperasi', dpp:'Jumlah bruto bunga per bulan', tariff:'0% / 10%', note:'0% jika bunga sampai dengan Rp240.000 per bulan. Jika lebih dari Rp240.000 per bulan, dikenai 10% dari jumlah bruto bunga.'},
+    {id:'obligasi_dn', group:'Bunga & Instrumen Keuangan', label:'Bunga/diskonto obligasi bagi WP dalam negeri dan BUT', rate:0.10, type:'flat', dpp:'Jumlah bruto bunga/diskonto', tariff:'10%', note:'Tarif ringkas untuk bunga/diskonto obligasi WP DN dan BUT.'},
+    {id:'obligasi_ln', group:'Bunga & Instrumen Keuangan', label:'Bunga/diskonto obligasi bagi WP luar negeri non-BUT sesuai P3B', rate:0.20, type:'manualRate', dpp:'Jumlah bruto bunga/diskonto', tariff:'Sesuai P3B / 20%', note:'Gunakan tarif P3B jika tersedia. Jika tidak, umumnya menggunakan 20%.'},
+    {id:'spn', group:'Bunga & Instrumen Keuangan', label:'Diskonto Surat Perbendaharaan Negara (SPN)', rate:0.20, type:'flat', dpp:'Jumlah diskonto SPN', tariff:'20%', note:'Dikenakan atas diskonto SPN sesuai ketentuan yang berlaku.'},
+    {id:'dhe_v1', group:'Bunga & Instrumen Keuangan', label:'DHE SDA valas - tenor 1 bulan', rate:0.10, type:'flat', dpp:'Penghasilan dari penempatan DHE SDA', tariff:'10%', note:'Tarif khusus DHE SDA dalam valas, bergantung tenor penempatan.'},
+    {id:'dhe_v3', group:'Bunga & Instrumen Keuangan', label:'DHE SDA valas - tenor 3 bulan', rate:0.075, type:'flat', dpp:'Penghasilan dari penempatan DHE SDA', tariff:'7,5%', note:'Tarif khusus DHE SDA dalam valas, bergantung tenor penempatan.'},
+    {id:'dhe_v6', group:'Bunga & Instrumen Keuangan', label:'DHE SDA valas - tenor 6 bulan', rate:0.025, type:'flat', dpp:'Penghasilan dari penempatan DHE SDA', tariff:'2,5%', note:'Tarif khusus DHE SDA dalam valas, bergantung tenor penempatan.'},
+    {id:'dhe_v6p', group:'Bunga & Instrumen Keuangan', label:'DHE SDA valas - tenor lebih dari 6 bulan', rate:0, type:'flat', dpp:'Penghasilan dari penempatan DHE SDA', tariff:'0%', note:'Tarif khusus DHE SDA dalam valas, bergantung tenor penempatan.'},
+    {id:'dhe_r1', group:'Bunga & Instrumen Keuangan', label:'DHE SDA dikonversi ke rupiah - tenor 1 bulan', rate:0.05, type:'flat', dpp:'Penghasilan dari penempatan DHE SDA', tariff:'5%', note:'Tarif khusus DHE SDA yang dikonversi ke rupiah, bergantung tenor penempatan.'},
+    {id:'dhe_r3', group:'Bunga & Instrumen Keuangan', label:'DHE SDA dikonversi ke rupiah - tenor 3 bulan', rate:0.025, type:'flat', dpp:'Penghasilan dari penempatan DHE SDA', tariff:'2,5%', note:'Tarif khusus DHE SDA yang dikonversi ke rupiah, bergantung tenor penempatan.'},
+    {id:'dhe_r6', group:'Bunga & Instrumen Keuangan', label:'DHE SDA dikonversi ke rupiah - tenor 6 bulan atau lebih', rate:0, type:'flat', dpp:'Penghasilan dari penempatan DHE SDA', tariff:'0%', note:'Tarif khusus DHE SDA yang dikonversi ke rupiah, bergantung tenor penempatan.'},
+
+    {id:'saham_non', group:'Saham, Sekuritas & Investasi', label:'Transaksi penjualan saham bukan pendiri di bursa efek', rate:0.001, type:'flat', dpp:'Jumlah bruto nilai transaksi penjualan', tariff:'0,1%', note:'PPh Final dari nilai transaksi penjualan saham di bursa efek.'},
+    {id:'saham_pendiri', group:'Saham, Sekuritas & Investasi', label:'Transaksi penjualan saham pendiri di bursa efek', rate:0.001, type:'founder', dpp:'Jumlah bruto nilai transaksi penjualan', tariff:'0,1% + 0,5%', note:'Dihitung 0,1% dari nilai transaksi penjualan dan tambahan 0,5% dari nilai saham pendiri.'},
+    {id:'modal_ventura', group:'Saham, Sekuritas & Investasi', label:'Penjualan saham/pengalihan penyertaan modal oleh perusahaan modal ventura', rate:0.001, type:'flat', dpp:'Jumlah bruto nilai transaksi/pengalihan', tariff:'0,1%', note:'Atas transaksi penjualan saham atau pengalihan penyertaan modal pada perusahaan pasangan usaha.'},
+
+    {id:'sewa_tb', group:'Tanah/Bangunan & Real Estat', label:'Persewaan tanah dan/atau bangunan', rate:0.10, type:'flat', dpp:'Jumlah bruto nilai sewa', tariff:'10%', note:'Termasuk biaya perawatan, pemeliharaan, keamanan, layanan, dan fasilitas lain yang terkait persewaan bila menjadi bagian jumlah bruto.'},
+    {id:'alih_tb_umum', group:'Tanah/Bangunan & Real Estat', label:'Pengalihan hak atas tanah dan/atau bangunan - umum', rate:0.025, type:'flat', dpp:'Nilai bruto pengalihan / nilai yang lebih tinggi sesuai ketentuan', tariff:'2,5%', note:'Untuk pengalihan hak atas tanah dan/atau bangunan, termasuk PPJB, dengan tarif umum.'},
+    {id:'alih_tb_rs', group:'Tanah/Bangunan & Real Estat', label:'Pengalihan rumah sederhana / rumah susun sederhana tertentu', rate:0.01, type:'flat', dpp:'Nilai bruto pengalihan', tariff:'1%', note:'Tarif khusus untuk rumah sederhana dan rumah susun sederhana oleh WP yang usaha pokoknya melakukan pengalihan hak atas tanah/bangunan.'},
+    {id:'alih_tb_pemerintah', group:'Tanah/Bangunan & Real Estat', label:'Pengalihan tanah/bangunan kepada pemerintah untuk kepentingan umum tertentu', rate:0, type:'flat', dpp:'Nilai bruto pengalihan', tariff:'0%', note:'Tarif 0% hanya untuk kondisi tertentu sesuai ketentuan.'},
+    {id:'dire', group:'Tanah/Bangunan & Real Estat', label:'Pengalihan real estat kepada SPC/KIK dalam skema DIRE tertentu', rate:0.005, type:'flat', dpp:'Jumlah bruto nilai pengalihan real estat', tariff:'0,5%', note:'Tarif khusus untuk skema DIRE/KIK tertentu sepanjang memenuhi syarat.'},
+
+    {id:'kon_pel_kecil', group:'Jasa Konstruksi', label:'Pekerjaan konstruksi - penyedia jasa kualifikasi kecil / SKK orang pribadi', rate:0.0175, type:'flat', dpp:'Nilai kontrak / pembayaran', tariff:'1,75%', note:'Untuk pelaksanaan pekerjaan konstruksi dengan kualifikasi kecil atau sertifikat kompetensi kerja untuk usaha orang pribadi.'},
+    {id:'kon_pel_sbu', group:'Jasa Konstruksi', label:'Pekerjaan konstruksi - penyedia jasa bersertifikat selain kecil', rate:0.0265, type:'flat', dpp:'Nilai kontrak / pembayaran', tariff:'2,65%', note:'Untuk pelaksanaan pekerjaan konstruksi oleh penyedia jasa bersertifikat selain kualifikasi kecil.'},
+    {id:'kon_pel_non', group:'Jasa Konstruksi', label:'Pekerjaan konstruksi - penyedia jasa tidak memiliki sertifikat', rate:0.04, type:'flat', dpp:'Nilai kontrak / pembayaran', tariff:'4%', note:'Untuk pelaksanaan pekerjaan konstruksi oleh penyedia jasa tanpa sertifikat/bukti kualifikasi yang dipersyaratkan.'},
+    {id:'kon_int_sbu', group:'Jasa Konstruksi', label:'Pekerjaan konstruksi terintegrasi - penyedia jasa memiliki SBU', rate:0.0265, type:'flat', dpp:'Nilai kontrak / pembayaran', tariff:'2,65%', note:'Untuk pekerjaan konstruksi terintegrasi oleh penyedia jasa yang memiliki SBU.'},
+    {id:'kon_int_non', group:'Jasa Konstruksi', label:'Pekerjaan konstruksi terintegrasi - penyedia jasa tidak memiliki SBU', rate:0.04, type:'flat', dpp:'Nilai kontrak / pembayaran', tariff:'4%', note:'Untuk pekerjaan konstruksi terintegrasi oleh penyedia jasa tanpa SBU.'},
+    {id:'kon_kons_sbu', group:'Jasa Konstruksi', label:'Jasa konsultansi konstruksi - memiliki SBU/SKK', rate:0.035, type:'flat', dpp:'Nilai kontrak / pembayaran', tariff:'3,5%', note:'Untuk jasa konsultansi konstruksi oleh penyedia jasa yang memiliki SBU atau sertifikat kompetensi kerja.'},
+    {id:'kon_kons_non', group:'Jasa Konstruksi', label:'Jasa konsultansi konstruksi - tidak memiliki SBU/SKK', rate:0.06, type:'flat', dpp:'Nilai kontrak / pembayaran', tariff:'6%', note:'Untuk jasa konsultansi konstruksi oleh penyedia jasa tanpa SBU atau sertifikat kompetensi kerja.'},
+
+    {id:'dividen_op', group:'Dividen & Penghasilan Khusus', label:'Dividen yang diterima/diperoleh orang pribadi dalam negeri', rate:0.10, type:'dividend', dpp:'Jumlah bruto dividen', tariff:'10% / dikecualikan', note:'Pada dasarnya 10%, namun dapat dikecualikan bila memenuhi syarat investasi/penggunaan di Indonesia sesuai ketentuan.'},
+    {id:'hadiah', group:'Dividen & Penghasilan Khusus', label:'Hadiah undian', rate:0.25, type:'flat', dpp:'Jumlah bruto/nilai hadiah', tariff:'25%', note:'PPh Final atas hadiah undian dari jumlah bruto/nilai hadiah.'},
+    {id:'uplift', group:'Dividen & Penghasilan Khusus', label:'Uplift atau imbalan sejenis pada kontrak hulu migas', rate:0.20, type:'flat', dpp:'Jumlah bruto uplift/imbalan', tariff:'20%', note:'Penghasilan khusus pada kontrak hulu migas.'},
+    {id:'pi_eksplorasi', group:'Dividen & Penghasilan Khusus', label:'Pengalihan participating interest hulu migas - masa eksplorasi', rate:0.05, type:'flat', dpp:'Jumlah bruto pengalihan', tariff:'5%', note:'Tarif untuk pengalihan participating interest pada masa eksplorasi.'},
+    {id:'pi_eksploitasi', group:'Dividen & Penghasilan Khusus', label:'Pengalihan participating interest hulu migas - masa eksploitasi', rate:0.07, type:'flat', dpp:'Jumlah bruto pengalihan', tariff:'7%', note:'Tarif untuk pengalihan participating interest pada masa eksploitasi.'},
+    {id:'lpi_dividen', group:'Dividen & Penghasilan Khusus', label:'Dividen tertentu dalam kerja sama dengan Lembaga Pengelola Investasi', rate:0.075, type:'flat', dpp:'Jumlah bruto dividen', tariff:'7,5%', note:'Tarif khusus untuk dividen tertentu dalam kerja sama LPI sepanjang memenuhi syarat.'},
+
+    {id:'revaluasi', group:'Lainnya / Catatan', label:'Selisih lebih revaluasi aktiva tetap', rate:0.10, type:'flat', dpp:'Selisih lebih revaluasi', tariff:'10%', note:'Dicatat sebagai catatan karena objek ini lebih tepat merujuk pada rezim PPh final revaluasi aktiva tetap/Pasal 19, bukan tabel utama Pasal 4 ayat (2).'},
+    {id:'derivatif_nonaktif', group:'Lainnya / Catatan', label:'Transaksi derivatif kontrak berjangka di bursa', rate:0, type:'inactive', dpp:'Nilai transaksi', tariff:'Tidak dihitung', note:'Tarif lama pernah ada, namun ketentuan PP terkait telah dicabut sehingga opsi ini tidak dihitung otomatis di kalkulator.'}
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const taxType = $('taxType');
+  const dppInput = $('dppInput');
+  const extra = $('extraFields');
+  const dppLabel = $('dppLabel');
+  const dppHint = $('dppHint');
+  const rateOut = $('rateOut');
+  const taxableOut = $('taxableOut');
+  const taxOut = $('taxOut');
+  const formulaOut = $('formulaOut');
+  const noteOut = $('noteOut');
+  const statusText = $('statusText');
+  const tariffBody = $('tariffBody');
+  const searchInput = $('searchInput');
+  const tariffPanel = $('tariffPanel');
+  const tariffToggle = $('tariffToggle');
+  const tariffToggleText = $('tariffToggleText');
+  const tariffContent = $('tariffContent');
+
+  function rupiah(n){
+    const value = Number.isFinite(n) ? Math.round(n) : 0;
+    return new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(value);
+  }
+  function percent(rate){
+    return (rate * 100).toLocaleString('id-ID', {maximumFractionDigits:3}) + '%';
+  }
+  function parseMoney(value){
+    if(!value) return 0;
+    const digits = String(value).replace(/[^0-9-]/g,'');
+    return Number(digits || 0);
+  }
+  function parseRate(value, fallback){
+    if(value === undefined || value === null || value === '') return fallback;
+    const cleaned = String(value).replace(',', '.').replace(/[^0-9.-]/g,'');
+    const num = Number(cleaned);
+    return Number.isFinite(num) ? num / 100 : fallback;
+  }
+  function currentItem(){
+    return items.find(item => item.id === taxType.value) || items[0];
+  }
+  function setExtraHtml(item){
+    extra.classList.add('hidden');
+    extra.innerHTML = '';
+
+    if(item.type === 'umkm'){
+      extra.classList.remove('hidden');
+      extra.innerHTML = `
+        <label for="priorOmzet">Omzet kumulatif sebelum masa/transaksi ini</label>
+        <input id="priorOmzet" inputmode="numeric" placeholder="Contoh: 450000000" />
+        <label class="check"><input type="checkbox" id="umkmThreshold" checked /> Terapkan fasilitas omzet Rp500 juta setahun untuk WP orang pribadi yang memenuhi syarat.</label>
+        <div class="hint">Hilangkan centang jika fasilitas tidak digunakan, sehingga seluruh DPP dihitung dengan tarif 0,5%.</div>
+      `;
+    } else if(item.type === 'manualRate'){
+      extra.classList.remove('hidden');
+      extra.innerHTML = `
+        <label for="manualRate">Tarif P3B / tarif khusus (%)</label>
+        <input id="manualRate" inputmode="decimal" placeholder="20" value="20" />
+        <div class="hint">Isi sesuai tarif P3B. Jika tidak ada P3B, biarkan 20.</div>
+      `;
+    } else if(item.type === 'founder'){
+      extra.classList.remove('hidden');
+      extra.innerHTML = `
+        <label for="founderValue">Nilai saham pendiri untuk tambahan 0,5%</label>
+        <input id="founderValue" inputmode="numeric" placeholder="Masukkan nominal DPP" />
+        <div class="hint">PPh = 0,1% × nilai transaksi penjualan + 0,5% × nilai saham pendiri.</div>
+      `;
+    } else if(item.type === 'dividend'){
+      extra.classList.remove('hidden');
+      extra.innerHTML = `
+        <label class="check"><input type="checkbox" id="dividendExempt" /> Dividen memenuhi syarat pengecualian karena diinvestasikan/digunakan di Indonesia sesuai ketentuan.</label>
+      `;
+    }
+
+    Array.from(extra.querySelectorAll('input')).forEach(el => el.addEventListener('input', calculate));
+    Array.from(extra.querySelectorAll('input[type="checkbox"]')).forEach(el => el.addEventListener('change', calculate));
+  }
+  function calculate(){
+    const item = currentItem();
+    const dpp = parseMoney(dppInput.value);
+    let rate = item.rate;
+    let taxable = dpp;
+    let tax = 0;
+    let formula = '';
+    let rateLabel = item.tariff || percent(rate);
+    let noteClass = 'note';
+
+    if(item.type === 'inactive'){
+      taxable = 0;
+      tax = 0;
+      formula = '<b>Rumus:</b> Opsi ini tidak dihitung otomatis karena status ketentuannya perlu dicek/diterapkan secara khusus.';
+      noteClass = 'note warn';
+    } else if(item.type === 'koperasi'){
+      if(dpp <= 240000){
+        rate = 0;
+        taxable = dpp;
+        tax = 0;
+        rateLabel = '0%';
+        formula = '<b>Rumus:</b> Bunga ≤ Rp240.000/bulan, sehingga PPh Final = Rp0.';
+      } else {
+        rate = 0.10;
+        tax = dpp * rate;
+        rateLabel = '10%';
+        formula = `<b>Rumus:</b> ${rupiah(dpp)} × 10% = <b>${rupiah(tax)}</b>.`;
+      }
+    } else if(item.type === 'umkm'){
+      const useThreshold = $('umkmThreshold') ? $('umkmThreshold').checked : true;
+      const prior = parseMoney(($('priorOmzet') || {}).value || '0');
+      if(useThreshold){
+        const remaining = Math.max(0, 500000000 - prior);
+        taxable = Math.max(0, dpp - remaining);
+        tax = taxable * rate;
+        formula = `<b>Rumus:</b> Sisa fasilitas Rp500 juta = ${rupiah(remaining)}. DPP kena pajak = max(0, ${rupiah(dpp)} − ${rupiah(remaining)}) = <b>${rupiah(taxable)}</b>. PPh = ${rupiah(taxable)} × 0,5% = <b>${rupiah(tax)}</b>.`;
+      } else {
+        taxable = dpp;
+        tax = dpp * rate;
+        formula = `<b>Rumus:</b> ${rupiah(dpp)} × 0,5% = <b>${rupiah(tax)}</b>.`;
+      }
+    } else if(item.type === 'manualRate'){
+      rate = parseRate(($('manualRate') || {}).value, item.rate);
+      tax = dpp * rate;
+      rateLabel = percent(rate);
+      formula = `<b>Rumus:</b> ${rupiah(dpp)} × ${percent(rate)} = <b>${rupiah(tax)}</b>.`;
+    } else if(item.type === 'founder'){
+      const founderValue = parseMoney(($('founderValue') || {}).value || '0');
+      const baseTax = dpp * 0.001;
+      const founderTax = founderValue * 0.005;
+      taxable = dpp + founderValue;
+      tax = baseTax + founderTax;
+      rateLabel = '0,1% + 0,5%';
+      formula = `<b>Rumus:</b> (${rupiah(dpp)} × 0,1%) + (${rupiah(founderValue)} × 0,5%) = <b>${rupiah(tax)}</b>.`;
+    } else if(item.type === 'dividend'){
+      const exempt = $('dividendExempt') ? $('dividendExempt').checked : false;
+      if(exempt){
+        rate = 0;
+        tax = 0;
+        taxable = 0;
+        rateLabel = '0% / dikecualikan';
+        formula = '<b>Rumus:</b> Dividen memenuhi syarat pengecualian, sehingga PPh Final = Rp0.';
+      } else {
+        tax = dpp * rate;
+        formula = `<b>Rumus:</b> ${rupiah(dpp)} × 10% = <b>${rupiah(tax)}</b>.`;
+      }
+    } else {
+      tax = dpp * rate;
+      formula = `<b>Rumus:</b> ${rupiah(dpp)} × ${percent(rate)} = <b>${rupiah(tax)}</b>.`;
+    }
+
+    dppLabel.textContent = item.dpp || 'Dasar Pengenaan Pajak';
+    dppHint.textContent = item.dpp ? `Isi ${item.dpp.toLowerCase()} sesuai objek pajak yang dipilih.` : 'Isi jumlah bruto/nilai transaksi.';
+    rateOut.textContent = rateLabel;
+    taxableOut.textContent = rupiah(taxable);
+    taxOut.textContent = rupiah(tax);
+    formulaOut.innerHTML = formula;
+    noteOut.textContent = item.note;
+    noteOut.className = noteClass;
+    statusText.textContent = dpp > 0 || item.type === 'inactive' ? 'Hasil berhasil dihitung' : 'Menunggu nominal DPP';
+  }
+
+  function setTariffOpen(open){
+    tariffPanel.classList.toggle('open', open);
+    tariffContent.classList.toggle('hidden', !open);
+    tariffToggle.setAttribute('aria-expanded', String(open));
+    tariffToggleText.textContent = open ? 'Klik untuk menutup daftar tarif' : 'Klik untuk membuka daftar tarif';
+  }
+
+  function toggleTariff(){
+    setTariffOpen(!tariffPanel.classList.contains('open'));
+  }
+
+  function buildSelect(){
+    taxType.innerHTML = '<option value="">Pilih jenis PPh Final</option>';
+    GROUPS.forEach(group => {
+      const groupItems = items.filter(item => item.group === group);
+      if(!groupItems.length) return;
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = group;
+      groupItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = item.label;
+        optgroup.appendChild(opt);
+      });
+      taxType.appendChild(optgroup);
+    });
+    taxType.value = 'umkm';
+  }
+  function buildTable(){
+    const q = (searchInput.value || '').toLowerCase().trim();
+    tariffBody.innerHTML = '';
+    items.forEach(item => {
+      const hay = `${item.label} ${item.tariff} ${item.dpp} ${item.note}`.toLowerCase();
+      if(q && !hay.includes(q)) return;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.label}</td>
+        <td class="rate">${item.tariff}</td>
+        <td>${item.dpp}</td>
+        <td>${item.note}</td>
+      `;
+      tariffBody.appendChild(tr);
+    });
+  }
+  function copyResult(){
+    const item = currentItem();
+    const text = [
+      'Kalkulator PPh Final Pasal 4 ayat (2)',
+      `Jenis pajak: ${item.label}`,
+      `Status NPWP / NIK: ${$('npwpStatus').selectedOptions[0].textContent}`,
+      `Tahun pajak: ${$('taxYear').value || '-'}`,
+      `Tarif pajak: ${rateOut.textContent}`,
+      `DPP kena pajak: ${taxableOut.textContent}`,
+      `PPh Final Pasal 4 ayat (2): ${taxOut.textContent}`,
+      formulaOut.textContent.replace(/\s+/g,' ').trim(),
+      `Catatan: ${noteOut.textContent}`
+    ].join('\n');
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(() => { statusText.textContent = 'Hasil perhitungan berhasil disalin'; });
+    } else {
+      const area = document.createElement('textarea');
+      area.value = text;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      document.body.removeChild(area);
+      statusText.textContent = 'Hasil perhitungan berhasil disalin';
+    }
+  }
+  function resetForm(){
+    $('npwpStatus').value = 'valid';
+    $('taxYear').value = '';
+    taxType.value = 'umkm';
+    dppInput.value = '';
+    setExtraHtml(currentItem());
+    calculate();
+  }
+
+  buildSelect();
+  buildTable();
+  setExtraHtml(currentItem());
+  calculate();
+
+  taxType.addEventListener('change', () => { setExtraHtml(currentItem()); calculate(); });
+  dppInput.addEventListener('input', calculate);
+  $('npwpStatus').addEventListener('change', calculate);
+  $('taxYear').addEventListener('input', calculate);
+  searchInput.addEventListener('input', buildTable);
+  tariffToggle.addEventListener('click', toggleTariff);
+  $('copyBtn').addEventListener('click', copyResult);
+  $('resetBtn').addEventListener('click', resetForm);
+})();
+</script>
+<script>
+(function(){
+  function applyNgolahTheme(theme){
+    var isDark = theme === 'dark';
+    document.documentElement.classList.toggle('dark', isDark);
+    if (document.body) {
+      document.body.classList.toggle('dark-mode', isDark);
+      document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    }
+  }
+  var theme = 'light';
+  try { theme = new URLSearchParams(window.location.search).get('theme') || 'light'; } catch (e) {}
+  applyNgolahTheme(theme);
+  window.addEventListener('message', function(event){
+    var data = event.data || {};
+    if (data.type === 'ngolahPajakTheme') applyNgolahTheme(data.theme === 'dark' ? 'dark' : 'light');
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kalkulator PPh Pasal 22</title>
+  <script>
+    (function(){
+      try {
+        if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    :root{
+      --navy:#111a44;
+      --navy-2:#1b2456;
+      --gold:#e7bd22;
+      --gold-2:#ffd84d;
+      --gold-soft:#fff8dc;
+      --bg:#f6f8fc;
+      --card:#ffffff;
+      --text:#263041;
+      --muted:#64748b;
+      --line:#dbe2ee;
+      --green:#087443;
+      --red:#dc2626;
+      --shadow:0 18px 44px rgba(17,26,68,.10);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% 0%,rgba(17,26,68,.08),transparent 32%),
+        radial-gradient(circle at 92% 8%,rgba(231,189,34,.18),transparent 28%),
+        linear-gradient(180deg,#fff 0%,var(--bg) 100%);
+    }
+    .wrap{width:min(100%,1080px);margin:0 auto;padding:26px 18px 40px}
+    .hero{
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding:20px 22px;
+      border:1px solid rgba(201,211,226,.9);
+      border-radius:28px;
+      background:
+        radial-gradient(360px 180px at 95% 10%,rgba(255,216,77,.28),transparent 64%),
+        linear-gradient(135deg,#fff 0%,#fffdf7 58%,#f8fafc 100%);
+      box-shadow:var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
+    .logo{width:46px;height:46px;border-radius:16px;flex:0 0 auto;background:linear-gradient(135deg,var(--gold-2) 0 48%,var(--navy) 49% 100%);box-shadow:0 10px 22px rgba(17,26,68,.16)}
+    h1{margin:0;color:var(--navy);font-size:clamp(23px,3vw,34px);line-height:1.08;letter-spacing:-.04em;font-weight:950}
+    .sub{margin:7px 0 0;max-width:740px;color:var(--muted);font-size:13px;line-height:1.55}
+    .badge{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-height:32px;padding:7px 13px;border-radius:999px;border:1px solid rgba(231,189,34,.42);background:#fff8dc;color:var(--navy);font-size:11px;font-weight:900}
+    .main{display:grid;grid-template-columns:1.18fr .82fr;gap:16px;margin-top:16px;align-items:start}
+    .card{
+      position:relative;
+      padding:18px;
+      border:1px solid rgba(201,211,226,.92);
+      border-radius:var(--radius);
+      background:rgba(255,255,255,.96);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .card::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--gold))}
+    h2{margin:2px 0 14px;color:var(--navy);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:950}
+    label{display:block;margin:11px 0 6px;color:#536176;font-size:12px;font-weight:850}
+    select,input{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--navy);outline:none;font:inherit;font-size:14px;box-shadow:0 1px 2px rgba(17,26,68,.03)}
+    select:focus,input:focus{border-color:rgba(17,26,68,.38);box-shadow:0 0 0 4px rgba(17,26,68,.08)}
+    input[readonly]{font-weight:900;background:#f8fafc}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .hint{margin-top:7px;color:var(--muted);font-size:11.5px;line-height:1.45}
+    .total{
+      margin-top:12px;
+      padding:18px;
+      border-radius:20px;
+      border:1px solid rgba(231,189,34,.45);
+      background:linear-gradient(135deg,#fff8dc,#fff);
+    }
+    .total .label{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+    .total .value{margin-top:8px;color:var(--green);font-size:clamp(28px,4vw,40px);line-height:1;font-weight:950;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+    .summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .box{padding:13px;border:1px solid var(--line);border-radius:17px;background:#f8fafc}
+    .box .t{color:var(--muted);font-size:11px;font-weight:900;line-height:1.35}
+    .box .v{margin-top:6px;color:var(--navy);font-size:18px;font-weight:950;font-variant-numeric:tabular-nums}
+    .formula{margin-top:12px;padding:13px;border-radius:17px;background:#f8fafc;border:1px dashed #cbd5e1;color:#526177;font-size:12px;line-height:1.55}
+    .formula b{color:var(--navy)}
+    details{margin-top:12px;border:1px solid rgba(201,211,226,.82);border-radius:17px;background:#fff;padding:11px 12px}
+    summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--navy);font-size:12px;font-weight:950}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"+";width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--gold-soft);border:1px solid rgba(231,189,34,.42);font-weight:950}
+    details[open] summary::after{content:"–"}
+    .detailText{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.6}
+    .btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+    button{min-height:40px;padding:10px 14px;border:1px solid rgba(201,211,226,.95);border-radius:14px;background:#fff;color:var(--navy);font-size:12px;font-weight:900;cursor:pointer;transition:.15s ease}
+    button:hover{transform:translateY(-1px);border-color:rgba(231,189,34,.58);background:#fffdf2}
+    .primary{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;border-color:rgba(17,26,68,.3)}
+    .primary:hover{background:linear-gradient(135deg,var(--navy),#2b356d);color:#fff}
+    .rates{margin-top:16px}
+    .rateSearch{display:grid;grid-template-columns:1fr 210px;gap:10px;margin-top:10px}
+    .rateList{display:grid;gap:8px;margin-top:12px;max-height:360px;overflow:auto;padding-right:4px}
+    .rateItem{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:15px;background:#fff}
+    .rateItem b{display:block;color:var(--navy);font-size:12px;line-height:1.3}
+    .rateItem span{display:block;margin-top:3px;color:var(--muted);font-size:11px;line-height:1.35}
+    .rateChip{white-space:nowrap;color:var(--navy);font-size:12px;font-weight:950;background:#fff8dc;border:1px solid rgba(231,189,34,.45);border-radius:999px;padding:7px 9px}
+    .foot{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.5;text-align:center}
+    .hidden{display:none!important}
+    @media(max-width:860px){.main{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}.rateSearch{grid-template-columns:1fr}.summary{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+    @media(max-width:520px){.wrap{padding:14px 12px 32px}.hero{padding:18px;border-radius:22px}.card{padding:15px}.brand{align-items:flex-start}.logo{width:40px;height:40px;border-radius:14px}.badge{white-space:normal}.rateItem{grid-template-columns:1fr}.rateChip{justify-self:start}}
+
+
+/* ===== v43 — Dark mode, mengikuti tombol tema dashboard ===== */
+html.dark{color-scheme:dark}
+html.dark body{
+  color:#dbe4f0;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,216,77,.10),transparent 32%),
+    radial-gradient(circle at 92% 8%,rgba(255,216,77,.12),transparent 28%),
+    linear-gradient(180deg,#070b1d 0%,#0b102b 54%,#111a44 100%);
+}
+html.dark .hero,
+html.dark .card,
+html.dark details,
+html.dark .box,
+html.dark .formula,
+html.dark .rateItem{
+  background:linear-gradient(180deg,rgba(17,26,68,.92),rgba(12,18,45,.90));
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 18px 44px rgba(0,0,0,.30);
+}
+html.dark h1,
+html.dark h2,
+html.dark summary,
+html.dark .box .v,
+html.dark .formula b,
+html.dark .rateItem b{color:#f8fafc}
+html.dark .sub,
+html.dark label,
+html.dark .hint,
+html.dark .box .t,
+html.dark .detailText,
+html.dark .foot{color:rgba(226,232,240,.70)}
+html.dark input,
+html.dark select{
+  background:rgba(255,255,255,.07);
+  color:#f8fafc;
+  border-color:rgba(255,255,255,.16);
+  box-shadow:none;
+}
+html.dark input::placeholder{color:rgba(226,232,240,.44)}
+html.dark input[readonly]{background:rgba(255,255,255,.09);color:#f8fafc}
+html.dark select option{color:#111a44;background:#ffffff}
+html.dark .badge,
+html.dark .rateChip{
+  background:rgba(255,216,77,.12);
+  color:#ffeaa0;
+  border-color:rgba(255,216,77,.34);
+}
+html.dark .total{
+  background:radial-gradient(circle at 100% 0%,rgba(255,216,77,.18),transparent 42%),linear-gradient(180deg,rgba(17,26,68,.92),rgba(12,18,45,.90));
+  border-color:rgba(255,216,77,.30);
+}
+html.dark .total .value{color:#5ee0a3}
+html.dark button{background:rgba(255,255,255,.08);color:#f8fafc;border-color:rgba(255,255,255,.16)}
+html.dark .primary{background:linear-gradient(135deg,#ffd84d,#e7bd22);color:#111a44;border-color:rgba(255,216,77,.60)}
+html.dark th{background:linear-gradient(180deg,rgba(255,216,77,.12),rgba(255,255,255,.06));color:#f8fafc;border-bottom-color:rgba(255,255,255,.14)}
+html.dark td{color:#dbe4f0;border-bottom-color:rgba(255,255,255,.10)}
+html.dark tbody tr:nth-child(even) td{background:rgba(255,255,255,.035)}
+html.dark tbody tr:hover td{background:rgba(255,216,77,.09)}
+html.dark .tableWrap,
+html.dark .rateList{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.14)}
+html.dark .green,
+html.dark .value{color:#5ee0a3!important}
+html.dark .red{color:#f87171!important}
+html.dark .footer{color:rgba(226,232,240,.60)}
+
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Kalkulator PPh Pasal 22</h1>
+          <p class="sub">Lengkapi status NPWP, pilih jenis transaksi, lalu masukkan dasar pengenaan pajak. Sistem akan menampilkan tarif dan menghitung PPh Pasal 22 secara otomatis.</p>
+        </div>
+      </div>
+      <span class="badge">Sahabat Pajak</span>
+    </section>
+
+    <section class="main" aria-label="Kalkulator PPh Pasal 22">
+      <div class="card">
+        <h2>Input Perhitungan</h2>
+
+        <div class="row">
+          <div>
+            <label for="wpStatus">Status NPWP</label>
+            <select id="wpStatus">
+              <option value="npwp">NPWP/NIK valid</option>
+              <option value="non">Tidak ada NPWP/NIK</option>
+            </select>
+          </div>
+          <div>
+            <label for="taxType">Jenis Pajak</label>
+            <select id="taxType"></select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="rateDisplay">Tarif Pajak</label>
+            <input id="rateDisplay" readonly value="0,00%" />
+          </div>
+          <div>
+            <label for="basisDisplay">Dasar Pengenaan</label>
+            <input id="basisDisplay" readonly value="-" />
+          </div>
+        </div>
+
+        <label for="dpp">Dasar Pengenaan Pajak</label>
+        <input id="dpp" inputmode="decimal" placeholder="Contoh: 250000000" />
+        <div class="hint" id="taxHint">Pilih jenis pajak terlebih dahulu, lalu isi nilai transaksi.</div>
+
+        <details id="importBox" class="hidden">
+          <summary>Hitung nilai impor dari CIF</summary>
+          <div class="row" style="margin-top:8px">
+            <div><label for="cif">CIF</label><input id="cif" inputmode="decimal" placeholder="0" /></div>
+            <div><label for="beaMasuk">Bea Masuk</label><input id="beaMasuk" inputmode="decimal" placeholder="0" /></div>
+          </div>
+          <label for="pungutanLain">Pungutan kepabeanan lain</label>
+          <input id="pungutanLain" inputmode="decimal" placeholder="0" />
+          <div class="btnrow"><button type="button" id="useImportValue">Gunakan sebagai DPP</button></div>
+        </details>
+
+        <details>
+          <summary>Opsi lanjutan</summary>
+          <div class="detailText">
+            <label style="display:flex;gap:8px;align-items:flex-start;margin-top:0">
+              <input type="checkbox" id="legacyNpwp" style="width:18px;min-height:18px;margin-top:1px;accent-color:var(--gold)" />
+              <span>Terapkan simulasi tarif lebih tinggi 100% untuk status tanpa NPWP/NIK.</span>
+            </label>
+            <label for="noteInput">Catatan transaksi</label>
+            <input id="noteInput" placeholder="Opsional" />
+          </div>
+        </details>
+
+        <div class="btnrow">
+          <button class="primary" type="button" id="btnCopy">Salin ringkasan</button>
+          <button type="button" id="btnReset">Reset</button>
+        </div>
+      </div>
+
+      <aside class="card">
+        <h2>Hasil</h2>
+        <div class="total">
+          <div class="label">PPh Pasal 22</div>
+          <div class="value" id="taxOut">Rp0</div>
+        </div>
+
+        <div class="summary">
+          <div class="box">
+            <div class="t">DPP</div>
+            <div class="v" id="dppOut">Rp0</div>
+          </div>
+          <div class="box">
+            <div class="t">Tarif Efektif</div>
+            <div class="v" id="rateOut">0,00%</div>
+          </div>
+        </div>
+
+        <div class="formula" id="formulaBox">
+          <b>Rumus:</b> PPh 22 = DPP × Tarif
+        </div>
+
+        <details>
+          <summary>Catatan tarif</summary>
+          <div class="detailText" id="warningBox">Belum ada jenis transaksi yang dipilih.</div>
+        </details>
+      </aside>
+    </section>
+
+    <section class="card rates">
+      <h2>Daftar Tarif Ringkas</h2>
+      <details>
+        <summary>Klik untuk lihat / tutup daftar tarif</summary>
+        <div class="rateSearch">
+          <input id="searchRate" placeholder="Cari: impor, semen, BBM, emas, kripto..." />
+          <select id="filterGroup"><option value="all">Semua kelompok</option></select>
+        </div>
+        <div class="rateList" id="rateList"></div>
+        <div class="foot">Daftar tarif bersifat ringkas untuk simulasi. Cocokkan kembali objek, pengecualian, dan dasar aturan sebelum dipakai untuk transaksi riil.</div>
+      </details>
+    </section>
+  </main>
+
+  <script>
+    const RATES = [
+      {id:'imp_tentu_10', name:'Impor barang tertentu', rate:0.10, basis:'Nilai impor', group:'Impor', final:'Tidak final', source:'PMK 51/2025', note:'Dengan atau tanpa API. Pastikan barang termasuk kategori barang tertentu.'},
+      {id:'imp_tentu_lain_75', name:'Impor barang tertentu lainnya', rate:0.075, basis:'Nilai impor', group:'Impor', final:'Tidak final', source:'PMK 51/2025', note:'Dengan atau tanpa API. Cocokkan dengan lampiran PMK.'},
+      {id:'imp_kedelai_api', name:'Impor kedelai, gandum, tepung terigu dengan API', rate:0.005, basis:'Nilai impor', group:'Impor', final:'Tidak final', source:'PMK 51/2025', note:'Berlaku jika menggunakan Angka Pengenal Impor.'},
+      {id:'imp_emas', name:'Impor emas batangan', rate:0.0025, basis:'Nilai impor', group:'Impor', final:'Tidak final', source:'PMK 51/2025', note:'Tarif 0,25% untuk impor emas batangan.'},
+      {id:'imp_api_lain', name:'Impor selain kategori khusus dengan API', rate:0.025, basis:'Nilai impor', group:'Impor', final:'Tidak final', source:'PMK 51/2025', note:'Untuk impor barang selain kategori khusus dan menggunakan API.'},
+      {id:'imp_non_api', name:'Impor tanpa API', rate:0.075, basis:'Nilai impor', group:'Impor', final:'Tidak final', source:'PMK 51/2025', note:'Untuk barang impor terkait tanpa API.'},
+      {id:'imp_lelang', name:'Barang tidak dikuasai / impor via lelang', rate:0.075, basis:'Harga jual lelang', group:'Impor', final:'Tidak final', source:'PMK 51/2025', note:'Gunakan harga jual lelang sebagai DPP.'},
+      {id:'ekspor_tambang', name:'Ekspor komoditas tambang', rate:0.015, basis:'Nilai ekspor / FOB', group:'Ekspor', final:'Tidak final', source:'PMK 51/2025', note:'Batubara, mineral logam, dan mineral bukan logam.'},
+      {id:'beli_pemerintah', name:'Pembelian barang oleh instansi pemerintah / BUMN / badan usaha tertentu', rate:0.015, basis:'Harga pembelian tidak termasuk PPN', group:'Pembelian barang', final:'Tidak final', source:'PMK 51/2025', note:'Gunakan nilai pembelian sebelum PPN.'},
+      {id:'bbm_pertamina', name:'Penjualan BBM ke SPBU Pertamina / anak usaha Pertamina', rate:0.0025, basis:'Penjualan tidak termasuk PPN', group:'BBM, BBG, pelumas', final:'Final untuk penyalur/agen', source:'PMK 51/2025', note:'PPh 22 atas BBM/BBG kepada penyalur/agen bersifat final.'},
+      {id:'bbm_non_pertamina', name:'Penjualan BBM ke SPBU bukan Pertamina atau pihak lain', rate:0.003, basis:'Penjualan tidak termasuk PPN', group:'BBM, BBG, pelumas', final:'Final/Tidak final sesuai pihak', source:'PMK 51/2025', note:'Tarif 0,3% untuk SPBU non-Pertamina dan pihak lain.'},
+      {id:'bbg', name:'Penjualan bahan bakar gas (BBG)', rate:0.003, basis:'Penjualan tidak termasuk PPN', group:'BBM, BBG, pelumas', final:'Final untuk penyalur/agen', source:'PMK 51/2025', note:'Untuk BBG oleh produsen/importir.'},
+      {id:'pelumas', name:'Penjualan pelumas', rate:0.003, basis:'Penjualan tidak termasuk PPN', group:'BBM, BBG, pelumas', final:'Tidak final', source:'PMK 51/2025', note:'PPh 22 pelumas bersifat tidak final.'},
+      {id:'semen', name:'Penjualan hasil produksi semen', rate:0.0025, basis:'Penjualan tidak termasuk PPN', group:'Industri tertentu', final:'Tidak final', source:'PMK 51/2025', note:'Penjualan kepada distributor di dalam negeri.'},
+      {id:'kertas', name:'Penjualan hasil produksi kertas', rate:0.001, basis:'Penjualan tidak termasuk PPN', group:'Industri tertentu', final:'Tidak final', source:'PMK 51/2025', note:'Penjualan kepada distributor di dalam negeri.'},
+      {id:'baja', name:'Penjualan hasil produksi baja', rate:0.003, basis:'Penjualan tidak termasuk PPN', group:'Industri tertentu', final:'Tidak final', source:'PMK 51/2025', note:'Penjualan kepada distributor di dalam negeri.'},
+      {id:'otomotif_industri', name:'Penjualan hasil produksi otomotif', rate:0.0045, basis:'Penjualan tidak termasuk PPN', group:'Industri tertentu', final:'Tidak final', source:'PMK 51/2025', note:'Kendaraan bermotor roda dua atau lebih, tidak termasuk alat berat.'},
+      {id:'farmasi', name:'Penjualan hasil produksi obat / farmasi', rate:0.003, basis:'Penjualan tidak termasuk PPN', group:'Industri tertentu', final:'Tidak final', source:'PMK 51/2025', note:'Penjualan semua jenis obat.'},
+      {id:'kendaraan_atpm', name:'Penjualan kendaraan oleh ATPM/APM/importir umum', rate:0.0045, basis:'Penjualan tidak termasuk PPN', group:'Kendaraan', final:'Tidak final', source:'PMK 51/2025', note:'Tidak termasuk alat berat.'},
+      {id:'hasil_primer', name:'Pembelian hasil kehutanan, perkebunan, pertanian, peternakan, perikanan', rate:0.0025, basis:'Harga pembelian tidak termasuk PPN', group:'Pembelian bahan', final:'Tidak final', source:'PMK 51/2025', note:'Untuk bahan yang belum melalui proses industri manufaktur.'},
+      {id:'minerba', name:'Pembelian batubara, mineral logam, mineral bukan logam dari pemegang IUP', rate:0.015, basis:'Harga pembelian tidak termasuk PPN', group:'Minerba', final:'Tidak final', source:'PMK 51/2025', note:'Dipungut oleh industri atau badan usaha.'},
+      {id:'emas_ljk', name:'Pembelian emas batangan oleh LJK Bulion berizin OJK', rate:0.0025, basis:'Harga pembelian tidak termasuk PPN', group:'Emas', final:'Tidak final', source:'PMK 51/2025', note:'Khusus transaksi emas batangan oleh LJK Bulion.'},
+      {id:'marketplace', name:'Pedagang dalam negeri melalui marketplace / PMSE', rate:0.005, basis:'Peredaran bruto tidak termasuk PPN/PPnBM', group:'Marketplace', final:'Final/Tidak final sesuai status WP', source:'PMK 37/2025', note:'Marketplace dapat ditunjuk sebagai pemungut.'},
+      {id:'kripto_021', name:'Transaksi aset kripto melalui penyelenggara dalam negeri', rate:0.0021, basis:'Nilai transaksi aset kripto', group:'Kripto', final:'Final', source:'PMK 50/2025', note:'PPh 22 final atas transaksi aset kripto.'},
+      {id:'kripto_1', name:'Transaksi aset kripto kondisi tertentu / PMSE luar negeri', rate:0.01, basis:'Nilai transaksi aset kripto', group:'Kripto', final:'Final', source:'PMK 50/2025', note:'Gunakan jika skema transaksi memenuhi ketentuan tarif 1%.'},
+      {id:'mewah_hunian', name:'Barang sangat mewah: rumah/apartemen kategori tertentu', rate:0.01, basis:'Harga jual tidak termasuk PPN/PPnBM', group:'Barang sangat mewah', final:'Tidak final', source:'PMK 92/2019', note:'Rumah/apartemen sangat mewah sesuai ambang batas ketentuan.'},
+      {id:'mewah_lain', name:'Barang sangat mewah: pesawat, helikopter, kapal pesiar, kendaraan mewah', rate:0.05, basis:'Harga jual tidak termasuk PPN/PPnBM', group:'Barang sangat mewah', final:'Tidak final', source:'PMK 92/2019', note:'Termasuk barang sangat mewah selain hunian.'}
+    ];
+
+    const $ = id => document.getElementById(id);
+    const fmtIDR = value => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(isFinite(value) ? value : 0);
+    const fmtPct = value => new Intl.NumberFormat('id-ID',{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2}).format(isFinite(value) ? value : 0);
+    const parseNum = value => {
+      if(typeof value === 'number') return value;
+      const clean = String(value || '').replace(/[^0-9,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',', '.');
+      const n = Number(clean);
+      return isFinite(n) ? n : 0;
+    };
+    const selectedRate = () => RATES.find(r => r.id === $('taxType').value) || null;
+    const getFactor = () => $('wpStatus').value === 'non' && $('legacyNpwp').checked ? 2 : 1;
+
+    function buildOptions(){
+      $('taxType').innerHTML = '<option value="">Pilih opsi</option>';
+      const groups = [...new Set(RATES.map(r => r.group))];
+      groups.forEach(group => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = group;
+        RATES.filter(r => r.group === group).forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r.id;
+          opt.textContent = r.name;
+          optgroup.appendChild(opt);
+        });
+        $('taxType').appendChild(optgroup);
+      });
+      groups.forEach(group => {
+        const opt = document.createElement('option');
+        opt.value = group;
+        opt.textContent = group;
+        $('filterGroup').appendChild(opt);
+      });
+    }
+
+    function calculate(){
+      const r = selectedRate();
+      const dpp = parseNum($('dpp').value);
+      const factor = getFactor();
+      const baseRate = r ? r.rate : 0;
+      const effectiveRate = baseRate * factor;
+      const tax = dpp * effectiveRate;
+      $('rateDisplay').value = r ? fmtPct(baseRate) : '0,00%';
+      $('basisDisplay').value = r ? r.basis : '-';
+      $('taxHint').textContent = r ? r.note : 'Pilih jenis pajak terlebih dahulu, lalu isi nilai transaksi.';
+      $('dppOut').textContent = fmtIDR(dpp);
+      $('rateOut').textContent = fmtPct(effectiveRate);
+      $('taxOut').textContent = fmtIDR(tax);
+      $('formulaBox').innerHTML = r
+        ? `<b>Rumus:</b> ${fmtIDR(dpp)} × ${fmtPct(baseRate)}${factor !== 1 ? ` × ${factor.toFixed(2)}` : ''} = <b>${fmtIDR(tax)}</b>`
+        : '<b>Rumus:</b> PPh 22 = DPP × Tarif';
+      $('warningBox').innerHTML = r
+        ? `<b>${r.name}</b><br>Tarif: ${fmtPct(r.rate)} · DPP: ${r.basis}<br>Sifat: ${r.final}<br>Sumber: ${r.source}`
+        : 'Belum ada jenis transaksi yang dipilih.';
+      $('importBox').classList.toggle('hidden', !(r && r.group === 'Impor'));
+      renderRates();
+    }
+
+    function renderRates(){
+      const q = ($('searchRate').value || '').toLowerCase().trim();
+      const group = $('filterGroup').value;
+      const rows = RATES.filter(r => (group === 'all' || r.group === group) && (!q || [r.name,r.group,r.basis,r.source,r.note].join(' ').toLowerCase().includes(q)));
+      $('rateList').innerHTML = rows.map(r => `
+        <div class="rateItem">
+          <div><b>${r.name}</b><span>${r.group} · ${r.basis} · ${r.source}</span></div>
+          <div class="rateChip">${fmtPct(r.rate)}</div>
+        </div>`).join('') || '<div class="detailText">Data tidak ditemukan.</div>';
+    }
+
+    function formatOnBlur(el){
+      const n = parseNum(el.value);
+      el.value = n ? new Intl.NumberFormat('id-ID').format(n) : '';
+    }
+
+    function resetAll(){
+      ['dpp','cif','beaMasuk','pungutanLain','noteInput'].forEach(id => { if($(id)) $(id).value = ''; });
+      $('taxType').value = '';
+      calculate();
+    }
+
+    function copySummary(){
+      const r = selectedRate();
+      const dpp = parseNum($('dpp').value);
+      const factor = getFactor();
+      const tax = dpp * (r ? r.rate : 0) * factor;
+      const text = r ? `Ringkasan PPh Pasal 22\nJenis: ${r.name}\nDPP: ${fmtIDR(dpp)}\nTarif: ${fmtPct(r.rate)}\nFaktor: ${factor.toFixed(2)}x\nPPh 22: ${fmtIDR(tax)}\nSumber: ${r.source}` : 'Belum ada jenis transaksi yang dipilih.';
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(text).then(() => {
+          $('btnCopy').textContent = 'Tersalin ✓';
+          setTimeout(() => $('btnCopy').textContent = 'Salin ringkasan', 1300);
+        }).catch(() => alert(text));
+      }else{ alert(text); }
+    }
+
+    function syncNpwpOption(){
+      const isNonNpwp = $('wpStatus').value === 'non';
+      $('legacyNpwp').checked = isNonNpwp;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      buildOptions();
+      syncNpwpOption();
+      $('wpStatus').addEventListener('input', () => {
+        syncNpwpOption();
+        calculate();
+      });
+      ['legacyNpwp','taxType','searchRate','filterGroup'].forEach(id => $(id).addEventListener('input', calculate));
+      ['dpp','cif','beaMasuk','pungutanLain'].forEach(id => {
+        $(id).addEventListener('input', calculate);
+        $(id).addEventListener('blur', e => formatOnBlur(e.target));
+      });
+      $('useImportValue').addEventListener('click', () => {
+        const value = parseNum($('cif').value) + parseNum($('beaMasuk').value) + parseNum($('pungutanLain').value);
+        $('dpp').value = new Intl.NumberFormat('id-ID').format(value);
+        calculate();
+      });
+      $('btnReset').addEventListener('click', resetAll);
+      $('btnCopy').addEventListener('click', copySummary);
+      calculate();
+    });
+  </script>
+<script>
+(function(){
+  function applyNgolahTheme(theme){
+    var isDark = theme === 'dark';
+    document.documentElement.classList.toggle('dark', isDark);
+    if (document.body) {
+      document.body.classList.toggle('dark-mode', isDark);
+      document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    }
+  }
+  var theme = 'light';
+  try { theme = new URLSearchParams(window.location.search).get('theme') || 'light'; } catch (e) {}
+  applyNgolahTheme(theme);
+  window.addEventListener('message', function(event){
+    var data = event.data || {};
+    if (data.type === 'ngolahPajakTheme') applyNgolahTheme(data.theme === 'dark' ? 'dark' : 'light');
+  });
+})();
+</script>
+
+</body>
+</html>

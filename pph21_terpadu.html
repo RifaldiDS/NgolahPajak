@@ -1,0 +1,3193 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aplikasi Kalkulator PPh 21 Terpadu</title>
+  <script>
+    (function(){
+      try {
+        if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --bg-2:#eef3fb;
+      --surface:#ffffff;
+      --surface-soft:#f8fafd;
+      --surface-blue:#f1f6ff;
+      --surface-teal:#effaf8;
+      --input:#ffffff;
+      --text:#1c2433;
+      --text-strong:#0f172a;
+      --muted:#64748b;
+      --muted-2:#94a3b8;
+      --accent:#2563eb;
+      --accent-2:#0f766e;
+      --accent-soft:#dbeafe;
+      --teal-soft:#ccfbf1;
+      --line:#dbe3ef;
+      --line-strong:#cbd5e1;
+      --good:#047857;
+      --bad:#dc2626;
+      --warn:#b45309;
+      --shadow:0 24px 60px rgba(15,23,42,.10);
+      --shadow-soft:0 14px 32px rgba(15,23,42,.08);
+      --shadow-mini:0 8px 18px rgba(15,23,42,.06);
+      --radius-xl:28px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --radius-sm:12px;
+    }
+
+    *{box-sizing:border-box}
+    html{min-height:100%;scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% 0%,rgba(37,99,235,.10),transparent 34%),
+        radial-gradient(circle at 92% 14%,rgba(15,118,110,.08),transparent 30%),
+        linear-gradient(180deg,#ffffff 0%,var(--bg) 46%,#f7fafc 100%);
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(100,116,139,.055) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(100,116,139,.055) 1px,transparent 1px);
+      background-size:58px 58px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.72),transparent 72%);
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      width:500px;
+      height:500px;
+      right:-260px;
+      top:130px;
+      border-radius:50%;
+      pointer-events:none;
+      background:radial-gradient(circle,rgba(37,99,235,.09),transparent 70%);
+      filter:blur(5px);
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      width:min(100%,1320px);
+      margin:0 auto;
+      padding:24px;
+    }
+
+    .wrap > .sectionTitle{
+      position:relative;
+      min-height:136px;
+      padding:28px;
+      border:1px solid rgba(203,213,225,.92);
+      border-radius:var(--radius-xl);
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.98),rgba(248,250,252,.94)),
+        radial-gradient(circle at 82% 18%,rgba(15,118,110,.12),transparent 33%),
+        radial-gradient(circle at 18% 0%,rgba(37,99,235,.13),transparent 36%);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      isolation:isolate;
+    }
+    .wrap > .sectionTitle::before{
+      content:"";
+      position:absolute;
+      right:-92px;
+      bottom:-138px;
+      width:390px;
+      height:390px;
+      border-radius:50%;
+      border:1px solid rgba(37,99,235,.12);
+      background:
+        radial-gradient(circle at 34% 34%,rgba(37,99,235,.16),transparent 22%),
+        radial-gradient(circle at 62% 60%,rgba(15,118,110,.11),transparent 28%),
+        linear-gradient(135deg,rgba(219,234,254,.82),rgba(204,251,241,.48));
+      opacity:.92;
+      z-index:-1;
+    }
+    .wrap > .sectionTitle::after{
+      content:"TAX CONSOLE";
+      position:absolute;
+      right:24px;
+      bottom:18px;
+      color:rgba(15,23,42,.045);
+      font-weight:950;
+      letter-spacing:.08em;
+      font-size:clamp(34px,6vw,78px);
+      line-height:1;
+      z-index:-1;
+      white-space:nowrap;
+    }
+
+    .sectionTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    h1{
+      margin:0;
+      color:var(--text-strong);
+      font-size:clamp(23px,3vw,36px);
+      line-height:1.08;
+      letter-spacing:-.045em;
+      font-weight:950;
+    }
+    .sub{
+      max-width:780px;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.62;
+    }
+    b,strong{color:var(--text-strong)}
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      min-height:30px;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(37,99,235,.18);
+      background:linear-gradient(135deg,rgba(219,234,254,.92),rgba(240,253,250,.82));
+      color:#1d4ed8;
+      font-size:11px;
+      font-weight:850;
+      letter-spacing:.01em;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+    }
+
+    .tabs{
+      position:sticky;
+      top:0;
+      z-index:9;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:16px 0 0;
+      padding:10px;
+      border:1px solid rgba(203,213,225,.82);
+      border-radius:22px;
+      background:rgba(255,255,255,.84);
+      backdrop-filter:blur(18px);
+      box-shadow:0 12px 32px rgba(15,23,42,.08);
+    }
+    .tab,
+    button{
+      min-height:40px;
+      padding:10px 14px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:linear-gradient(180deg,#ffffff,#f8fafc);
+      color:#334155;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.005em;
+      transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease;
+      box-shadow:0 1px 0 rgba(255,255,255,.8),0 6px 14px rgba(15,23,42,.045);
+    }
+    .tab:hover,
+    button:hover{
+      border-color:rgba(37,99,235,.36);
+      background:linear-gradient(180deg,#ffffff,#eff6ff);
+      color:#1d4ed8;
+      box-shadow:0 10px 22px rgba(37,99,235,.10);
+    }
+    .tab.active{
+      border-color:rgba(37,99,235,.36);
+      background:linear-gradient(135deg,#2563eb,#1d4ed8);
+      color:#ffffff;
+      box-shadow:0 12px 28px rgba(37,99,235,.23);
+    }
+    .ghost{
+      background:#ffffff;
+      color:#475569;
+    }
+    .danger{
+      border-color:rgba(220,38,38,.22);
+      color:#b91c1c;
+      background:linear-gradient(180deg,#fff,#fff7f7);
+    }
+    .danger:hover{
+      border-color:rgba(220,38,38,.42);
+      color:#991b1b;
+      box-shadow:0 10px 20px rgba(220,38,38,.10);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:minmax(280px,.82fr) minmax(420px,1.24fr) minmax(330px,1.02fr);
+      gap:16px;
+      margin-top:16px;
+      align-items:start;
+    }
+    .card{
+      position:relative;
+      min-width:0;
+      border:1px solid rgba(203,213,225,.86);
+      border-radius:var(--radius-lg);
+      background:rgba(255,255,255,.94);
+      padding:16px;
+      box-shadow:var(--shadow-soft);
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:4px;
+      background:linear-gradient(90deg,#2563eb,#0f766e);
+      opacity:.82;
+    }
+    .card h2{
+      position:relative;
+      margin:0 0 10px;
+      color:#334155;
+      font-size:11px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-weight:900;
+    }
+
+    label{
+      display:block;
+      margin:11px 0 6px;
+      color:#526177;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.01em;
+    }
+    input,select,textarea{
+      width:100%;
+      min-height:42px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--input);
+      color:var(--text-strong);
+      outline:none;
+      font:inherit;
+      font-size:13px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 1px 2px rgba(15,23,42,.03);
+      transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+    input::placeholder,
+    textarea::placeholder{color:#a1adbd}
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(37,99,235,.48);
+      background:#ffffff;
+      box-shadow:0 0 0 4px rgba(37,99,235,.10),inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    input[readonly]{
+      color:#0f766e;
+      border-color:rgba(15,118,110,.20);
+      background:linear-gradient(180deg,#f8fffd,#ecfdf5);
+      font-weight:850;
+    }
+    select{
+      appearance:auto;
+      cursor:pointer;
+    }
+    textarea{
+      min-height:70px;
+      resize:vertical;
+      line-height:1.45;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:12px;
+    }
+    .hint{
+      margin-top:7px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.45;
+    }
+    .mini{
+      margin-top:9px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.55;
+    }
+
+    .pillbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:11px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:32px;
+      padding:8px 10px;
+      border:1px solid rgba(203,213,225,.82);
+      border-radius:999px;
+      background:linear-gradient(180deg,#ffffff,#f8fafc);
+      color:#475569;
+      font-size:11px;
+      font-weight:750;
+      box-shadow:var(--shadow-mini);
+    }
+    .pill strong{
+      color:#1d4ed8;
+      font-weight:950;
+    }
+
+    .btnrow{
+      display:flex;
+      gap:9px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    #btnSaveMonth,
+    #btnCsv,
+    #btnJson{
+      border-color:rgba(37,99,235,.22);
+      background:linear-gradient(135deg,#2563eb,#1d4ed8);
+      color:#ffffff;
+      box-shadow:0 12px 24px rgba(37,99,235,.18);
+    }
+    #btnSaveMonth:hover,
+    #btnCsv:hover,
+    #btnJson:hover{
+      color:#ffffff;
+      border-color:rgba(37,99,235,.42);
+      background:linear-gradient(135deg,#1d4ed8,#1e40af);
+      box-shadow:0 14px 30px rgba(37,99,235,.24);
+    }
+
+    details{
+      margin-top:12px;
+      border:1px solid rgba(203,213,225,.78);
+      border-radius:18px;
+      padding:11px 12px;
+      background:linear-gradient(180deg,#ffffff,#f8fafc);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    details[open]{
+      background:linear-gradient(180deg,#ffffff,#f8fbff);
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      color:#1f2937;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.01em;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    summary::-webkit-details-marker{display:none}
+    summary::after{
+      content:"+";
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      color:#2563eb;
+      border:1px solid rgba(37,99,235,.18);
+      background:#eff6ff;
+      font-weight:950;
+    }
+    details[open] > summary::after{content:"–"}
+
+    .kpis{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .kpi{
+      position:relative;
+      min-height:94px;
+      padding:14px;
+      border:1px solid rgba(203,213,225,.82);
+      border-radius:20px;
+      background:
+        linear-gradient(180deg,#ffffff,#f8fafc),
+        radial-gradient(circle at 100% 0%,rgba(37,99,235,.09),transparent 42%);
+      box-shadow:var(--shadow-mini);
+      overflow:hidden;
+    }
+    .kpi::before{
+      content:"";
+      position:absolute;
+      left:14px;
+      top:13px;
+      width:30px;
+      height:3px;
+      border-radius:999px;
+      background:#2563eb;
+      opacity:.82;
+    }
+    .kpi .t{
+      padding-top:12px;
+      color:#64748b;
+      text-align:left;
+      font-size:11px;
+      font-weight:850;
+      line-height:1.35;
+    }
+    .kpi .v{
+      margin-top:7px;
+      color:#0f172a;
+      font-size:clamp(15px,1.4vw,19px);
+      line-height:1.12;
+      font-weight:950;
+      font-variant-numeric:tabular-nums;
+      letter-spacing:-.025em;
+      word-break:break-word;
+    }
+    .ok{color:var(--good)!important}
+    .kpi .hint.ok{color:#047857!important;font-weight:800}
+
+    .span-all{grid-column:1 / -1}
+    .tableCard{
+      margin:0 auto;
+      padding:16px;
+    }
+    .tableCard.compact{max-width:960px}
+    .tableCard.wide{max-width:1320px}
+    .tableCard::before{background:linear-gradient(90deg,#0f766e,#2563eb)}
+
+    .scrollX{
+      width:100%;
+      overflow-x:auto;
+      padding:4px 0 8px;
+      display:block;
+      scrollbar-width:thin;
+      scrollbar-color:#cbd5e1 transparent;
+    }
+    .scrollX table{margin:0 auto}
+    .scrollX.compact table{min-width:760px;max-width:940px}
+    .scrollX.wide table{min-width:1160px}
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      margin-top:10px;
+      overflow:hidden;
+      border-radius:18px;
+      border:1px solid rgba(203,213,225,.88);
+      background:#ffffff;
+      box-shadow:var(--shadow-mini);
+    }
+    th,td{
+      padding:9px 11px;
+      border-bottom:1px solid rgba(226,232,240,.95);
+      vertical-align:middle;
+      text-align:center;
+      font-size:11px;
+      font-variant-numeric:tabular-nums;
+      white-space:nowrap;
+    }
+    th{
+      position:sticky;
+      top:0;
+      z-index:1;
+      color:#475569;
+      background:linear-gradient(180deg,#f8fafc,#eef4ff);
+      font-weight:900;
+      letter-spacing:.015em;
+    }
+    tbody tr:nth-child(even) td{background:#fbfdff}
+    tbody tr:hover td{background:#f1f6ff}
+    tr:last-child td{border-bottom:none}
+    td:first-child,
+    th:first-child{
+      text-align:left;
+      font-weight:900;
+      color:#1e3a8a;
+    }
+    td.note{
+      min-width:130px;
+      white-space:normal;
+      text-align:center;
+      color:#64748b;
+    }
+
+    .foot{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.5;
+      text-align:center;
+    }
+    .hidden{display:none!important}
+
+    #view_placeholder{
+      margin-top:16px;
+      min-height:170px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      background:
+        linear-gradient(135deg,#ffffff,#f8fafc),
+        radial-gradient(circle at 92% 0%,rgba(37,99,235,.10),transparent 34%);
+    }
+
+    @media (max-width:1180px){
+      .grid{grid-template-columns:1fr 1fr}
+      .grid > .card:nth-child(3){grid-column:1 / -1}
+      .tableCard.compact,.tableCard.wide{max-width:100%}
+    }
+    @media (max-width:860px){
+      .wrap{padding:16px}
+      .wrap > .sectionTitle{
+        min-height:auto;
+        padding:22px;
+        align-items:flex-start;
+        flex-direction:column;
+      }
+      .wrap > .sectionTitle::after{
+        right:18px;
+        bottom:12px;
+        font-size:42px;
+      }
+      .tabs{position:relative;border-radius:18px}
+      .grid{grid-template-columns:1fr;gap:14px}
+      .grid > .card:nth-child(3){grid-column:auto}
+      .row{grid-template-columns:1fr}
+      .kpis{grid-template-columns:1fr}
+      .sectionTitle{align-items:flex-start;flex-direction:column}
+      .card{padding:14px;border-radius:20px}
+      .scrollX.compact table{min-width:720px;max-width:none}
+      .scrollX.wide table{min-width:1040px}
+    }
+    @media (max-width:520px){
+      .wrap{padding:12px}
+      h1{font-size:24px}
+      .sub{font-size:12px}
+      .tab,button{width:100%;justify-content:center}
+      .btnrow button{flex:1 1 100%}
+      .pill{width:100%;justify-content:space-between}
+      th,td{padding:8px 9px}
+    }
+  
+
+
+    /* =========================================================
+       v20 — clean white, deep navy, warm gold palette
+       Layout and calculation script are intentionally untouched.
+       ========================================================= */
+    :root{
+      --bg:#f5f7fb;
+      --bg-2:#eef2f8;
+      --surface:#ffffff;
+      --surface-soft:#f9fafc;
+      --surface-blue:#f3f6ff;
+      --surface-teal:#fff8e1;
+      --input:#ffffff;
+      --text:#263041;
+      --text-strong:#111a44;
+      --muted:#65738a;
+      --muted-2:#9aa7b8;
+      --accent:#182150;
+      --accent-2:#e7bd22;
+      --accent-soft:#eef2ff;
+      --teal-soft:#fff0b8;
+      --line:#dbe2ee;
+      --line-strong:#c9d3e2;
+      --good:#087443;
+      --bad:#dc2626;
+      --warn:#b7791f;
+      --shadow:0 26px 70px rgba(17,26,68,.12);
+      --shadow-soft:0 15px 36px rgba(17,26,68,.09);
+      --shadow-mini:0 8px 20px rgba(17,26,68,.07);
+    }
+
+    body{
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% -2%,rgba(24,33,80,.105),transparent 34%),
+        radial-gradient(circle at 92% 10%,rgba(231,189,34,.16),transparent 28%),
+        linear-gradient(180deg,#ffffff 0%,#f6f8fc 45%,#f8fafc 100%);
+    }
+    body::before{
+      background-image:
+        linear-gradient(rgba(17,26,68,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(17,26,68,.045) 1px,transparent 1px);
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.62),transparent 72%);
+    }
+    body::after{
+      background:radial-gradient(circle,rgba(231,189,34,.13),transparent 68%);
+    }
+
+    .wrap > .sectionTitle{
+      border-color:rgba(201,211,226,.95);
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.99),rgba(249,250,252,.96)),
+        radial-gradient(circle at 84% 16%,rgba(231,189,34,.20),transparent 32%),
+        radial-gradient(circle at 14% 0%,rgba(24,33,80,.14),transparent 34%);
+      box-shadow:0 28px 74px rgba(17,26,68,.13);
+    }
+    .wrap > .sectionTitle::before{
+      border-color:rgba(24,33,80,.11);
+      background:
+        radial-gradient(circle at 34% 34%,rgba(24,33,80,.14),transparent 23%),
+        radial-gradient(circle at 62% 60%,rgba(231,189,34,.32),transparent 30%),
+        linear-gradient(135deg,rgba(238,242,255,.90),rgba(255,246,205,.66));
+    }
+    .wrap > .sectionTitle::after{
+      color:rgba(17,26,68,.045);
+      content:"TAX CONSOLE";
+    }
+    h1{color:#111a44}
+    b,strong{color:#111a44}
+    .sub{color:#65738a}
+
+    .badge{
+      border-color:rgba(231,189,34,.35);
+      background:linear-gradient(135deg,#fff8dc,#eef2ff);
+      color:#111a44;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 18px rgba(231,189,34,.12);
+    }
+    .tabs{
+      border-color:rgba(201,211,226,.88);
+      background:rgba(255,255,255,.86);
+      box-shadow:0 13px 34px rgba(17,26,68,.08);
+    }
+    .tab,
+    button{
+      color:#263041;
+      border-color:rgba(219,226,238,.95);
+      background:linear-gradient(180deg,#ffffff,#f8fafc);
+    }
+    button:hover{
+      border-color:rgba(24,33,80,.25);
+      background:linear-gradient(180deg,#ffffff,#f3f6ff);
+      color:#111a44;
+      box-shadow:0 10px 22px rgba(17,26,68,.10);
+    }
+    .tab.active{
+      border-color:rgba(24,33,80,.36);
+      background:linear-gradient(135deg,#111a44,#1b2456 64%,#2b356d);
+      color:#ffffff;
+      box-shadow:0 13px 30px rgba(17,26,68,.28);
+    }
+    .tab.active::after{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      margin-left:8px;
+      background:#e7bd22;
+      box-shadow:0 0 0 4px rgba(231,189,34,.18);
+    }
+    .ghost{background:#ffffff;color:#526177}
+    .danger{
+      border-color:rgba(220,38,38,.20);
+      color:#b91c1c;
+      background:linear-gradient(180deg,#ffffff,#fff8f8);
+    }
+
+    .card{
+      border-color:rgba(201,211,226,.90);
+      background:rgba(255,255,255,.96);
+      box-shadow:var(--shadow-soft);
+    }
+    .card::before{
+      height:4px;
+      background:linear-gradient(90deg,#111a44 0%,#192253 47%,#e7bd22 100%);
+      opacity:.94;
+    }
+    .card h2{
+      color:#263041;
+    }
+    .card h2::before{
+      content:"";
+      display:inline-block;
+      width:7px;
+      height:7px;
+      margin-right:8px;
+      border-radius:999px;
+      background:#e7bd22;
+      box-shadow:0 0 0 4px rgba(231,189,34,.14);
+      vertical-align:1px;
+    }
+
+    label{color:#536176}
+    input,select,textarea{
+      border-color:#dbe2ee;
+      background:#ffffff;
+      color:#111a44;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 1px 2px rgba(17,26,68,.035);
+    }
+    input:hover,select:hover,textarea:hover{border-color:#c9d3e2}
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(24,33,80,.38);
+      box-shadow:0 0 0 4px rgba(24,33,80,.09),0 8px 18px rgba(17,26,68,.07);
+    }
+    input[readonly]{
+      background:linear-gradient(180deg,#f8fafc,#f3f6ff);
+      color:#111a44;
+      font-weight:850;
+    }
+    ::placeholder{color:#a3adbc}
+
+    .hint,.mini,.foot{color:#65738a}
+    .pill{
+      border-color:rgba(201,211,226,.88);
+      background:linear-gradient(135deg,#ffffff,#f8fafc);
+      color:#526177;
+    }
+    .pill strong{
+      color:#111a44;
+    }
+    .pillbar .pill:nth-child(1){background:linear-gradient(135deg,#f3f6ff,#ffffff)}
+    .pillbar .pill:nth-child(2){background:linear-gradient(135deg,#fff8dc,#ffffff)}
+    .pillbar .pill:nth-child(3){background:linear-gradient(135deg,#f8fafc,#ffffff)}
+
+    details{
+      border-color:rgba(201,211,226,.80);
+      background:linear-gradient(180deg,#ffffff,#f8fafc);
+    }
+    details[open]{background:linear-gradient(180deg,#ffffff,#fbfcff)}
+    summary{color:#111a44}
+    summary::after{
+      color:#111a44;
+      border-color:rgba(231,189,34,.34);
+      background:#fff8dc;
+    }
+
+    .kpi{
+      border-color:rgba(201,211,226,.86);
+      background:
+        radial-gradient(circle at 100% 0%,rgba(231,189,34,.16),transparent 40%),
+        linear-gradient(180deg,#ffffff,#f8fafc);
+      box-shadow:var(--shadow-mini);
+    }
+    .kpi::before{
+      background:linear-gradient(90deg,#111a44,#e7bd22);
+      opacity:.95;
+    }
+    .kpi .t{color:#65738a}
+    .kpi .v{color:#111a44}
+    .ok{color:#087443!important}
+    .kpi .hint.ok{color:#087443!important}
+
+    .tableCard::before{background:linear-gradient(90deg,#111a44,#e7bd22)}
+    .scrollX{scrollbar-color:#c9d3e2 transparent}
+    table{
+      border-color:rgba(201,211,226,.90);
+      background:#ffffff;
+      box-shadow:var(--shadow-mini);
+    }
+    th{
+      color:#111a44;
+      background:linear-gradient(180deg,#fffaf0,#f3f6ff);
+      border-bottom-color:#dbe2ee;
+    }
+    td{
+      color:#263041;
+      border-bottom-color:rgba(219,226,238,.92);
+    }
+    tbody tr:nth-child(even) td{background:#fafbfe}
+    tbody tr:hover td{
+      background:#fff8dc;
+      color:#111a44;
+    }
+
+    #btnSaveMonth{
+      border-color:rgba(24,33,80,.32);
+      background:linear-gradient(135deg,#111a44,#1e285f);
+      color:#ffffff;
+      box-shadow:0 12px 26px rgba(17,26,68,.22);
+    }
+    #btnSaveMonth:hover{
+      border-color:rgba(231,189,34,.56);
+      background:linear-gradient(135deg,#111a44,#222d68);
+      color:#ffffff;
+      box-shadow:0 14px 30px rgba(17,26,68,.28);
+    }
+    #btnCsv,#btnJson{
+      border-color:rgba(231,189,34,.38);
+      background:linear-gradient(180deg,#fffaf0,#ffffff);
+      color:#111a44;
+    }
+    #btnCsv:hover,#btnJson:hover{
+      background:linear-gradient(180deg,#fff8dc,#ffffff);
+      border-color:rgba(231,189,34,.58);
+    }
+
+    select option{color:#111a44;background:#ffffff}
+    ::selection{background:rgba(231,189,34,.34);color:#111a44}
+
+
+/* =========================================================
+   v21 — Pegawai Tak Tetap integrated view
+   Separate IDs/scripts; fixed-employee calculation remains untouched.
+   ========================================================= */
+#view_tak{margin-top:12px}
+.tak-hero{
+  grid-column:1 / -1;
+  position:relative;
+  overflow:hidden;
+  padding:18px 18px 16px;
+  border:1px solid rgba(201,211,226,.90);
+  border-radius:var(--radius-lg);
+  background:
+    radial-gradient(circle at 88% 0%,rgba(231,189,34,.18),transparent 32%),
+    radial-gradient(circle at 6% 16%,rgba(17,26,68,.10),transparent 34%),
+    linear-gradient(135deg,#ffffff,#f8fafc);
+  box-shadow:var(--shadow-soft);
+}
+.tak-hero::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:4px;
+  background:linear-gradient(90deg,#111a44,#e7bd22);
+}
+.tak-hero h2{
+  margin:0;
+  color:#111a44;
+  font-size:18px;
+  letter-spacing:-.02em;
+  font-weight:950;
+}
+.tak-hero p{
+  max-width:920px;
+  margin:8px 0 0;
+  color:#65738a;
+  line-height:1.55;
+  font-size:13px;
+}
+.tak-grid{
+  display:grid;
+  grid-template-columns:.82fr 1.28fr 1fr;
+  gap:12px;
+  grid-column:1 / -1;
+}
+.tak-mode-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.tak-mode-pill{
+  min-height:38px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:9px 12px;
+  border-radius:999px;
+  border:1px solid rgba(201,211,226,.92);
+  background:linear-gradient(180deg,#ffffff,#f8fafc);
+  color:#526177;
+  font-size:12px;
+  font-weight:850;
+  cursor:pointer;
+  user-select:none;
+  box-shadow:0 1px 0 rgba(255,255,255,.9),0 6px 14px rgba(17,26,68,.045);
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease,transform .18s ease;
+}
+.tak-mode-pill:hover{
+  transform:translateY(-1px);
+  border-color:rgba(24,33,80,.26);
+  color:#111a44;
+  box-shadow:0 10px 22px rgba(17,26,68,.08);
+}
+.tak-mode-pill.active{
+  color:#ffffff;
+  border-color:rgba(24,33,80,.38);
+  background:linear-gradient(135deg,#111a44,#1b2456 64%,#2b356d);
+  box-shadow:0 13px 28px rgba(17,26,68,.24);
+}
+.tak-mode-pill.active::after{
+  content:"";
+  width:7px;
+  height:7px;
+  margin-left:8px;
+  border-radius:999px;
+  background:#e7bd22;
+  box-shadow:0 0 0 4px rgba(231,189,34,.18);
+}
+.tak-formula{
+  margin-top:10px;
+  border:1px dashed rgba(201,211,226,.98);
+  background:linear-gradient(180deg,#ffffff,#f8fafc);
+  border-radius:16px;
+  padding:12px;
+  font-size:12px;
+  color:#65738a;
+  line-height:1.55;
+  font-variant-numeric:tabular-nums;
+}
+.tak-formula b{color:#111a44}
+.tak-table-wrap{
+  margin-top:10px;
+  overflow:auto;
+  border-radius:16px;
+}
+.tak-table-wrap table{margin-top:0;min-width:520px}
+.tak-table-wrap td input{
+  min-width:136px;
+  padding:8px 10px;
+  border-radius:11px;
+  font-size:12px;
+  text-align:right;
+}
+.tak-kpi-highlight{
+  position:relative;
+  border-color:rgba(231,189,34,.34)!important;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(231,189,34,.20),transparent 42%),
+    linear-gradient(180deg,#ffffff,#fffdf5)!important;
+}
+.tak-kpi-highlight .v{font-size:24px}
+.tak-note-list{
+  margin:8px 0 0;
+  padding-left:18px;
+  color:#65738a;
+  line-height:1.65;
+  font-size:12px;
+}
+.tak-muted-card{
+  margin-top:10px;
+  padding:12px;
+  border:1px solid rgba(201,211,226,.82);
+  border-radius:16px;
+  background:linear-gradient(180deg,#ffffff,#f8fafc);
+  color:#65738a;
+  font-size:12px;
+  line-height:1.55;
+}
+.tak-result-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+@media (max-width:1100px){
+  .tak-grid{grid-template-columns:1fr}
+  .tak-hero{padding:16px}
+}
+@media (max-width:520px){
+  .tak-mode-pill{width:100%}
+  .tak-table-wrap table{min-width:500px}
+}
+
+  
+
+/* ===== PPh 21 Lainnya - integrated validated panel ===== */
+#view_lain{
+  --navy:#0b1b4d;
+  --navy2:#142869;
+  --gold:#f8d34d;
+  --gold2:#ffe27a;
+  --line:#d8e0ec;
+  --soft:#f1f5fb;
+  --green:#0f9f6e;
+  --red:#dc2626;
+  --muted:#667085;
+  --muted2:#8a94a6;
+  --shadow:0 18px 45px rgba(13,30,80,.10);
+  --radius:20px;
+  margin-top:14px;
+}
+#view_lain .hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+  background:linear-gradient(135deg,#fff 0%,#fffaf0 46%,#eef5ff 100%);
+  border:1px solid rgba(11,27,77,.12);
+  box-shadow:var(--shadow);
+  padding:20px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+}
+#view_lain .hero:before{
+  content:"";
+  position:absolute;
+  right:-120px;
+  top:-160px;
+  width:360px;
+  height:360px;
+  border-radius:44%;
+  background:linear-gradient(135deg,var(--gold),#fff4ad);
+  opacity:.55;
+  transform:rotate(18deg);
+}
+#view_lain .hero:after{
+  content:"";
+  position:absolute;
+  right:58px;
+  bottom:-120px;
+  width:260px;
+  height:260px;
+  border-radius:42%;
+  background:linear-gradient(135deg,var(--navy),#243b88);
+  opacity:.11;
+  transform:rotate(-18deg);
+}
+#view_lain .hero > *{position:relative;z-index:1}
+#view_lain .titlebar{display:flex;gap:12px;align-items:center}
+#view_lain .mark{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--gold) 0 48%,var(--navy) 49% 100%);
+  box-shadow:0 12px 30px rgba(11,27,77,.20);
+  flex:0 0 auto;
+}
+#view_lain h1{margin:0;font-size:22px;letter-spacing:-.02em;color:var(--navy)}
+#view_lain .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.45;max-width:760px}
+#view_lain .badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid rgba(11,27,77,.14);
+  background:rgba(255,255,255,.72);
+  color:var(--navy);
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:12px;
+  white-space:nowrap;
+  box-shadow:0 8px 20px rgba(11,27,77,.06);
+}
+#view_lain .grid{display:grid;grid-template-columns:.86fr 1.28fr 1fr;gap:14px;margin-top:16px}
+#view_lain .span{grid-column:1/-1}
+#view_lain .card{
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(11,27,77,.11);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+}
+#view_lain .card h2{
+  margin:0 0 12px;
+  color:var(--navy);
+  font-size:13px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+#view_lain .section{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}
+#view_lain .miniBadge{font-size:11px;color:var(--navy);font-weight:800;background:#fff8d7;border:1px solid rgba(248,211,77,.75);padding:6px 10px;border-radius:999px}
+#view_lain label{display:block;margin:10px 0 6px;font-size:12px;color:#465067;font-weight:700}
+#view_lain .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#view_lain input,#view_lain select,#view_lain textarea{
+  width:100%;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#111827;
+  border-radius:14px;
+  padding:11px 12px;
+  font-size:14px;
+  outline:none;
+  transition:.15s ease;
+  box-shadow:0 1px 0 rgba(11,27,77,.03);
+}
+#view_lain input:focus,#view_lain select:focus,#view_lain textarea:focus{border-color:#8ab7ff;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+#view_lain input[readonly]{background:#f6f8fc;color:#344054}
+#view_lain textarea{min-height:76px;resize:vertical}
+#view_lain .hint{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.45}
+#view_lain .help{padding:10px 12px;border-radius:16px;background:#f8fbff;border:1px dashed #c9d7eb;color:#4b5565;font-size:12px;line-height:1.55}
+#view_lain .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#view_lain .kpi{border:1px solid rgba(11,27,77,.10);background:linear-gradient(180deg,#fff,#f8fbff);padding:13px;border-radius:18px}
+#view_lain .kpi .t{font-size:12px;color:var(--muted);font-weight:700}
+#view_lain .kpi .v{font-size:18px;color:var(--navy);font-weight:900;margin-top:6px;font-variant-numeric:tabular-nums}
+#view_lain .kpi.gold{background:linear-gradient(135deg,#fff9db,#fff)}
+#view_lain .kpi.good{background:linear-gradient(135deg,#ecfdf5,#fff)}
+#view_lain .kpi.red{background:linear-gradient(135deg,#fff1f2,#fff)}
+#view_lain .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#view_lain button{border:1px solid rgba(11,27,77,.14);background:#fff;color:var(--navy);border-radius:14px;padding:10px 12px;font-size:12px;font-weight:800;cursor:pointer;transition:.15s ease}
+#view_lain button:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(11,27,77,.10)}
+#view_lain .primary{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff}
+#view_lain .goldBtn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111827;border-color:rgba(176,137,0,.35)}
+#view_lain .ghost{background:transparent}
+#view_lain .mono{font-variant-numeric:tabular-nums}
+#view_lain .green{color:var(--green)}
+#view_lain .red{color:var(--red)}
+#view_lain .formula{border:1px solid rgba(11,27,77,.12);background:linear-gradient(180deg,#fbfdff,#f4f7fc);border-radius:18px;padding:12px;color:#4b5565;font-size:12px;line-height:1.6}
+#view_lain .formula b{color:var(--navy)}
+#view_lain table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:16px;border:1px solid var(--line);background:#fff;margin-top:0}
+#view_lain th,#view_lain td{padding:9px 10px;border-bottom:1px solid #edf1f7;font-size:12px;text-align:right;white-space:nowrap;color:#344054}
+#view_lain th{background:#f7f9fd;color:#516070;font-weight:800}
+#view_lain td:first-child,#view_lain th:first-child{text-align:left}
+#view_lain tr:last-child td{border-bottom:none}
+#view_lain .tableWrap{overflow-x:auto;border-radius:16px}
+#view_lain .tableWrap input{min-width:120px;padding:8px 10px;border-radius:10px;text-align:right}
+#view_lain .noteBox{background:#fffdf2;border:1px solid rgba(248,211,77,.55);border-radius:18px;padding:12px;color:#5d4d17;font-size:12px;line-height:1.5}
+#view_lain .dangerBox{background:#fff5f5;border:1px solid #fecaca;border-radius:18px;padding:12px;color:#7f1d1d;font-size:12px;line-height:1.5}
+#view_lain details{border:1px solid rgba(11,27,77,.09);border-radius:16px;background:#fbfdff;padding:11px 12px;margin-top:10px}
+#view_lain summary{cursor:pointer;font-weight:900;color:var(--navy);font-size:12px}
+#view_lain .footer{margin-top:14px;text-align:center;color:var(--muted2);font-size:11px;line-height:1.5}
+#view_lain .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+#view_lain .pill{display:inline-flex;padding:7px 10px;border-radius:999px;background:#f7f9fd;border:1px solid var(--line);font-size:11px;font-weight:800;color:var(--navy)}
+@media(max-width:1040px){
+  #view_lain .grid{grid-template-columns:1fr}
+  #view_lain .hero{display:block}
+  #view_lain .badge{margin-top:12px}
+  #view_lain .row{grid-template-columns:1fr!important}
+}
+
+
+    /* ===== v24 context panel: screenshot-style shared hero ===== */
+    .appContext{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+      margin-top:22px;
+      min-height:132px;
+      padding:28px 28px;
+      border:1px solid rgba(201,211,226,.88);
+      border-radius:30px;
+      background:
+        radial-gradient(520px 230px at 92% 28%,rgba(255,216,77,.30),transparent 62%),
+        radial-gradient(420px 220px at 78% 92%,rgba(17,26,68,.08),transparent 68%),
+        linear-gradient(135deg,#ffffff 0%,#fffdf6 55%,#f7f8fb 100%);
+      box-shadow:0 18px 42px rgba(17,26,68,.10);
+      overflow:hidden;
+      isolation:isolate;
+    }
+    .appContext::before{
+      content:"";
+      position:absolute;
+      right:72px;
+      top:-96px;
+      width:310px;
+      height:310px;
+      border-radius:50%;
+      background:rgba(17,26,68,.07);
+      z-index:-2;
+    }
+    .appContext::after{
+      content:"";
+      position:absolute;
+      right:-10px;
+      top:-118px;
+      width:258px;
+      height:258px;
+      border-radius:50%;
+      background:linear-gradient(135deg,rgba(255,216,77,.38),rgba(255,244,170,.20));
+      z-index:-1;
+    }
+    .appContextLeft{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      min-width:0;
+      flex:1;
+    }
+    .appContextMark{
+      width:50px;
+      height:50px;
+      border-radius:17px;
+      background:linear-gradient(135deg,#ffd84d 0 48%,#111a44 49% 100%);
+      box-shadow:0 12px 28px rgba(17,26,68,.18);
+      flex:0 0 auto;
+    }
+    .appContextCopy{min-width:0;flex:1}
+    .appContextCopy h1{
+      margin:0;
+      color:#111a44;
+      font-size:clamp(24px,3vw,32px);
+      line-height:1.08;
+      letter-spacing:-.045em;
+      font-weight:950;
+    }
+    .appContext p{
+      margin:10px 0 0;
+      color:#65738a;
+      font-size:14px;
+      line-height:1.6;
+      max-width:980px;
+    }
+    .appContextBadge{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:38px;
+      padding:9px 18px;
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(17,26,68,.12);
+      color:#111a44;
+      font-size:13px;
+      font-weight:950;
+      box-shadow:0 8px 20px rgba(17,26,68,.06), inset 0 1px 0 rgba(255,255,255,.80);
+      white-space:nowrap;
+    }
+    .tab.active{
+      border-color:rgba(24,33,80,.36)!important;
+      background:linear-gradient(135deg,#111a44,#1b2456 64%,#2b356d)!important;
+      color:#ffffff!important;
+      box-shadow:0 13px 30px rgba(17,26,68,.28)!important;
+    }
+    .tab.active::after{
+      content:"";
+      width:8px!important;
+      height:36px!important;
+      border-radius:999px!important;
+      margin-left:10px!important;
+      background:#726d57!important;
+      box-shadow:none!important;
+      opacity:.95;
+    }
+
+    /* Individual view heroes are hidden because v23 uses one consistent shared context panel. */
+    .tak-hero,
+    #view_lain > .hero{display:none!important}
+
+    /* Make tax/payable values visually consistent and green. */
+    #kpiJanNovTop,#kpiDecTop,#kpiYearTop,#annualTaxOut,
+    #tak_pphLbl,#tak_sumPph,
+    #lain_taxOut,#lain_mTaxTotal{
+      color:#087443!important;
+      font-weight:950!important;
+    }
+    #tableWrap.compact #mainTable tbody td:nth-child(4),
+    #tableWrap.wide #mainTable tbody td:nth-child(12),
+    #tableWrap.compact #mainTable thead th:nth-child(4),
+    #tableWrap.wide #mainTable thead th:nth-child(12),
+    #tak_tbodyBulanan td:nth-child(4),
+    #tak_tbodyBulanan ~ tfoot td:nth-child(4),
+    #view_lain #lain_monthlyBody td:nth-child(4),
+    #view_lain #lain_monthlyBody ~ tfoot td:nth-child(4){
+      color:#087443!important;
+      font-weight:900!important;
+    }
+    #view_lain .kpi.gold .v,
+    #view_lain .kpi.good .v{color:#087443!important}
+    .taxGreen{color:#087443!important;font-weight:950!important}
+
+    @media(max-width:860px){
+      .appContext{align-items:flex-start;flex-direction:column;padding:20px;border-radius:24px}
+      .appContextBadge{align-self:flex-start}
+    }
+    @media(max-width:520px){
+      .appContextLeft{align-items:flex-start;gap:13px}
+      .appContextMark{width:44px;height:44px;border-radius:15px}
+      .appContextCopy h1{font-size:23px}
+      .appContextBadge{width:100%}
+    }
+
+
+  
+
+    /* ===== v25 compact context + yellow tabs refinement ===== */
+    .tabs{
+      gap:12px!important;
+      padding:10px!important;
+      border-radius:22px!important;
+      background:rgba(255,255,255,.92)!important;
+      border-color:rgba(201,211,226,.90)!important;
+      box-shadow:0 10px 26px rgba(17,26,68,.07)!important;
+    }
+    .tab{
+      min-height:46px!important;
+      padding:12px 22px!important;
+      border-radius:16px!important;
+      background:linear-gradient(180deg,#fffefa 0%,#fff8dc 100%)!important;
+      border:1px solid rgba(231,189,34,.45)!important;
+      color:#111a44!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 4px 12px rgba(231,189,34,.10)!important;
+      font-weight:950!important;
+      letter-spacing:.01em!important;
+    }
+    .tab:hover{
+      background:linear-gradient(180deg,#fff8d6 0%,#ffe37a 100%)!important;
+      border-color:rgba(217,171,16,.75)!important;
+      color:#111a44!important;
+      transform:translateY(-1px);
+      box-shadow:0 10px 20px rgba(231,189,34,.18)!important;
+    }
+    .tab.active{
+      background:linear-gradient(180deg,#ffe178 0%,#ffd84d 48%,#f0bd21 100%)!important;
+      border-color:#d7a414!important;
+      color:#111a44!important;
+      box-shadow:0 13px 28px rgba(231,189,34,.28),inset 0 1px 0 rgba(255,255,255,.82)!important;
+    }
+    .tab.active::after{
+      content:""!important;
+      width:0!important;
+      height:0!important;
+      margin-left:0!important;
+      background:transparent!important;
+      box-shadow:none!important;
+      display:none!important;
+    }
+
+    .appContext{
+      margin-top:14px!important;
+      min-height:92px!important;
+      padding:16px 22px!important;
+      border-radius:24px!important;
+      gap:18px!important;
+      box-shadow:0 12px 30px rgba(17,26,68,.08)!important;
+      background:
+        radial-gradient(430px 160px at 94% 15%,rgba(255,216,77,.28),transparent 62%),
+        radial-gradient(340px 175px at 80% 80%,rgba(17,26,68,.06),transparent 70%),
+        linear-gradient(135deg,#ffffff 0%,#fffdf7 60%,#f8fafc 100%)!important;
+    }
+    .appContext::before{
+      right:72px!important;
+      top:-88px!important;
+      width:230px!important;
+      height:230px!important;
+      background:rgba(17,26,68,.055)!important;
+    }
+    .appContext::after{
+      right:-6px!important;
+      top:-92px!important;
+      width:205px!important;
+      height:205px!important;
+      background:linear-gradient(135deg,rgba(255,216,77,.34),rgba(255,244,170,.18))!important;
+    }
+    .appContextLeft{
+      gap:14px!important;
+    }
+    .appContextMark{
+      width:42px!important;
+      height:42px!important;
+      border-radius:14px!important;
+      box-shadow:0 9px 18px rgba(17,26,68,.14)!important;
+    }
+    .appContextCopy h1{
+      font-size:clamp(19px,2.05vw,24px)!important;
+      line-height:1.1!important;
+      letter-spacing:-.035em!important;
+    }
+    .appContext p{
+      margin-top:6px!important;
+      font-size:12.5px!important;
+      line-height:1.45!important;
+      max-width:860px!important;
+    }
+    .appContextBadge{
+      min-height:30px!important;
+      padding:7px 14px!important;
+      font-size:11.5px!important;
+      border-radius:999px!important;
+      background:rgba(255,255,255,.76)!important;
+    }
+
+    #kpiDecTop,#kpiYearTop,#kpiJanNovTop,#annualTaxOut,#tak_pphLbl,#tak_sumPph,#lain_taxOut,#lain_mTaxTotal{
+      color:#087443!important;
+      font-weight:950!important;
+    }
+
+    @media(max-width:860px){
+      .appContext{padding:15px 16px!important;border-radius:20px!important;min-height:auto!important;gap:12px!important}
+      .appContextBadge{align-self:flex-start!important}
+    }
+    @media(max-width:520px){
+      .tabs{gap:8px!important;padding:8px!important}
+      .tab{min-height:42px!important;padding:10px 14px!important}
+      .appContextLeft{gap:11px!important}
+      .appContextMark{width:36px!important;height:36px!important;border-radius:12px!important}
+      .appContextCopy h1{font-size:19px!important}
+      .appContext p{font-size:12px!important}
+      .appContextBadge{width:auto!important;max-width:100%}
+    }
+
+  
+
+    /* ===== Standalone preview launcher back button ===== */
+    .backToMainApp{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      z-index:9999;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:11px 16px;
+      border-radius:999px;
+      border:1px solid rgba(231,189,34,.55);
+      background:linear-gradient(180deg,#fffefa 0%,#fff8dc 100%);
+      color:#111a44;
+      font-size:12px;
+      font-weight:950;
+      text-decoration:none;
+      box-shadow:0 14px 30px rgba(17,26,68,.16), inset 0 1px 0 rgba(255,255,255,.9);
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .backToMainApp:hover{
+      transform:translateY(-1px);
+      border-color:rgba(217,171,16,.78);
+      box-shadow:0 18px 36px rgba(231,189,34,.20),0 10px 22px rgba(17,26,68,.10);
+    }
+    @media(max-width:520px){
+      .backToMainApp{left:12px;bottom:12px;right:12px;width:auto}
+    }
+
+
+    body.embedded-mode .backToMainApp{display:none!important}
+
+
+
+/* ===== v43 — Dark mode, mengikuti tombol tema dashboard ===== */
+html.dark:root{
+  --bg:#0b102b;
+  --bg-2:#111a44;
+  --surface:#111a44;
+  --surface-soft:#17204a;
+  --surface-blue:#17204a;
+  --surface-teal:#122e34;
+  --input:#0f1738;
+  --text:#dbe4f0;
+  --text-strong:#f8fafc;
+  --muted:#a7b4c8;
+  --muted-2:#8291a8;
+  --accent:#ffd84d;
+  --accent-2:#4fd1c5;
+  --accent-soft:rgba(255,216,77,.13);
+  --teal-soft:rgba(45,212,191,.13);
+  --line:rgba(255,255,255,.14);
+  --line-strong:rgba(255,255,255,.22);
+  --good:#5ee0a3;
+  --bad:#f87171;
+  --warn:#fbbf24;
+  --shadow:0 24px 60px rgba(0,0,0,.36);
+  --shadow-soft:0 14px 32px rgba(0,0,0,.28);
+  --shadow-mini:0 8px 18px rgba(0,0,0,.22);
+}
+html.dark{color-scheme:dark}
+html.dark body{
+  color:var(--text);
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,216,77,.10),transparent 34%),
+    radial-gradient(circle at 92% 14%,rgba(45,212,191,.08),transparent 30%),
+    linear-gradient(180deg,#070b1d 0%,#0b102b 48%,#111a44 100%);
+}
+html.dark body::before{background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)}
+html.dark body::after{background:radial-gradient(circle,rgba(255,216,77,.10),transparent 70%)}
+html.dark .wrap > .sectionTitle,
+html.dark .tabs,
+html.dark .appContext,
+html.dark .hero,
+html.dark .card,
+html.dark .tableCard,
+html.dark #view_lain .hero,
+html.dark #view_lain .card,
+html.dark #view_lain table,
+html.dark .kpi,
+html.dark #view_lain .kpi,
+html.dark .noteBox,
+html.dark #view_lain .noteBox,
+html.dark .help,
+html.dark #view_lain .help,
+html.dark .dangerBox,
+html.dark .pill,
+html.dark .miniBadge,
+html.dark .formula{
+  background:linear-gradient(180deg,rgba(17,26,68,.92),rgba(12,18,45,.90));
+  border-color:rgba(255,255,255,.14);
+  box-shadow:var(--shadow-soft);
+}
+html.dark .wrap > .sectionTitle::after,
+html.dark .appContext::after{color:rgba(255,255,255,.055)}
+html.dark h1,
+html.dark h2,
+html.dark b,
+html.dark strong,
+html.dark .card h2,
+html.dark #view_lain .card h2,
+html.dark .kpi .v,
+html.dark #view_lain .kpi .v,
+html.dark td:first-child,
+html.dark th:first-child{color:#f8fafc}
+html.dark .sub,
+html.dark .hint,
+html.dark label,
+html.dark .appContext p,
+html.dark #view_lain .sub,
+html.dark .kpi .t,
+html.dark #view_lain .kpi .t,
+html.dark td.note{color:rgba(226,232,240,.70)}
+html.dark input,
+html.dark select,
+html.dark textarea,
+html.dark #view_lain input,
+html.dark #view_lain select,
+html.dark #view_lain textarea{
+  background:rgba(255,255,255,.07);
+  color:#f8fafc;
+  border-color:rgba(255,255,255,.16);
+  box-shadow:none;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder{color:rgba(226,232,240,.44)}
+html.dark input[readonly],
+html.dark #view_lain input[readonly]{background:rgba(255,255,255,.09);color:#f8fafc}
+html.dark select option{color:#111a44;background:#ffffff}
+html.dark button,
+html.dark #view_lain button{
+  background:rgba(255,255,255,.08);
+  color:#f8fafc;
+  border-color:rgba(255,255,255,.16);
+}
+html.dark button:hover,
+html.dark #view_lain button:hover{box-shadow:0 10px 22px rgba(0,0,0,.28)}
+html.dark .tab.active,
+html.dark .gold,
+html.dark .goldBtn,
+html.dark #btnSaveMonth{
+  background:linear-gradient(180deg,#ffe178,#ffd84d)!important;
+  color:#111a44!important;
+  border-color:rgba(255,216,77,.60)!important;
+}
+html.dark .badge,
+html.dark .appContextBadge,
+html.dark .pill{
+  background:rgba(255,216,77,.12);
+  color:#ffeaa0;
+  border-color:rgba(255,216,77,.32);
+}
+html.dark th,
+html.dark #view_lain th{background:linear-gradient(180deg,rgba(255,216,77,.12),rgba(255,255,255,.06));color:#f8fafc;border-bottom-color:rgba(255,255,255,.14)}
+html.dark td,
+html.dark #view_lain td{color:#dbe4f0;border-bottom-color:rgba(255,255,255,.10)}
+html.dark tbody tr:nth-child(even) td,
+html.dark #view_lain tbody tr:nth-child(even) td{background:rgba(255,255,255,.035)}
+html.dark tbody tr:hover td,
+html.dark #view_lain tbody tr:hover td{background:rgba(255,216,77,.09)}
+html.dark .scrollX,
+html.dark .tableWrap,
+html.dark #view_lain .tableWrap{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+html.dark .kpi.gold,
+html.dark #view_lain .kpi.gold{background:linear-gradient(135deg,rgba(255,216,77,.16),rgba(255,255,255,.045))}
+html.dark .kpi.good,
+html.dark #view_lain .kpi.good{background:linear-gradient(135deg,rgba(94,224,163,.13),rgba(255,255,255,.045))}
+html.dark .kpi.red,
+html.dark #view_lain .kpi.red{background:linear-gradient(135deg,rgba(248,113,113,.13),rgba(255,255,255,.045))}
+html.dark .good,
+html.dark .green{color:#5ee0a3!important}
+html.dark .danger,
+html.dark .red{color:#f87171!important}
+html.dark .noteBox,
+html.dark #view_lain .noteBox,
+html.dark .formula{color:#ffeaa0;background:rgba(255,216,77,.09);border-color:rgba(255,216,77,.28)}
+html.dark .footer{color:rgba(226,232,240,.62)}
+
+
+/* ===== v44 — PPh 21 dark mode cleanup: no layout changes, colors only ===== */
+html.dark body{
+  color:#dbe4f0!important;
+  background:
+    radial-gradient(circle at 8% -2%,rgba(255,216,77,.10),transparent 34%),
+    radial-gradient(circle at 92% 10%,rgba(45,212,191,.08),transparent 28%),
+    linear-gradient(180deg,#070b1d 0%,#0b102b 45%,#111a44 100%)!important;
+}
+html.dark body::before{
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)!important;
+}
+html.dark body::after{background:radial-gradient(circle,rgba(255,216,77,.10),transparent 68%)!important}
+html.dark .wrap > .sectionTitle{
+  background:
+    radial-gradient(520px 230px at 92% 28%,rgba(255,216,77,.12),transparent 62%),
+    radial-gradient(420px 220px at 12% 5%,rgba(45,212,191,.08),transparent 68%),
+    linear-gradient(135deg,rgba(17,26,68,.96),rgba(8,12,31,.94))!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 24px 60px rgba(0,0,0,.36)!important;
+}
+html.dark .wrap > .sectionTitle::before{
+  border-color:rgba(255,255,255,.10)!important;
+  background:linear-gradient(135deg,rgba(255,216,77,.12),rgba(45,212,191,.06))!important;
+}
+html.dark .wrap > .sectionTitle::after{color:rgba(255,255,255,.055)!important}
+html.dark h1,
+html.dark .wrap > .sectionTitle h1,
+html.dark .appContextCopy h1,
+html.dark .card h2,
+html.dark #view_lain h1,
+html.dark #view_lain .card h2,
+html.dark .tak-hero h2{
+  color:#f8fafc!important;
+}
+html.dark .sub,
+html.dark .hint,
+html.dark .mini,
+html.dark .foot,
+html.dark label,
+html.dark .appContext p,
+html.dark #view_lain .sub,
+html.dark #view_lain .hint,
+html.dark #view_lain label,
+html.dark .tak-hero p,
+html.dark .tak-note-list{
+  color:rgba(226,232,240,.72)!important;
+}
+html.dark b,
+html.dark strong,
+html.dark .pill strong,
+html.dark .tak-formula b,
+html.dark #view_lain .formula b{
+  color:#f8fafc!important;
+}
+html.dark .tabs{
+  background:rgba(8,12,31,.88)!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.28)!important;
+  backdrop-filter:blur(18px)!important;
+}
+html.dark .tab,
+html.dark button,
+html.dark .ghost,
+html.dark #view_lain button,
+html.dark .tak-mode-pill{
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.045))!important;
+  color:#f8fafc!important;
+  border-color:rgba(255,255,255,.16)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.22)!important;
+}
+html.dark .tab:hover,
+html.dark button:hover,
+html.dark #view_lain button:hover,
+html.dark .tak-mode-pill:hover{
+  background:linear-gradient(180deg,rgba(255,216,77,.15),rgba(255,255,255,.07))!important;
+  color:#fff8dc!important;
+  border-color:rgba(255,216,77,.32)!important;
+}
+html.dark .tab.active,
+html.dark .tak-mode-pill.active,
+html.dark .gold,
+html.dark .goldBtn,
+html.dark #view_lain .goldBtn,
+html.dark #btnSaveMonth{
+  background:linear-gradient(180deg,#ffe178 0%,#ffd84d 48%,#f0bd21 100%)!important;
+  border-color:rgba(255,216,77,.62)!important;
+  color:#111a44!important;
+  box-shadow:0 13px 28px rgba(231,189,34,.20),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+html.dark .danger,
+html.dark #btnClearAll{
+  background:linear-gradient(180deg,rgba(248,113,113,.16),rgba(255,255,255,.04))!important;
+  color:#fecaca!important;
+  border-color:rgba(248,113,113,.32)!important;
+}
+html.dark .badge,
+html.dark .miniBadge,
+html.dark #view_lain .miniBadge{
+  background:rgba(255,216,77,.12)!important;
+  color:#ffeaa0!important;
+  border-color:rgba(255,216,77,.32)!important;
+}
+html.dark .appContext{
+  background:
+    radial-gradient(430px 160px at 94% 15%,rgba(255,216,77,.12),transparent 62%),
+    radial-gradient(340px 175px at 80% 80%,rgba(45,212,191,.07),transparent 70%),
+    linear-gradient(135deg,rgba(17,26,68,.96),rgba(8,12,31,.93))!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 18px 44px rgba(0,0,0,.34)!important;
+}
+html.dark .appContext::before{background:rgba(255,255,255,.045)!important}
+html.dark .appContext::after{background:linear-gradient(135deg,rgba(255,216,77,.16),rgba(255,244,170,.05))!important}
+html.dark .appContextBadge{
+  background:rgba(255,216,77,.12)!important;
+  color:#ffeaa0!important;
+  border-color:rgba(255,216,77,.28)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+html.dark .card,
+html.dark #view_lain .card,
+html.dark .tak-muted-card{
+  background:linear-gradient(180deg,rgba(17,26,68,.94),rgba(9,14,35,.92))!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 16px 38px rgba(0,0,0,.28)!important;
+}
+html.dark .card::before{background:linear-gradient(90deg,#ffd84d,#111a44)!important;opacity:.95!important}
+html.dark details,
+html.dark details[open],
+html.dark #view_lain details{
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.045))!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+html.dark summary,
+html.dark #view_lain summary{
+  color:#f8fafc!important;
+}
+html.dark summary::after{
+  color:#111a44!important;
+  background:#ffd84d!important;
+  border-color:rgba(255,216,77,.55)!important;
+}
+html.dark input,
+html.dark select,
+html.dark textarea,
+html.dark #view_lain input,
+html.dark #view_lain select,
+html.dark #view_lain textarea,
+html.dark .tak-table-wrap td input{
+  background:rgba(255,255,255,.075)!important;
+  color:#f8fafc!important;
+  border-color:rgba(255,255,255,.16)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html.dark input:hover,
+html.dark select:hover,
+html.dark textarea:hover,
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus,
+html.dark #view_lain input:focus,
+html.dark #view_lain select:focus,
+html.dark #view_lain textarea:focus{
+  background:rgba(255,255,255,.10)!important;
+  border-color:rgba(255,216,77,.34)!important;
+  box-shadow:0 0 0 4px rgba(255,216,77,.10)!important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder,
+html.dark ::placeholder{color:rgba(226,232,240,.42)!important}
+html.dark input[readonly],
+html.dark #view_lain input[readonly]{
+  background:rgba(255,255,255,.09)!important;
+  color:#f8fafc!important;
+  border-color:rgba(255,216,77,.20)!important;
+}
+html.dark select option{color:#111a44!important;background:#ffffff!important}
+html.dark .pill,
+html.dark .pillbar .pill:nth-child(1),
+html.dark .pillbar .pill:nth-child(2),
+html.dark .pillbar .pill:nth-child(3),
+html.dark #view_lain .pill{
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.045))!important;
+  color:rgba(226,232,240,.78)!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.20)!important;
+}
+html.dark .kpi,
+html.dark #view_lain .kpi,
+html.dark .tak-kpi-highlight,
+html.dark #view_lain .kpi.gold,
+html.dark #view_lain .kpi.good,
+html.dark #view_lain .kpi.red{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,216,77,.10),transparent 42%),
+    linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.035))!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.22)!important;
+}
+html.dark .kpi .t,
+html.dark #view_lain .kpi .t{color:rgba(226,232,240,.66)!important}
+html.dark .kpi .v,
+html.dark #view_lain .kpi .v{color:#f8fafc!important}
+html.dark .green,
+html.dark .ok,
+html.dark .taxGreen,
+html.dark #kpiJanNovTop,
+html.dark #kpiDecTop,
+html.dark #kpiYearTop,
+html.dark #annualTaxOut,
+html.dark #tak_pphLbl,
+html.dark #tak_sumPph,
+html.dark #lain_taxOut,
+html.dark #lain_mTaxTotal{
+  color:#5ee0a3!important;
+}
+html.dark .red,
+html.dark .danger{color:#f87171!important}
+html.dark .tak-formula,
+html.dark #view_lain .formula,
+html.dark #view_lain .help,
+html.dark #view_lain .noteBox{
+  background:rgba(255,216,77,.08)!important;
+  border-color:rgba(255,216,77,.24)!important;
+  color:#ffeaa0!important;
+}
+html.dark #view_lain .dangerBox{
+  background:rgba(248,113,113,.10)!important;
+  border-color:rgba(248,113,113,.28)!important;
+  color:#fecaca!important;
+}
+html.dark table,
+html.dark #view_lain table{
+  background:rgba(17,26,68,.92)!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.22)!important;
+}
+html.dark th,
+html.dark #view_lain th{
+  background:linear-gradient(180deg,rgba(255,216,77,.12),rgba(255,255,255,.06))!important;
+  color:#f8fafc!important;
+  border-bottom-color:rgba(255,255,255,.14)!important;
+}
+html.dark td,
+html.dark #view_lain td{
+  color:#dbe4f0!important;
+  border-bottom-color:rgba(255,255,255,.10)!important;
+}
+html.dark tbody tr:nth-child(even) td,
+html.dark #view_lain tbody tr:nth-child(even) td{background:rgba(255,255,255,.035)!important}
+html.dark tbody tr:hover td,
+html.dark #view_lain tbody tr:hover td{background:rgba(255,216,77,.09)!important;color:#f8fafc!important}
+html.dark .scrollX,
+html.dark .tableWrap,
+html.dark #view_lain .tableWrap,
+html.dark .tak-table-wrap{
+  background:rgba(255,255,255,.035)!important;
+  border-color:rgba(255,255,255,.14)!important;
+}
+html.dark #btnCsv,
+html.dark #btnJson{
+  background:linear-gradient(180deg,rgba(255,216,77,.13),rgba(255,255,255,.05))!important;
+  color:#fff8dc!important;
+  border-color:rgba(255,216,77,.32)!important;
+}
+html.dark .backToMainApp{
+  background:linear-gradient(180deg,rgba(255,216,77,.18),rgba(255,216,77,.10))!important;
+  color:#fff8dc!important;
+  border-color:rgba(255,216,77,.38)!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+
+  </style>
+</head>
+<body>
+<script>
+(function(){
+  function isEmbeddedMode(){
+    try { return new URLSearchParams(window.location.search).get('embed') === '1'; }
+    catch (e) { return false; }
+  }
+  if (isEmbeddedMode()) document.body.classList.add('embedded-mode');
+})();
+function backToDashboardFromPPh21(event){
+  if (event) event.preventDefault();
+  try{
+    sessionStorage.setItem('ngolahPajakReturnPage','dashboard');
+    sessionStorage.setItem('ngolahPajakSuppressDashboardTutorial','1');
+    if (window.self !== window.top) {
+      window.parent.postMessage({ type:'ngolahPajakNavigate', page:'dashboard' }, '*');
+      return false;
+    }
+  }catch(e){}
+  window.location.href='index.html?page=dashboard';
+  return false;
+}
+</script>
+<a class="backToMainApp" href="index.html?page=dashboard" onclick="return backToDashboardFromPPh21(event);">← Kembali ke Dashboard</a>
+
+<div class="wrap">
+  <div class="sectionTitle">
+    <div>
+      <h1>Kalkulator PPh 21 Terpadu</h1>
+      <div class="sub">Hitung PPh 21 untuk <b>Pegawai Tetap</b>, <b>Pegawai Tak Tetap</b>, dan <b>PPh 21 Lainnya</b> dalam satu halaman kerja.</div>
+    </div>
+    <div class="badge">PPh 21 Terpadu</div>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Menu">
+    <button class="tab active" id="tab_tetap">Pegawai Tetap</button>
+    <button class="tab" id="tab_tak">Pegawai Tak Tetap</button>
+    <button class="tab" id="tab_lain">PPh 21 Lainnya</button>
+  </div>
+
+  <section class="appContext" id="appContext" aria-live="polite">
+    <div class="appContextLeft">
+      <div class="appContextMark" aria-hidden="true"></div>
+      <div class="appContextCopy">
+        <h1 id="appContextTitle">Kalkulator PPh 21 Pegawai Tetap</h1>
+        <p id="appContextDesc">Isi data pegawai dan penghasilan bulanan, lalu aplikasi menghitung TER, PPh bulanan, dan rekonsiliasi masa pajak terakhir.</p>
+      </div>
+    </div>
+    <div class="appContextBadge" id="appContextBadge">Pegawai Tetap</div>
+  </section>
+
+  <div class="grid" id="view_tetap">
+    <div class="card">
+      <h2>PERSONAL</h2>
+
+      <label>Nama (opsional)</label>
+      <input id="name" placeholder="Nama karyawan" />
+
+      <div class="row">
+        <div>
+          <label>Status NPWP</label>
+          <select id="npwp">
+            <option value="yes">Punya NPWP</option>
+            <option value="no">Tidak punya NPWP (tarif +20%)</option>
+          </select>
+          <div class="hint">Jika tidak punya NPWP, pemotongan PPh 21 dikenakan <b>20% lebih tinggi</b>.</div>
+        </div>
+        <div>
+          <label>Tahun Pajak (opsional)</label>
+          <input id="taxYear" inputmode="numeric" placeholder="mis. 2026" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Status Kawin</label>
+          <select id="marital">
+            <option value="TK">Tidak Kawin (TK)</option>
+            <option value="K">Kawin (K)</option>
+          </select>
+        </div>
+        <div>
+          <label>Tanggungan</label>
+          <select id="deps">
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Status PTKP (otomatis)</label>
+      <div class="row">
+        <div>
+          <input id="ptkp" readonly />
+          <div class="hint">Dihitung dari Status Kawin + Tanggungan. (Bisa override jika perlu)</div>
+        </div>
+        <div>
+          <label style="margin-top:0">Override PTKP</label>
+          <select id="ptkpOverride">
+            <option value="">(tidak)</option>
+            <option value="TK/0">TK/0</option><option value="TK/1">TK/1</option><option value="TK/2">TK/2</option><option value="TK/3">TK/3</option>
+            <option value="K/0">K/0</option><option value="K/1">K/1</option><option value="K/2">K/2</option><option value="K/3">K/3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pillbar">
+        <span class="pill">Kategori TER: <strong id="terCat">A</strong></span>
+        <span class="pill">PTKP setahun: <strong id="ptkpVal">Rp0</strong></span>
+        <span class="pill">Faktor NPWP: <strong id="npwpMul">1.00x</strong></span>
+      </div>
+
+      <details>
+        <summary>Panduan Pengisian</summary>
+        <div class="mini">
+          <ul style="margin:8px 0 0 16px;padding:0">
+            <li>Tabel bulanan akan <b>terbarui otomatis</b> saat nominal penghasilan diisi.</li>
+            <li>Tekan <b>Simpan bulan ini</b> agar data bulan terpilih tersimpan dan rincian tambahan dapat ditampilkan.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">
+        <h2>PENGHASILAN & PENGURANG</h2>
+        <span class="badge">Input bulanan</span>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Pilih Bulan</label>
+          <select id="monthSel"></select>
+          <div class="hint">Isi nominal pada bulan yang dipilih. Perhitungan akan diperbarui otomatis, lalu tekan <b>Simpan bulan ini</b> untuk menyimpan data bulan tersebut.</div>
+        </div>
+        <div>
+          <label>Template cepat</label>
+          <select id="regularTpl">
+            <option value="keep">—</option>
+            <option value="copyAll">Salin komponen TERATUR bulan ini → semua bulan</option>
+            <option value="fillZeroIrregular">Kosongkan komponen TIDAK TERATUR semua bulan</option>
+          </select>
+          <div class="hint">Gunakan template untuk menyalin komponen rutin ke seluruh bulan atau mengosongkan komponen tidak teratur.</div>
+        </div>
+      </div>
+
+      <details open>
+        <summary>Penambah Bruto (bulan terpilih)</summary>
+
+        <div class="row" style="margin-top:6px">
+          <div>
+            <label>Gaji Pokok</label>
+            <input id="c_gajiPokok" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label>Tunjangan Jabatan</label>
+            <input id="c_tunjJabatan" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Tunjangan Makan & Transportasi / Natura</label>
+            <input id="c_tunjMakanTrans" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label>Jaminan Kematian (JKM)</label>
+            <input id="c_jkm" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Jaminan Kecelakaan Kerja (JKK)</label>
+            <input id="c_jkk" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label>Komponen teratur lainnya (opsional)</label>
+            <input id="c_otherRegular" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>THR (bulan ini)</label>
+            <input id="c_thr" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label>Bonus lain (bulan ini)</label>
+            <input id="c_bonusLain" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Catatan (opsional)</label>
+            <textarea id="c_note" placeholder="mis. THR, bonus, dll"></textarea>
+          </div>
+          <div>
+            <label style="visibility:hidden">spacer</label>
+            <div class="hint">Catatan hanya sebagai informasi tambahan dan tidak memengaruhi perhitungan.</div>
+          </div>
+        </div>
+
+        <div class="pillbar">
+          <span class="pill">Bruto Teratur bulan ini: <strong id="grossRegThis">Rp0</strong></span>
+          <span class="pill">Bruto Tidak Teratur bulan ini: <strong id="grossIrregThis">Rp0</strong></span>
+          <span class="pill">Total Bruto bulan ini: <strong id="grossThis">Rp0</strong></span>
+        </div>
+      </details>
+
+      <details>
+        <summary>Pengurang</summary>
+        <div class="row" style="margin-top:6px">
+          <div>
+            <label>Iuran pensiun/JHT/JP (bulan ini) (opsional)</label>
+            <input id="d_iuranMonthly" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label>Pengurang lain (bulan ini) (opsional)</label>
+            <input id="d_otherMonthly" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+
+        <label>Pengurang Tahunan (untuk rekonsiliasi)</label>
+        <div class="row">
+          <div>
+            <label style="margin-top:0">Total iuran/pengurang setahun (opsional)</label>
+            <input id="annualContrib" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label style="margin-top:0">Biaya Jabatan</label>
+            <select id="bjMode">
+              <option value="auto">Otomatis 5% (maks 500rb/bln, maks 6jt/thn)</option>
+              <option value="manual">Manual (isi total biaya jabatan setahun)</option>
+              <option value="none">Tidak dihitung</option>
+            </select>
+            <input id="bjManual" inputmode="numeric" placeholder="Total biaya jabatan setahun (manual)" style="margin-top:8px;display:none"/>
+          </div>
+        </div>
+      </details>
+
+      <div class="btnrow">
+        <button id="btnSaveMonth">Simpan bulan ini</button>
+        <button class="ghost" id="btnResetMonth">Reset bulan ini</button>
+        <button class="danger" id="btnClearAll">Kosongkan semua bulan</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">
+        <h2>PERHITUNGAN PPH 21 PEGAWAI TETAP</h2>
+        <span class="badge" id="decModeBadge">Desember: Rekonsiliasi</span>
+      </div>
+
+      <label>Mode Desember</label>
+      <select id="decMode">
+        <option value="reconcile">Rekonsiliasi (PPh Des = PPh setahun − PPh Jan–Nov)</option>
+        <option value="ter">Potong TER juga di Desember (tanpa rekonsiliasi)</option>
+      </select>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="t">Total Bruto Setahun</div>
+          <div class="v" id="kpiGrossYearTop">Rp0</div>
+        </div>
+        <div class="kpi">
+          <div class="t">Total PPh Jan–Nov</div>
+          <div class="v" id="kpiJanNovTop">Rp0</div>
+        </div>
+        <div class="kpi">
+          <div class="t">PPh Desember</div>
+          <div class="v ok" id="kpiDecTop">Rp0</div>
+          <div class="hint ok" id="kpiStatusTop">Kurang bayar</div>
+        </div>
+        <div class="kpi">
+          <div class="t">Total PPh Setahun</div>
+          <div class="v" id="kpiYearTop">Rp0</div>
+        </div>
+      </div>
+
+      <details open>
+        <summary>Rekap Tahunan (rincian)</summary>
+        <div class="mini" style="margin-top:8px">
+          <div class="row">
+            <div>
+              <div>Biaya jabatan setahun: <b id="bjOut">Rp0</b></div>
+              <div>Pengurang lain setahun: <b id="contribOut">Rp0</b></div>
+              <div>PTKP setahun: <b id="ptkpOut">Rp0</b></div>
+            </div>
+            <div>
+              <div>Penghasilan neto setahun: <b id="netOut">Rp0</b></div>
+              <div>PKP (pembulatan ribuan): <b id="pkpOut">Rp0</b></div>
+              <div>PPh setahun (Pasal 17): <b id="annualTaxOut">Rp0</b></div>
+            </div>
+          </div>
+
+          <div class="btnrow" style="margin-top:10px">
+            <button id="btnCsv">Download CSV</button>
+            <button id="btnJson">Download JSON</button>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="card span-all tableCard compact" id="tableCard">
+      <details open>
+        <summary>Tabel Bulanan (Bruto, TER, PPh)</summary>
+
+        <div class="scrollX compact" id="tableWrap">
+          <table id="mainTable">
+            <thead>
+              <tr id="theadRow"></tr>
+            </thead>
+            <tbody id="tbodyMain"></tbody>
+          </table>
+        </div>
+
+        <div class="foot" id="tableFoot">
+          Tabel awal menampilkan ringkasan bulanan. Setelah komponen tambahan disimpan, tabel dapat menampilkan rincian penghasilan dan PPh.
+        </div>
+      </details>
+    </div>
+  </div>
+
+
+<div class="grid hidden" id="view_tak">
+  <div class="tak-hero">
+    <h2>PPh 21 Pegawai Tidak Tetap</h2>
+    <p>Gunakan panel ini untuk menghitung PPh 21 pegawai tidak tetap berdasarkan sistem pembayaran: bulanan, harian, atau borongan/satuan.</p>
+  </div>
+
+  <div class="tak-grid">
+    <div class="card">
+      <h2>PERSONAL</h2>
+
+      <label>Status NPWP</label>
+      <select id="tak_npwp">
+        <option value="NPWP">NPWP</option>
+        <option value="NON">Tidak punya NPWP</option>
+      </select>
+      <div class="hint">Jika <b>tidak punya NPWP</b>, pajak = <b>120%</b> dari hasil perhitungan.</div>
+
+      <label>Status Kawin</label>
+      <select id="tak_kawin">
+        <option value="TK">Tidak Kawin (TK)</option>
+        <option value="K">Kawin (K)</option>
+      </select>
+
+      <label>Tanggungan</label>
+      <select id="tak_tanggungan">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>Status PTKP (otomatis)</label>
+          <input id="tak_ptkpStatus" readonly />
+          <div class="hint">Dipakai untuk menentukan kategori TER bulanan.</div>
+        </div>
+        <div>
+          <label>Kategori TER (bulanan)</label>
+          <input id="tak_terCat" readonly />
+          <div class="hint">A / B / C</div>
+        </div>
+      </div>
+
+      <details style="margin-top:12px">
+        <summary>Ringkasan ambang PMK</summary>
+        <ul class="tak-note-list">
+          <li>≤ Rp450.000 per hari → <b>0%</b></li>
+          <li>&gt; Rp450.000 s.d. Rp2.500.000 per hari → <b>0,5%</b></li>
+          <li>&gt; Rp2.500.000 per hari → <b>5% × 50% × bruto per hari</b></li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>PENGHASILAN</h2>
+
+      <label>Sistem Upah</label>
+      <div class="tak-mode-row" role="tablist" aria-label="Sistem upah pegawai tidak tetap">
+        <button type="button" class="tak-mode-pill active" id="tak_pillBulanan">Dibayar Bulanan</button>
+        <button type="button" class="tak-mode-pill" id="tak_pillHarian">Harian</button>
+        <button type="button" class="tak-mode-pill" id="tak_pillBorongan">Borongan/Satuan</button>
+      </div>
+      <div class="hint">Pilih sistem upah, lalu isi nominal yang sesuai. Hasil PPh akan diperbarui otomatis.</div>
+
+      <details id="tak_monthlyDetails" open style="margin-top:12px">
+        <summary>Input Penghasilan Bruto per Bulan (12 bulan)</summary>
+        <div class="hint" style="margin-top:10px">Isi bruto per bulan. PPh tiap bulan dihitung memakai <b>TER Bulanan</b> sesuai kategori.</div>
+        <div class="tak-table-wrap scrollX">
+          <table>
+            <thead>
+              <tr>
+                <th>Bulan</th>
+                <th>Bruto</th>
+                <th>TER</th>
+                <th>PPh</th>
+              </tr>
+            </thead>
+            <tbody id="tak_tbodyBulanan"></tbody>
+            <tfoot>
+              <tr>
+                <td><b>Total</b></td>
+                <td id="tak_sumBruto"><b>Rp0</b></td>
+                <td>—</td>
+                <td id="tak_sumPph"><b>Rp0</b></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </details>
+
+      <div id="tak_secHarian" style="display:none;margin-top:12px">
+        <div class="row">
+          <div>
+            <label>Upah per Hari (bruto per hari)</label>
+            <input id="tak_upahHarian" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label>Jumlah Hari Kerja (periode/bulan)</label>
+            <input id="tak_hariKerja" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+      </div>
+
+      <div id="tak_secBorongan" style="display:none;margin-top:12px">
+        <div class="row">
+          <div>
+            <label>Total Dibayar (bruto periode)</label>
+            <input id="tak_totalBorongan" inputmode="numeric" placeholder="0" />
+          </div>
+          <div>
+            <label>Jumlah Hari Kerja (periode)</label>
+            <input id="tak_hariBorongan" inputmode="numeric" placeholder="0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="t">Penghasilan Kumulatif (periode/bulan)</div>
+        <div class="v" id="tak_kumulatifLbl">Rp0</div>
+        <div class="hint" id="tak_avgLbl">Rata-rata per hari: —</div>
+      </div>
+
+      <div class="tak-formula" id="tak_formulaBox"><b>Rumus yang dipakai:</b><br />—</div>
+    </div>
+
+    <div class="card">
+      <h2>PERHITUNGAN PEGAWAI TAK TETAP</h2>
+
+      <div class="kpi tak-kpi-highlight">
+        <div class="t">PPh 21 Terutang</div>
+        <div class="v ok" id="tak_pphLbl">Rp0</div>
+        <div class="hint" id="tak_noteLbl">—</div>
+      </div>
+
+      <div class="tak-result-grid">
+        <div class="kpi">
+          <div class="t">Mode Perhitungan</div>
+          <div class="v" style="font-size:16px" id="tak_modeBadge">Dibayar Bulanan</div>
+        </div>
+        <div class="tak-muted-card">
+          Untuk mode <b>harian</b> dan <b>borongan/satuan</b>, nilai utama menampilkan PPh per hari. Perkiraan total periode ditampilkan pada kotak rumus.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="hidden" id="view_lain">
+
+<div class="hero">
+<div>
+<div class="titlebar"><div class="mark"></div><div><h1>Kalkulator PPh 21 Lainnya</h1><div class="sub">Pilih jenis penerima penghasilan, isi bruto dan pengurang yang relevan, lalu aplikasi menampilkan dasar pengenaan, metode tarif, dan PPh Pasal 21.</div></div></div>
+</div>
+<div class="badge">PPh 21 Lainnya</div>
+</div>
+<div class="grid">
+<div class="card">
+<h2>Personal</h2>
+<label>Status NPWP/NIK</label>
+<select id="lain_npwp"><option value="yes">Punya NPWP / NIK valid</option><option value="no">Tidak punya NPWP (tarif +20% bila berlaku)</option></select>
+<div class="hint" id="lain_npwpHint">Multiplier dipakai pada PPh 21 non-final/TER dan honorarium APBN/APBD bila relevan. Untuk pesangon final, multiplier tidak diterapkan.</div>
+<div class="row">
+<div><label>Status Kawin</label><select id="lain_marital"><option value="TK">Tidak Kawin (TK)</option><option value="K">Kawin (K)</option></select></div>
+<div><label>Tanggungan</label><select id="lain_deps"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+</div>
+<label>Status PTKP / TER</label>
+<div class="row">
+<input id="lain_ptkpStatus" readonly=""/>
+<input id="lain_terCategory" readonly=""/>
+</div>
+<details>
+<summary>Kapan status PTKP/TER dipakai?</summary>
+<div class="hint">Dipakai untuk objek yang menggunakan TER bulanan: komisaris/pengawas tidak teratur, pensiunan berkala, dan penghasilan tetap-teratur pejabat/PNS/TNI/POLRI. Untuk objek Pasal 17 single payment, PTKP tidak dipakai dalam kalkulasi pemotongan.</div>
+</details>
+</div>
+<div class="card">
+<div class="section"><h2>Perhitungan PPh Pasal 21</h2><span class="miniBadge" id="lain_modeBadge">Single payment</span></div>
+<label>Jenis Pajak</label>
+<select id="lain_taxType">
+<option value="gov_gol12">Penghasilan Lainnya Pejabat/PNS/TNI/POLRI - Gol I &amp; II, Tamtama/Bintara &amp; Pensiunan</option>
+<option value="gov_gol3">Penghasilan Lainnya Pejabat/PNS/TNI/POLRI - Gol III, Perwira Pertama &amp; Pensiunan</option>
+<option value="gov_gol4">Penghasilan Lainnya Pejabat/PNS/TNI/POLRI - Gol IV, Pejabat Negara, Perwira Menengah/Tinggi &amp; Pensiunan</option>
+<option value="gov_regular">Penghasilan Tetap dan Teratur Pejabat/PNS/TNI/POLRI/Pensiunan</option>
+<option value="non_employee_cont">Bukan Pegawai - Berkesinambungan</option>
+<option value="non_employee_once">Bukan Pegawai - Tidak Berkesinambungan</option>
+<option value="pension_regular">Pensiunan Berkala</option>
+<option value="pension_program">Peserta Program Pensiun</option>
+<option value="activity_participant">Peserta Kegiatan</option>
+<option value="commissioner">Anggota Dewan Komisaris/Pengawas</option>
+<option value="former_employee">Mantan Pegawai</option>
+<option value="severance">Pesangon</option>
+</select>
+<div id="lain_singleFields">
+<label id="lain_grossLabel">Total Penghasilan Bruto</label>
+<input id="lain_gross" inputmode="numeric" placeholder="0"/>
+<div class="hidden" id="lain_nonEmployeeFields">
+<div class="row">
+<div><label>Jenis Jasa</label><select id="lain_serviceType"><option value="non_catering">Jasa selain katering</option><option value="catering">Jasa katering</option></select></div>
+<div><label>Pengurang yang dapat dibuktikan</label><input id="lain_expense" inputmode="numeric" placeholder="0"/></div>
+</div>
+<div class="hint">Untuk jasa selain katering, pembayaran ke tenaga kerja, material/barang, atau pihak ketiga yang dapat dibuktikan bisa dikeluarkan dari jumlah bruto sebelum dikenakan 50%. Untuk jasa katering, bruto tetap seluruh jumlah pembayaran.</div>
+</div>
+<div class="hidden" id="lain_severanceFields">
+<div class="row">
+<div><label>Pesangon sebelumnya dalam periode 2 tahun</label><input id="lain_sevPrev" inputmode="numeric" placeholder="0"/></div>
+<div><label>Perlakuan Pembayaran</label><select id="lain_sevMode"><option value="final2y">Sekaligus/bertahap ≤ 2 tahun kalender (final)</option><option value="nonfinal3y">Tahun ke-3 dan seterusnya (tidak final)</option></select></div>
+</div>
+<div class="hint">Untuk final 2 tahun, pajak dihitung kumulatif: pajak atas total pesangon sampai pembayaran ini dikurangi pajak yang sudah dikenakan atas pesangon sebelumnya.</div>
+</div>
+</div>
+<div class="hidden" id="lain_monthlyFields">
+<div class="row">
+<div><label>Jenis Penerima</label><select id="lain_monthlyRecipient"><option value="active">Pejabat/PNS/TNI/POLRI aktif</option><option value="pensioner">Pensiunan</option></select></div>
+<div><label>Mode Masa Terakhir</label><select id="lain_decMode"><option value="reconcile">Desember/Masa terakhir: rekonsiliasi tahunan</option><option value="ter">Semua bulan pakai TER saja</option></select></div>
+</div>
+<div class="row">
+<div><label>Pengurang lain setahun / zakat melalui pembayar</label><input id="lain_annualOtherDed" inputmode="numeric" placeholder="0"/></div>
+<div><label>Catatan</label><input id="lain_monthlyNote" placeholder="opsional"/></div>
+</div>
+<div class="tableWrap" style="margin-top:12px">
+<table>
+<thead><tr><th>Bulan</th><th>Bruto</th><th>TER</th><th>PPh Bulanan</th></tr></thead>
+<tbody id="lain_monthlyBody"></tbody>
+<tfoot><tr><td><b>Total</b></td><td id="lain_mGrossTotal">Rp0</td><td>—</td><td id="lain_mTaxTotal">Rp0</td></tr></tfoot>
+</table>
+</div>
+<div class="btnrow"><button class="goldBtn" id="lain_copyJan" type="button">Salin Jan ke semua bulan</button><button id="lain_clearMonthly" type="button">Kosongkan bulanan</button></div>
+</div>
+<div class="btnrow"><button class="primary" id="lain_btnCalc">Hitung ulang</button><button class="ghost" id="lain_btnReset">Reset input</button></div>
+</div>
+<div class="card">
+<h2>Hasil</h2>
+<div class="kpis">
+<div class="kpi"><div class="t">Tarif / Metode</div><div class="v" id="lain_rateOut">—</div></div>
+<div class="kpi"><div class="t">Dasar Pengenaan Pajak</div><div class="v" id="lain_dppOut">Rp0</div></div>
+<div class="kpi gold"><div class="t">PPh Pasal 21</div><div class="v" id="lain_taxOut">Rp0</div></div>
+<div class="kpi good"><div class="t">Status</div><div class="v" id="lain_statusOut">—</div></div>
+</div>
+<div class="formula" id="lain_formulaOut" style="margin-top:12px"><b>Rumus:</b><br/>—</div>
+<div class="noteBox" id="lain_noteOut" style="margin-top:12px">Pilih jenis pajak dan isi penghasilan.</div>
+</div>
+<div class="card span">
+<div class="section"><h2>Panduan Metode Perhitungan</h2><span class="miniBadge">Aktif</span></div>
+<div class="tableWrap">
+<table>
+<thead><tr><th>Objek</th><th>Metode</th><th>Panduan Penggunaan</th></tr></thead>
+<tbody>
+<tr><td>Penghasilan lainnya APBN/APBD Gol I/II, Gol III, Gol IV</td><td>Final 0% / 5% / 15% × bruto</td><td>Dihitung per pembayaran, bukan memakai TER.</td></tr>
+<tr><td>Bukan Pegawai</td><td>Pasal 17 × 50% × bruto bersih</td><td>Pilih sesuai kondisi pembayaran. Sistem menghitung DPP 50% dari bruto bersih.</td></tr>
+<tr><td>Peserta Kegiatan, Peserta Program Pensiun, Mantan Pegawai</td><td>Pasal 17 × bruto</td><td>Dihitung per pembayaran atau masa pajak, tidak memakai TER.</td></tr>
+<tr><td>Komisaris/Pengawas tidak teratur</td><td>TER bulanan × bruto</td><td>Isi status kawin dan tanggungan untuk menentukan kategori TER A/B/C.</td></tr>
+<tr><td>Pensiunan berkala &amp; tetap-teratur Pejabat/PNS/TNI/POLRI</td><td>TER bulanan + rekonsiliasi tahunan</td><td>Isi tabel 12 bulan agar rekonsiliasi masa terakhir dapat dihitung.</td></tr>
+<tr><td>Pesangon</td><td>Final berlapis 0%, 5%, 15%, 25%</td><td>Untuk pembayaran ≤2 tahun, sistem memakai perhitungan kumulatif. Tahun ke-3 dan seterusnya memakai Pasal 17.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="footer">Gunakan panduan ini untuk memastikan jenis pajak, dasar pengenaan, dan metode tarif yang dipilih sudah sesuai dengan transaksi.</div>
+</div>
+</div>
+
+</div>
+
+  <div class="card hidden" id="view_placeholder" style="margin-top:12px">
+    <h2>Belum Tersedia</h2>
+    <div class="sub">Pilih salah satu menu di atas untuk mulai menghitung PPh 21.</div>
+  </div>
+</div>
+
+<script>
+/** TER tables **/
+const TER_A = [
+  [5400000, 0.00],[5650000,0.0025],[5950000,0.005],[6300000,0.0075],[6750000,0.01],
+  [7500000,0.0125],[8550000,0.015],[9650000,0.0175],[10050000,0.02],[10350000,0.0225],
+  [10700000,0.025],[11050000,0.03],[11600000,0.035],[12500000,0.04],[13750000,0.05],
+  [15100000,0.06],[16950000,0.07],[19750000,0.08],[24150000,0.09],[26450000,0.10],
+  [28000000,0.11],[30050000,0.12],[32400000,0.13],[35400000,0.14],[39100000,0.15],
+  [43850000,0.16],[47800000,0.17],[51400000,0.18],[56300000,0.19],[62200000,0.20],
+  [68600000,0.21],[77500000,0.22],[89000000,0.23],[103000000,0.24],[125000000,0.25],
+  [157000000,0.26],[206000000,0.27],[337000000,0.28],[454000000,0.29],[550000000,0.30],
+  [695000000,0.31],[910000000,0.32],[1400000000,0.33],[Infinity,0.34]
+];
+const TER_B = [
+  [6200000,0.00],[6500000,0.0025],[6850000,0.005],[7300000,0.0075],[9200000,0.01],
+  [10750000,0.015],[11250000,0.02],[11600000,0.025],[12600000,0.03],[13600000,0.04],
+  [14950000,0.05],[16400000,0.06],[18450000,0.07],[21850000,0.08],[26000000,0.09],
+  [27700000,0.10],[29350000,0.11],[31450000,0.12],[33950000,0.13],[37100000,0.14],
+  [41100000,0.15],[45800000,0.16],[49500000,0.17],[53800000,0.18],[58500000,0.19],
+  [64000000,0.20],[71000000,0.21],[80000000,0.22],[93000000,0.23],[109000000,0.24],
+  [129000000,0.25],[163000000,0.26],[211000000,0.27],[374000000,0.28],[459000000,0.29],
+  [555000000,0.30],[704000000,0.31],[957000000,0.32],[1405000000,0.33],[Infinity,0.34]
+];
+const TER_C = [
+  [6600000,0.00],[6950000,0.0025],[7350000,0.005],[7800000,0.0075],[8850000,0.01],
+  [9800000,0.0125],[10950000,0.015],[11200000,0.0175],[12050000,0.02],[12950000,0.03],
+  [14150000,0.04],[15550000,0.05],[17050000,0.06],[19500000,0.07],[22700000,0.08],
+  [26600000,0.09],[28100000,0.10],[30100000,0.11],[32600000,0.12],[35400000,0.13],
+  [38900000,0.14],[43000000,0.15],[47400000,0.16],[51200000,0.17],[55800000,0.18],
+  [60400000,0.19],[66700000,0.20],[74500000,0.21],[83200000,0.22],[95600000,0.23],
+  [110000000,0.24],[134000000,0.25],[169000000,0.26],[221000000,0.27],[390000000,0.28],
+  [463000000,0.29],[561000000,0.30],[709000000,0.31],[965000000,0.32],[1419000000,0.33],
+  [Infinity,0.34]
+];
+
+const PTKP = {"TK/0":54000000,"TK/1":58500000,"TK/2":63000000,"TK/3":67500000,"K/0":58500000,"K/1":63000000,"K/2":67500000,"K/3":72000000};
+
+const months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const monthSel=document.getElementById("monthSel");
+months.forEach((m,i)=>{const o=document.createElement("option");o.value=String(i);o.textContent=m;monthSel.appendChild(o);});
+monthSel.value="0";
+
+function parseNum(v){const s=String(v??"").replace(/[^\d]/g,"");return s?Number(s):0;}
+function fmtIDR(n){const v=Math.round(n||0);return "Rp"+v.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");}
+function fmtPct(r){if(r==null) return "—";const p=r*100;return (p%1===0?p.toFixed(0):p.toFixed(2).replace(/0+$/,"").replace(/\.$/,""))+"%";}
+function floorToThousand(n){return Math.floor((n||0)/1000)*1000;}
+
+function categoryFromStatus(status){
+  if(["TK/0","TK/1","K/0"].includes(status)) return "A";
+  if(["TK/2","TK/3","K/1","K/2"].includes(status)) return "B";
+  if(status==="K/3") return "C";
+  return "A";
+}
+function terRate(cat,gross){
+  const tbl=(cat==="A")?TER_A:(cat==="B")?TER_B:TER_C;
+  const g=Math.max(0,gross||0);
+  for(const [max,rate] of tbl) if(g<=max) return rate;
+  return tbl[tbl.length-1][1];
+}
+function taxPasal17(pkp){
+  let s=Math.max(0,pkp||0);
+  const brackets=[[60000000,.05],[250000000,.15],[500000000,.25],[5000000000,.30],[Infinity,.35]];
+  let prev=0,tax=0;
+  for(const [cap,rate] of brackets){
+    const taxable=Math.min(s,cap)-prev;
+    if(taxable>0) tax+=taxable*rate;
+    if(s<=cap) break;
+    prev=cap;
+  }
+  return tax;
+}
+function npwpMultiplier(){return document.getElementById("npwp").value==="no"?1.2:1.0;}
+function computePTKP(){
+  const ov=document.getElementById("ptkpOverride").value;
+  if(ov) return ov;
+  return `${document.getElementById("marital").value}/${document.getElementById("deps").value}`;
+}
+function computeBiayaJabatanAnnual(grossArr){
+  const mode=document.getElementById("bjMode").value;
+  if(mode==="none") return 0;
+  if(mode==="manual") return parseNum(document.getElementById("bjManual").value);
+  let sum=0;
+  for(let i=0;i<12;i++) sum+=Math.min(grossArr[i]*0.05,500000);
+  return Math.min(sum,6000000);
+}
+function computeMonthlyDeductionsFallback(){
+  let sum=0;
+  for(let i=0;i<12;i++) sum+=(components[i].iuranMonthly||0)+(components[i].otherMonthly||0);
+  return sum;
+}
+
+const components=Array.from({length:12},()=>({
+  gajiPokok:0,tunjJabatan:0,tunjMakanTrans:0,jkm:0,jkk:0,otherRegular:0,
+  thr:0,bonusLain:0,note:"",
+  iuranMonthly:0,otherMonthly:0
+}));
+
+let draftMonth=0;
+let draftDirty=false;
+let draftData=null;
+
+function readInputsAsTemp(){
+  return {
+    gajiPokok:parseNum(document.getElementById("c_gajiPokok").value),
+    tunjJabatan:parseNum(document.getElementById("c_tunjJabatan").value),
+    tunjMakanTrans:parseNum(document.getElementById("c_tunjMakanTrans").value),
+    jkm:parseNum(document.getElementById("c_jkm").value),
+    jkk:parseNum(document.getElementById("c_jkk").value),
+    otherRegular:parseNum(document.getElementById("c_otherRegular").value),
+    thr:parseNum(document.getElementById("c_thr").value),
+    bonusLain:parseNum(document.getElementById("c_bonusLain").value),
+    note:document.getElementById("c_note").value||"",
+    iuranMonthly:parseNum(document.getElementById("d_iuranMonthly").value),
+    otherMonthly:parseNum(document.getElementById("d_otherMonthly").value)
+  };
+}
+function setInputsFromMonth(i){
+  const c=components[i];
+  const set=(id,val)=>document.getElementById(id).value=val;
+  set("c_gajiPokok",c.gajiPokok?String(c.gajiPokok):"");
+  set("c_tunjJabatan",c.tunjJabatan?String(c.tunjJabatan):"");
+  set("c_tunjMakanTrans",c.tunjMakanTrans?String(c.tunjMakanTrans):"");
+  set("c_jkm",c.jkm?String(c.jkm):"");
+  set("c_jkk",c.jkk?String(c.jkk):"");
+  set("c_otherRegular",c.otherRegular?String(c.otherRegular):"");
+  set("c_thr",c.thr?String(c.thr):"");
+  set("c_bonusLain",c.bonusLain?String(c.bonusLain):"");
+  set("c_note",c.note||"");
+  set("d_iuranMonthly",c.iuranMonthly?String(c.iuranMonthly):"");
+  set("d_otherMonthly",c.otherMonthly?String(c.otherMonthly):"");
+}
+function getOverlayData(){
+  const arr = components.map(c=>({...c}));
+  if(draftDirty && draftData) arr[draftMonth] = {...draftData};
+  return arr;
+}
+
+function grossRegular(c){return c.gajiPokok+c.tunjJabatan+c.tunjMakanTrans+c.jkm+c.jkk+c.otherRegular;}
+function grossIrregular(c){return c.thr+c.bonusLain;}
+function grossTotal(c){return grossRegular(c)+grossIrregular(c);}
+
+function computeAnnualWithData(dataArr){
+  const status=computePTKP();
+  const cat=categoryFromStatus(status);
+  const mul=npwpMultiplier();
+  const decMode=document.getElementById("decMode").value;
+
+  const grossArr=months.map((_,i)=>grossTotal(dataArr[i]));
+  const rateArr=months.map((_,i)=>terRate(cat,grossArr[i]));
+  let taxArr=months.map((_,i)=>grossArr[i]*rateArr[i]*mul);
+
+  const totalGross=grossArr.reduce((a,b)=>a+b,0);
+  const annualContrib=parseNum(document.getElementById("annualContrib").value);
+  const otherDed=annualContrib>0?annualContrib:computeMonthlyDeductionsFallback();
+  const bj=computeBiayaJabatanAnnual(grossArr);
+  const net=Math.max(0,totalGross-bj-otherDed);
+  const pkp=floorToThousand(Math.max(0,net-(PTKP[status]||0)));
+  const annualTax=taxPasal17(pkp)*mul;
+
+  const janNovTax=taxArr.slice(0,11).reduce((a,b)=>a+b,0);
+  let decTax=taxArr[11];
+  if(decMode==="reconcile"){decTax=annualTax-janNovTax;taxArr[11]=decTax;}
+  const totalYearTax=taxArr.reduce((a,b)=>a+b,0);
+
+  let statusBayar="TER";
+  if(decMode==="reconcile"){
+    statusBayar="Nihil";
+    if(janNovTax<annualTax) statusBayar="Kurang bayar";
+    else if(janNovTax>annualTax) statusBayar="Lebih bayar";
+  }
+  return {status,cat,mul,decMode,grossArr,rateArr,taxArr,totalGross,otherDed,bj,net,pkp,annualTax,janNovTax,decTax,totalYearTax,statusBayar};
+}
+
+function hasSavedExtraComponents(){
+  const keys=["tunjJabatan","tunjMakanTrans","jkm","jkk","otherRegular","thr","bonusLain"];
+  return components.some(c=>keys.some(k=>(c[k]||0)!==0));
+}
+
+function buildTable(mode, annual, overlay){
+  const theadRow=document.getElementById("theadRow");
+  const tbody=document.getElementById("tbodyMain");
+  theadRow.innerHTML="";
+  tbody.innerHTML="";
+
+  const decMode=document.getElementById("decMode").value;
+
+  if(mode==="compact"){
+    const headers=["Bulan","Bruto","TER","PPh Dipotong","Catatan"];
+    headers.forEach((h)=>{const th=document.createElement("th");th.textContent=h;theadRow.appendChild(th);});
+    for(let i=0;i<12;i++){
+      const rowNote = (draftDirty && i===draftMonth && draftData) ? draftData.note : components[i].note;
+      const tr=document.createElement("tr");
+      tr.innerHTML = `
+        <td>${months[i]}</td>
+        <td>${fmtIDR(grossTotal(overlay[i]))}</td>
+        <td>${(decMode==="reconcile"&&i===11)?"—":fmtPct(annual.rateArr[i])}</td>
+        <td>${fmtIDR(annual.taxArr[i])}</td>
+        <td class="note">${rowNote||""}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  } else {
+    const headers=[
+      "Bulan","Gaji Pokok","Tunj. Jabatan","Makan/Trans/Natura","JKM","JKK","Lainnya (teratur)","THR","Bonus lain",
+      "Penghasilan Bruto","TER","PPh 21","Catatan"
+    ];
+    headers.forEach((h)=>{const th=document.createElement("th");th.textContent=h;theadRow.appendChild(th);});
+
+    const annualSaved=computeAnnualWithData(components);
+    for(let i=0;i<12;i++){
+      const c=components[i];
+      const tr=document.createElement("tr");
+      tr.innerHTML = `
+        <td>${months[i]}</td>
+        <td>${fmtIDR(c.gajiPokok)}</td>
+        <td>${fmtIDR(c.tunjJabatan)}</td>
+        <td>${fmtIDR(c.tunjMakanTrans)}</td>
+        <td>${fmtIDR(c.jkm)}</td>
+        <td>${fmtIDR(c.jkk)}</td>
+        <td>${fmtIDR(c.otherRegular)}</td>
+        <td>${fmtIDR(c.thr)}</td>
+        <td>${fmtIDR(c.bonusLain)}</td>
+        <td><b>${fmtIDR(annualSaved.grossArr[i])}</b></td>
+        <td>${(annualSaved.decMode==="reconcile"&&i===11)?"—":fmtPct(annualSaved.rateArr[i])}</td>
+        <td><b>${fmtIDR(annualSaved.taxArr[i])}</b></td>
+        <td class="note">${c.note||""}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+}
+
+function render(){
+  const status=computePTKP();
+  document.getElementById("ptkp").value=status;
+  const cat=categoryFromStatus(status);
+  document.getElementById("terCat").textContent=cat;
+  document.getElementById("ptkpVal").textContent=fmtIDR(PTKP[status]||0);
+  document.getElementById("ptkpOut").textContent=fmtIDR(PTKP[status]||0);
+  const mul=npwpMultiplier();
+  document.getElementById("npwpMul").textContent=mul.toFixed(2)+"x";
+
+  const d = (draftDirty && draftData) ? draftData : components[draftMonth];
+  document.getElementById("grossRegThis").textContent=fmtIDR(grossRegular(d));
+  document.getElementById("grossIrregThis").textContent=fmtIDR(grossIrregular(d));
+  document.getElementById("grossThis").textContent=fmtIDR(grossTotal(d));
+
+  const annual=computeAnnualWithData(getOverlayData());
+
+  const decBadge=document.getElementById("decModeBadge");
+  decBadge.textContent=(annual.decMode==="reconcile")?"Desember: Rekonsiliasi":"Desember: TER";
+  decBadge.style.borderColor=(annual.decMode==="reconcile")?"rgba(61,220,151,.35)":"rgba(122,162,255,.35)";
+
+  document.getElementById("kpiGrossYearTop").textContent=fmtIDR(annual.totalGross);
+  document.getElementById("kpiJanNovTop").textContent=fmtIDR(annual.janNovTax);
+  document.getElementById("kpiDecTop").textContent=fmtIDR(annual.decTax);
+  document.getElementById("kpiYearTop").textContent=fmtIDR(annual.totalYearTax);
+  document.getElementById("kpiStatusTop").textContent=annual.statusBayar;
+
+  document.getElementById("bjOut").textContent=fmtIDR(annual.bj);
+  document.getElementById("contribOut").textContent=fmtIDR(annual.otherDed);
+  document.getElementById("netOut").textContent=fmtIDR(annual.net);
+  document.getElementById("pkpOut").textContent=fmtIDR(annual.pkp);
+  document.getElementById("annualTaxOut").textContent=fmtIDR(annual.annualTax);
+
+  const wide=hasSavedExtraComponents();
+  const card=document.getElementById("tableCard");
+  const wrap=document.getElementById("tableWrap");
+  card.classList.toggle("wide",wide);
+  card.classList.toggle("compact",!wide);
+  wrap.classList.toggle("wide",wide);
+  wrap.classList.toggle("compact",!wide);
+
+  const overlay=getOverlayData();
+  buildTable(wide?"wide":"compact", annual, overlay);
+}
+
+function copyRegularToAll(fromI){
+  const s=components[fromI];
+  for(let i=0;i<12;i++){
+    components[i].gajiPokok=s.gajiPokok;
+    components[i].tunjJabatan=s.tunjJabatan;
+    components[i].tunjMakanTrans=s.tunjMakanTrans;
+    components[i].jkm=s.jkm;
+    components[i].jkk=s.jkk;
+    components[i].otherRegular=s.otherRegular;
+  }
+}
+function clearAllIrregular(){for(let i=0;i<12;i++){components[i].thr=0;components[i].bonusLain=0;components[i].note="";}}
+function resetMonth(i){components[i]={gajiPokok:0,tunjJabatan:0,tunjMakanTrans:0,jkm:0,jkk:0,otherRegular:0,thr:0,bonusLain:0,note:"",iuranMonthly:0,otherMonthly:0};}
+
+function exportPayload(){
+  const annual=computeAnnualWithData(components);
+  return {
+    name: document.getElementById("name").value||null,
+    taxYear: document.getElementById("taxYear").value||null,
+    npwp: document.getElementById("npwp").value,
+    npwpMultiplier: annual.mul,
+    statusPTKP: annual.status,
+    terCategory: annual.cat,
+    decMode: annual.decMode,
+    statusBayar: annual.statusBayar,
+    componentsByMonth: Object.fromEntries(months.map((m,i)=>[m,{...components[i]}])),
+    grossByMonth: Object.fromEntries(months.map((m,i)=>[m,annual.grossArr[i]])),
+    terRateByMonth: Object.fromEntries(months.map((m,i)=>[m,(annual.decMode==="reconcile"&&i===11)?null:annual.rateArr[i]])),
+    pph21ByMonth: Object.fromEntries(months.map((m,i)=>[m,annual.taxArr[i]])),
+    totals: {
+      grossYear: annual.totalGross,
+      biayaJabatanYear: annual.bj,
+      deductionsOtherYear: annual.otherDed,
+      ptkpYear: PTKP[annual.status]||0,
+      netYear: annual.net,
+      pkpRounded: annual.pkp,
+      annualTaxPasal17: annual.annualTax,
+      pphJanNov: annual.taxArr.slice(0,11).reduce((a,b)=>a+b,0),
+      pphDec: annual.decTax,
+      pphYear: annual.taxArr.reduce((a,b)=>a+b,0)
+    }
+  };
+}
+function download(filename,content,mime){
+  const blob=new Blob([content],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();a.remove();
+  URL.revokeObjectURL(url);
+}
+
+monthSel.addEventListener("change", ()=>{
+  const m=Number(monthSel.value);
+  draftMonth=m;
+  draftDirty=false;
+  setInputsFromMonth(m);
+  draftData=readInputsAsTemp();
+  render();
+});
+
+document.getElementById("btnSaveMonth").addEventListener("click", ()=>{
+  const m=draftMonth;
+  const tmp=readInputsAsTemp();
+  components[m]={...components[m],...tmp};
+  draftDirty=false;
+  draftData=readInputsAsTemp();
+
+  const tpl=document.getElementById("regularTpl").value;
+  if(tpl==="copyAll") copyRegularToAll(m);
+  else if(tpl==="fillZeroIrregular") clearAllIrregular();
+  document.getElementById("regularTpl").value="keep";
+
+  setInputsFromMonth(m);
+  draftData=readInputsAsTemp();
+  render();
+});
+
+document.getElementById("btnResetMonth").addEventListener("click", ()=>{
+  const m=draftMonth;
+  resetMonth(m);
+  setInputsFromMonth(m);
+  draftDirty=false;
+  draftData=readInputsAsTemp();
+  render();
+});
+document.getElementById("btnClearAll").addEventListener("click", ()=>{
+  if(!confirm("Kosongkan semua bulan?")) return;
+  for(let i=0;i<12;i++) resetMonth(i);
+  setInputsFromMonth(draftMonth);
+  draftDirty=false;
+  draftData=readInputsAsTemp();
+  render();
+});
+
+["marital","deps","ptkpOverride","npwp","decMode","annualContrib"].forEach(id=>{
+  document.getElementById(id).addEventListener("change", render);
+  document.getElementById(id).addEventListener("input", render);
+});
+document.getElementById("bjMode").addEventListener("change", ()=>{
+  document.getElementById("bjManual").style.display=(document.getElementById("bjMode").value==="manual")?"block":"none";
+  render();
+});
+document.getElementById("bjManual").addEventListener("input", render);
+
+["c_gajiPokok","c_tunjJabatan","c_tunjMakanTrans","c_jkm","c_jkk","c_otherRegular","c_thr","c_bonusLain","c_note","d_iuranMonthly","d_otherMonthly"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", ()=>{
+    draftDirty=true;
+    draftData=readInputsAsTemp();
+    render();
+  });
+});
+
+document.getElementById("btnJson").addEventListener("click", ()=>download("pph21-ter-pegawai-tetap_v10.json", JSON.stringify(exportPayload(),null,2), "application/json;charset=utf-8"));
+document.getElementById("btnCsv").addEventListener("click", ()=>{
+  const p=exportPayload();
+  const rows=[];
+  rows.push(["bulan","gaji_pokok","tunj_jabatan","makan_trans_natura","jkm","jkk","lainnya_teratur","thr","bonus_lain","penghasilan_bruto","ter_rate","pph21","catatan"].join(","));
+  months.forEach((m)=>{
+    const c=p.componentsByMonth[m];
+    const bruto=p.grossByMonth[m];
+    const ter=p.terRateByMonth[m];
+    const pph=p.pph21ByMonth[m];
+    const esc=(s)=>('"'+String(s??"").replaceAll('"','""')+'"');
+    rows.push([m,c.gajiPokok,c.tunjJabatan,c.tunjMakanTrans,c.jkm,c.jkk,c.otherRegular,c.thr,c.bonusLain,bruto,(ter==null?"":ter),pph,esc(c.note||"")].join(","));
+  });
+  rows.push("");
+  rows.push(["TOTAL_BRUTO",p.totals.grossYear].join(","));
+  rows.push(["TOTAL_PPH_SETahun",p.totals.pphYear].join(","));
+  rows.push(["STATUS",p.statusBayar].join(","));
+  download("pph21-ter-pegawai-tetap_v10.csv", rows.join("\n"), "text/csv;charset=utf-8");
+});
+
+// tabs placeholder
+function showPlaceholder(){document.getElementById("view_tetap").classList.add("hidden");document.getElementById("view_placeholder").classList.remove("hidden");}
+function showTetap(){document.getElementById("view_placeholder").classList.add("hidden");document.getElementById("view_tetap").classList.remove("hidden");}
+document.getElementById("tab_tetap").addEventListener("click", ()=>{showTetap();document.getElementById("tab_tetap").classList.add("active");document.getElementById("tab_tak").classList.remove("active");document.getElementById("tab_lain").classList.remove("active");});
+["tab_tak","tab_lain"].forEach(id=>{document.getElementById(id).addEventListener("click", ()=>{showPlaceholder();document.getElementById("tab_tetap").classList.remove("active");document.getElementById("tab_tak").classList.toggle("active", id==="tab_tak");document.getElementById("tab_lain").classList.toggle("active", id==="tab_lain");});});
+
+// init
+setInputsFromMonth(0);
+draftMonth=0;draftDirty=false;draftData=readInputsAsTemp();
+render();
+</script>
+
+<script>
+(function(){
+  function el(id){return document.getElementById(id);}
+  function parseNum(v){ if(v==null) return 0; const s=String(v).replace(/[^\d]/g,''); return s?Number(s):0; }
+  function fmtIDR(n){ n=Math.round((n||0)); return "Rp"+n.toLocaleString("id-ID"); }
+  function fmtPct(r){ if(r==null) return "—"; const p=r*100; return (Math.round(p*100)/100).toLocaleString("id-ID")+"%"; }
+  function npwpMult(){ return (el("tak_npwp").value==="NON") ? 1.2 : 1.0; }
+  function setBadge(txt){ const badge=el('tak_modeBadge'); if(badge) badge.textContent=txt; }
+
+  function ptkpStatus(){
+    const k=el("tak_kawin").value;
+    const t=parseInt(el("tak_tanggungan").value||"0",10) || 0;
+    return `${k}/${t}`;
+  }
+  function categoryFromStatus(status){
+    const s=(status||"").trim().toUpperCase();
+    if(s==="K/3") return "C";
+    if(["TK/2","TK/3","K/1","K/2"].includes(s)) return "B";
+    return "A";
+  }
+
+  const TAK_TER_A=[[0,5400000,0],[5400000,5650000,0.0025],[5650000,5950000,0.005],[5950000,6300000,0.0075],[6300000,6750000,0.01],[6750000,7500000,0.0125],[7500000,8550000,0.015],[8550000,9650000,0.0175],[9650000,10050000,0.02],[10050000,10350000,0.0225],[10350000,10700000,0.025],[10700000,11050000,0.03],[11050000,11600000,0.035],[11600000,12500000,0.04],[12500000,13750000,0.05],[13750000,15100000,0.06],[15100000,16950000,0.07],[16950000,19750000,0.08],[19750000,24150000,0.09],[24150000,26450000,0.1],[26450000,28000000,0.11],[28000000,30050000,0.12],[30050000,32400000,0.13],[32400000,35400000,0.14],[35400000,39100000,0.15],[39100000,43850000,0.16],[43850000,47800000,0.17],[47800000,51400000,0.18],[51400000,56300000,0.19],[56300000,62200000,0.2],[62200000,68600000,0.21],[68600000,77500000,0.22],[77500000,89000000,0.23],[89000000,103000000,0.24],[103000000,125000000,0.25],[125000000,157000000,0.26],[157000000,206000000,0.27],[206000000,337000000,0.28],[337000000,454000000,0.29],[454000000,550000000,0.3],[550000000,695000000,0.31],[695000000,910000000,0.32],[910000000,1400000000,0.33],[1400000000,Infinity,0.34]];
+  const TAK_TER_B=[[0,6200000,0],[6200000,6500000,0.0025],[6500000,6850000,0.005],[6850000,7300000,0.0075],[7300000,9200000,0.01],[9200000,10750000,0.015],[10750000,11250000,0.02],[11250000,11600000,0.025],[11600000,12600000,0.03],[12600000,13600000,0.04],[13600000,14950000,0.05],[14950000,16400000,0.06],[16400000,18450000,0.07],[18450000,21850000,0.08],[21850000,26000000,0.09],[26000000,27700000,0.1],[27700000,29350000,0.11],[29350000,31450000,0.12],[31450000,33950000,0.13],[33950000,37100000,0.14],[37100000,41100000,0.15],[41100000,45800000,0.16],[45800000,49500000,0.17],[49500000,53800000,0.18],[53800000,58500000,0.19],[58500000,64000000,0.2],[64000000,71000000,0.21],[71000000,80000000,0.22],[80000000,93000000,0.23],[93000000,109000000,0.24],[109000000,129000000,0.25],[129000000,163000000,0.26],[163000000,211000000,0.27],[211000000,374000000,0.28],[374000000,459000000,0.29],[459000000,555000000,0.3],[555000000,704000000,0.31],[704000000,957000000,0.32],[957000000,1405000000,0.33],[1405000000,Infinity,0.34]];
+  const TAK_TER_C=[[0,6600000,0],[6600000,6950000,0.0025],[6950000,7350000,0.005],[7350000,7800000,0.0075],[7800000,8850000,0.01],[8850000,9800000,0.0125],[9800000,10950000,0.015],[10950000,11200000,0.0175],[11200000,12050000,0.02],[12050000,12950000,0.03],[12950000,14150000,0.04],[14150000,15550000,0.05],[15550000,17050000,0.06],[17050000,19500000,0.07],[19500000,22700000,0.08],[22700000,26600000,0.09],[26600000,28100000,0.1],[28100000,30100000,0.11],[30100000,32600000,0.12],[32600000,35400000,0.13],[35400000,38900000,0.14],[38900000,43000000,0.15],[43000000,47400000,0.16],[47400000,51200000,0.17],[51200000,55800000,0.18],[55800000,60400000,0.19],[60400000,66700000,0.2],[66700000,74500000,0.21],[74500000,83200000,0.22],[83200000,95000000,0.23],[95000000,110000000,0.24],[110000000,134000000,0.25],[134000000,169000000,0.26],[169000000,221000000,0.27],[221000000,390000000,0.28],[390000000,463000000,0.29],[463000000,561000000,0.3],[561000000,709000000,0.31],[709000000,965000000,0.32],[965000000,1419000000,0.33],[1419000000,Infinity,0.34]];
+
+  function terRate(cat, bruto){
+    const x=Math.max(0, bruto||0);
+    const tbl=(cat==="B") ? TAK_TER_B : (cat==="C" ? TAK_TER_C : TAK_TER_A);
+    for(const [lo,hi,r] of tbl){ if(x>=lo && x<hi) return r; }
+    return 0;
+  }
+  function terHarianRate(brutoPerHari){
+    const g=Math.max(0, brutoPerHari||0);
+    if(g<=450000) return 0.0;
+    if(g<=2500000) return 0.005;
+    return null;
+  }
+
+  const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+  function initMonthlyTable(){
+    const tbody=el("tak_tbodyBulanan");
+    if(!tbody) return;
+    tbody.innerHTML="";
+    MONTHS.forEach((m,i)=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`
+        <td>${m}</td>
+        <td><input class="tak_m_in" data-idx="${i}" inputmode="numeric" placeholder="0" /></td>
+        <td id="tak_m_ter_${i}">—</td>
+        <td id="tak_m_pph_${i}">Rp0</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll(".tak_m_in").forEach(inp=>{
+      inp.addEventListener("input", render);
+      inp.addEventListener("change", render);
+    });
+  }
+
+  let mode="bulanan";
+  function setMode(m){
+    mode=m;
+    el("tak_pillBulanan").classList.toggle("active", m==="bulanan");
+    el("tak_pillHarian").classList.toggle("active", m==="harian");
+    el("tak_pillBorongan").classList.toggle("active", m==="borongan");
+
+    el("tak_monthlyDetails").style.display=(m==="bulanan") ? "block" : "none";
+    el("tak_secHarian").style.display=(m==="harian") ? "block" : "none";
+    el("tak_secBorongan").style.display=(m==="borongan") ? "block" : "none";
+    render();
+  }
+
+  function renderMonthly(cat, mul){
+    let sumBr=0, sumP=0;
+    document.querySelectorAll(".tak_m_in").forEach(inp=>{
+      const idx=parseInt(inp.dataset.idx,10);
+      const bruto=parseNum(inp.value);
+      const r=bruto>0 ? terRate(cat, bruto) : 0;
+      const pph=bruto*r*mul;
+      sumBr+=bruto;
+      sumP+=pph;
+      el(`tak_m_ter_${idx}`).textContent=bruto>0 ? fmtPct(r) : "—";
+      el(`tak_m_pph_${idx}`).textContent=fmtIDR(pph);
+    });
+    el("tak_sumBruto").innerHTML="<b>"+fmtIDR(sumBr)+"</b>";
+    el("tak_sumPph").innerHTML="<b>"+fmtIDR(sumP)+"</b>";
+    return {sumBr, sumP};
+  }
+
+  function render(){
+    if(!el("tak_npwp")) return;
+    const status=ptkpStatus();
+    const cat=categoryFromStatus(status);
+    el("tak_ptkpStatus").value=status;
+    el("tak_terCat").value=cat;
+
+    const mul=npwpMult();
+    let kum=0, avg=0, pph=0, note="—", formula="—";
+
+    if(mode==="bulanan"){
+      const {sumBr, sumP}=renderMonthly(cat, mul);
+      kum=sumBr;
+      pph=sumP;
+      note="Total PPh dari input bruto bulanan (TER bulanan per bulan).";
+      formula=`<b>PPh per bulan</b> = <b>TER Bulanan</b> × <b>Bruto bulan tsb</b><br/><b>Total PPh</b> = Σ PPh 12 bulan`;
+      setBadge("Dibayar Bulanan");
+    }
+
+    if(mode==="harian"){
+      const brutoPerHari=parseNum(el("tak_upahHarian").value);
+      const hari=Math.max(0, parseInt(el("tak_hariKerja").value||"0",10) || 0);
+      avg=brutoPerHari;
+      kum=brutoPerHari*hari;
+      const r=terHarianRate(brutoPerHari);
+      let pphPerHari=0;
+      if(r!==null){
+        pphPerHari=brutoPerHari*r*mul;
+        note=(brutoPerHari<=450000) ? "≤ Rp450.000/hari → 0% (PPh per hari)." : "> Rp450.000 s.d. Rp2.500.000/hari → 0,5% (PPh per hari).";
+        formula=`<b>PPh per hari</b> = <b>TER Harian</b> × <b>Bruto per hari</b>` + (hari>0 ? `<br/><b>Perkiraan total periode</b> = PPh per hari × <b>Jumlah hari</b>` : "");
+        setBadge("Harian");
+      }else{
+        pphPerHari=(0.05*0.5*brutoPerHari)*mul;
+        note="> Rp2.500.000/hari → 5% × 50% × bruto per hari (PPh per hari).";
+        formula=`<b>PPh per hari</b> = <b>5%</b> × <b>50%</b> × <b>Bruto per hari</b>` + (hari>0 ? `<br/><b>Perkiraan total periode</b> = PPh per hari × <b>Jumlah hari</b>` : "");
+        setBadge("Harian (>2,5jt)");
+      }
+      pph=pphPerHari;
+    }
+
+    if(mode==="borongan"){
+      const total=parseNum(el("tak_totalBorongan").value);
+      const hari=Math.max(0, parseInt(el("tak_hariBorongan").value||"0",10) || 0);
+      kum=total;
+      avg=(hari>0) ? (total/hari) : 0;
+      const r=terHarianRate(avg);
+      let pphPerHari=0;
+      if(r!==null){
+        pphPerHari=avg*r*mul;
+        note=(avg<=0) ? "—" : (avg<=450000 ? "Rata-rata ≤ Rp450.000/hari → 0% (PPh per hari)." : "Rata-rata > Rp450.000 s.d. Rp2.500.000/hari → 0,5% (PPh per hari).");
+        formula=`<b>Rata-rata per hari</b> = total ÷ hari<br/><b>PPh per hari</b> = <b>TER Harian</b> × <b>Rata-rata per hari</b>` + (hari>0 ? `<br/><b>Perkiraan total periode</b> = PPh per hari × <b>Jumlah hari</b>` : "");
+        setBadge("Borongan/Satuan");
+      }else{
+        pphPerHari=(0.05*0.5*avg)*mul;
+        note="Rata-rata > Rp2.500.000/hari → 5% × 50% × rata-rata per hari (PPh per hari).";
+        formula=`<b>Rata-rata per hari</b> = total ÷ hari<br/><b>PPh per hari</b> = <b>5%</b> × <b>50%</b> × <b>Rata-rata per hari</b>` + (hari>0 ? `<br/><b>Perkiraan total periode</b> = PPh per hari × <b>Jumlah hari</b>` : "");
+        setBadge("Borongan/Satuan (>2,5jt)");
+      }
+      pph=pphPerHari;
+    }
+
+    el("tak_kumulatifLbl").textContent=fmtIDR(kum);
+    el("tak_avgLbl").textContent=(avg>0) ? ("Rata-rata per hari: "+fmtIDR(avg)) : "Rata-rata per hari: —";
+    el("tak_pphLbl").textContent=fmtIDR(pph);
+    el("tak_noteLbl").textContent=note;
+    el("tak_formulaBox").innerHTML=`<b>Rumus yang dipakai:</b><br/>`+formula;
+  }
+
+  function showTak(){
+    el("view_tetap").classList.add("hidden");
+    el("view_placeholder").classList.add("hidden");
+    el("view_tak").classList.remove("hidden");
+    el("tab_tetap").classList.remove("active");
+    el("tab_lain").classList.remove("active");
+    el("tab_tak").classList.add("active");
+  }
+  function hideTak(){
+    const v=el("view_tak");
+    if(v) v.classList.add("hidden");
+  }
+
+  initMonthlyTable();
+  el("tak_pillBulanan").addEventListener("click", ()=>setMode("bulanan"));
+  el("tak_pillHarian").addEventListener("click", ()=>setMode("harian"));
+  el("tak_pillBorongan").addEventListener("click", ()=>setMode("borongan"));
+  ["tak_npwp","tak_kawin","tak_tanggungan","tak_upahHarian","tak_hariKerja","tak_totalBorongan","tak_hariBorongan"].forEach(id=>{
+    const node=el(id);
+    node.addEventListener("input", render);
+    node.addEventListener("change", render);
+  });
+
+  el("tab_tak").addEventListener("click", showTak);
+  el("tab_tetap").addEventListener("click", hideTak);
+  el("tab_lain").addEventListener("click", hideTak);
+
+  render();
+})();
+</script>
+
+
+<script>
+(function(){
+
+const PTKP={"TK/0":54000000,"TK/1":58500000,"TK/2":63000000,"TK/3":63000000+4500000,"K/0":58500000,"K/1":63000000,"K/2":67500000,"K/3":72000000};
+const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const TER_A=[[5400000,0],[5650000,.0025],[5950000,.005],[6300000,.0075],[6750000,.01],[7500000,.0125],[8550000,.015],[9650000,.0175],[10050000,.02],[10350000,.0225],[10700000,.025],[11050000,.03],[11600000,.035],[12500000,.04],[13750000,.05],[15100000,.06],[16950000,.07],[19750000,.08],[24150000,.09],[26450000,.10],[28000000,.11],[30050000,.12],[32400000,.13],[35400000,.14],[39100000,.15],[43850000,.16],[47800000,.17],[51400000,.18],[56300000,.19],[62200000,.20],[68600000,.21],[77500000,.22],[89000000,.23],[103000000,.24],[125000000,.25],[157000000,.26],[206000000,.27],[337000000,.28],[454000000,.29],[550000000,.30],[695000000,.31],[910000000,.32],[1400000000,.33],[Infinity,.34]];
+const TER_B=[[6200000,0],[6500000,.0025],[6850000,.005],[7300000,.0075],[9200000,.01],[10750000,.015],[11250000,.02],[11600000,.025],[12600000,.03],[13600000,.04],[14950000,.05],[16400000,.06],[18450000,.07],[21850000,.08],[26000000,.09],[27700000,.10],[29350000,.11],[31450000,.12],[33950000,.13],[37100000,.14],[41100000,.15],[45800000,.16],[49500000,.17],[53800000,.18],[58500000,.19],[64000000,.20],[71000000,.21],[80000000,.22],[93000000,.23],[109000000,.24],[129000000,.25],[163000000,.26],[211000000,.27],[374000000,.28],[459000000,.29],[555000000,.30],[704000000,.31],[957000000,.32],[1405000000,.33],[Infinity,.34]];
+const TER_C=[[6600000,0],[6950000,.0025],[7350000,.005],[7800000,.0075],[8850000,.01],[9800000,.0125],[10950000,.015],[11200000,.0175],[12050000,.02],[12950000,.03],[14150000,.04],[15550000,.05],[17050000,.06],[19500000,.07],[22700000,.08],[26600000,.09],[28100000,.10],[30100000,.11],[32600000,.12],[35400000,.13],[38900000,.14],[43000000,.15],[47400000,.16],[51200000,.17],[55800000,.18],[60400000,.19],[66700000,.20],[74500000,.21],[83200000,.22],[95600000,.23],[110000000,.24],[134000000,.25],[169000000,.26],[221000000,.27],[390000000,.28],[463000000,.29],[561000000,.30],[709000000,.31],[965000000,.32],[1419000000,.33],[Infinity,.34]];
+const root=document.getElementById("view_lain");
+function $(id){return root.querySelector("#lain_"+id)}
+function parseNum(v){const s=String(v??"").replace(/[^\d]/g,"");return s?Number(s):0}
+function fmtIDR(n){return "Rp"+Math.round(n||0).toLocaleString("id-ID")}
+function fmtPct(r){if(r==null)return "—";let p=r*100;return p.toLocaleString("id-ID",{maximumFractionDigits:2})+"%"}
+function npwpMult(apply=true){return apply&&$("npwp").value==="no"?1.2:1}
+function ptkpStatus(){return `${$("marital").value}/${$("deps").value}`}
+function catFromStatus(s){if(s==="K/3")return "C"; if(["TK/2","TK/3","K/1","K/2"].includes(s))return "B"; return "A"}
+function terRate(cat,gross){const tbl=cat==="B"?TER_B:cat==="C"?TER_C:TER_A;const g=Math.max(0,gross||0);for(const [max,r] of tbl){if(g<=max)return r}return 0}
+function floorThousand(n){return Math.floor(Math.max(0,n||0)/1000)*1000}
+function taxPasal17(base){let x=Math.max(0,base||0), tax=0, prev=0; const br=[[60000000,.05],[250000000,.15],[500000000,.25],[5000000000,.30],[Infinity,.35]]; for(const [cap,r] of br){const amt=Math.min(x,cap)-prev;if(amt>0)tax+=amt*r;if(x<=cap)break;prev=cap}return tax}
+function taxPesangonFinal(x){x=Math.max(0,x||0);let tax=0;if(x>500000000)tax+=(x-500000000)*.25,x=500000000;if(x>100000000)tax+=(x-100000000)*.15,x=100000000;if(x>50000000)tax+=(x-50000000)*.05;return tax}
+function initMonthly(){const body=$("monthlyBody");body.innerHTML="";MONTHS.forEach((m,i)=>{const tr=document.createElement("tr");tr.innerHTML=`<td>${m}</td><td><input class="mGross" data-i="${i}" inputmode="numeric" placeholder="0"></td><td id="lain_mRate${i}">—</td><td id="lain_mTax${i}">Rp0</td>`;body.appendChild(tr)});root.querySelectorAll(".mGross").forEach(el=>el.addEventListener("input",render));}
+function monthlyGrosses(){return Array.from(root.querySelectorAll(".mGross")).map(el=>parseNum(el.value))}
+function allowedMonthly(){return ["gov_regular","pension_regular"].includes($("taxType").value)}
+function updateVisibility(){const t=$("taxType").value;const monthly=allowedMonthly();$("singleFields").classList.toggle("hidden",monthly);$("monthlyFields").classList.toggle("hidden",!monthly);$("nonEmployeeFields").classList.toggle("hidden",!["non_employee_cont","non_employee_once"].includes(t));$("severanceFields").classList.toggle("hidden",t!=="severance");$("grossLabel").textContent=t==="severance"?"Pesangon dibayar saat ini":"Total Penghasilan Bruto";$("modeBadge").textContent=monthly?"TER bulanan + tahunan":"Single payment"; if(t==="gov_regular")$("monthlyRecipient").value="active"; if(t==="pension_regular")$("monthlyRecipient").value="pensioner";}
+function computeMonthly(){const status=ptkpStatus(),cat=catFromStatus(status),mul=npwpMult(true),grosses=monthlyGrosses();let rateArr=grosses.map(g=>g>0?terRate(cat,g):0);let taxArr=grosses.map((g,i)=>g*rateArr[i]*mul);const totalGross=grosses.reduce((a,b)=>a+b,0);const rec=$("monthlyRecipient").value;let monthlyCap=rec==="pensioner"?200000:500000, annualCap=rec==="pensioner"?2400000:6000000;let cost=Math.min(grosses.reduce((a,g)=>a+Math.min(g*.05,monthlyCap),0),annualCap);let other=parseNum($("annualOtherDed").value);let net=Math.max(0,totalGross-cost-other);let pkp=floorThousand(Math.max(0,net-(PTKP[status]||0)));let annualTax=taxPasal17(pkp)*mul;let janNov=taxArr.slice(0,11).reduce((a,b)=>a+b,0);if($("decMode").value==="reconcile"){taxArr[11]=annualTax-janNov;rateArr[11]=null}let totalTax=taxArr.reduce((a,b)=>a+b,0);grosses.forEach((g,i)=>{$(`mRate${i}`).textContent=(g>0&&rateArr[i]!=null)?fmtPct(rateArr[i]):(i===11&&$("decMode").value==="reconcile"?"rekon":"—");$(`mTax${i}`).textContent=fmtIDR(taxArr[i])});$("mGrossTotal").textContent=fmtIDR(totalGross);$("mTaxTotal").textContent=fmtIDR(totalTax);return {dpp:pkp,tax:totalTax,annualTax,totalGross,cost,other,net,pkp,method:$("decMode").value==="reconcile"?"TER + Rekon":"TER", status:$("taxType").value==="gov_regular"?"DTP / APBN-APBD":"Tidak Final", formula:`<b>Jan-Nov</b> = TER bulanan × bruto. <br><b>Masa terakhir</b> = PPh Pasal 17 setahun - PPh masa sebelumnya. <br>Pengurang: ${rec==="pensioner"?"biaya pensiun 5% maks Rp200rb/bln/Rp2,4jt/thn":"biaya jabatan 5% maks Rp500rb/bln/Rp6jt/thn"}.`}}
+function computeSingle(){const t=$("taxType").value,g=parseNum($("gross").value),mul=npwpMult(t!=="severance");let dpp=0,tax=0,rate="—",status="Tidak Final",formula="—",note="";
+if(t==="gov_gol12"||t==="gov_gol3"||t==="gov_gol4"){let r=t==="gov_gol12"?0:t==="gov_gol3"?.05:.15;dpp=g;tax=g*r*mul;rate=fmtPct(r)+(mul>1?" × 120%":"");status="Final APBN/APBD";formula=`<b>PPh 21 final</b> = tarif golongan × bruto${mul>1?" × 120% non-NPWP":""}.`;note="Untuk honorarium/imbalan lain yang menjadi beban APBN/APBD, bukan penghasilan tetap dan teratur.";}
+else if(t==="non_employee_cont"||t==="non_employee_once"){const catering=$("serviceType").value==="catering";const exp=catering?0:parseNum($("expense").value);const base=Math.max(0,g-exp);dpp=base*.5;tax=taxPasal17(dpp)*mul;rate="Pasal 17"+(mul>1?" × 120%":"");status="Tidak Final";formula=`<b>Bruto dasar</b> = ${catering?"seluruh bruto jasa katering":"bruto - pengurang terbukti"}.<br><b>DPP</b> = 50% × bruto dasar.<br><b>PPh 21</b> = Pasal 17 × DPP${mul>1?" × 120% non-NPWP":""}.`;note="Di PMK 168, berkesinambungan dan tidak berkesinambungan tidak dibuat berbeda dalam rumus utama pemotongan: sama-sama 50% dari bruto sebagai DPP.";}
+else if(t==="activity_participant"||t==="pension_program"||t==="former_employee"){dpp=g;tax=taxPasal17(dpp)*mul;rate="Pasal 17"+(mul>1?" × 120%":"");status="Tidak Final";let obj=t==="activity_participant"?"Peserta Kegiatan":t==="pension_program"?"Peserta Program Pensiun":"Mantan Pegawai";formula=`<b>PPh 21 ${obj}</b> = Pasal 17 × jumlah bruto${mul>1?" × 120% non-NPWP":""}.`;note="Dihitung per penghasilan dalam masa pajak/pada saat terutang, bukan memakai TER.";}
+else if(t==="commissioner"){const cat=catFromStatus(ptkpStatus()),r=terRate(cat,g);dpp=g;tax=g*r*mul;rate=`TER ${cat}: ${fmtPct(r)}`+(mul>1?" × 120%":"");status="Tidak Final";formula=`<b>PPh 21 Komisaris/Pengawas tidak teratur</b> = TER bulanan kategori ${cat} × bruto${mul>1?" × 120% non-NPWP":""}.`;note="Objek ini memakai TER bulanan, jadi status PTKP memengaruhi kategori TER.";}
+else if(t==="severance"){const prev=parseNum($("sevPrev").value);if($("sevMode").value==="final2y"){dpp=g;tax=Math.max(0,taxPesangonFinal(prev+g)-taxPesangonFinal(prev));rate="Final berlapis";status="Final";formula="<b>PPh pesangon sekarang</b> = pajak final kumulatif atas (pesangon sebelumnya + saat ini) - pajak final atas pesangon sebelumnya.<br>Lapisan: 0% ≤50jt; 5% >50-100jt; 15% >100-500jt; 25% >500jt.";note="Multiplier non-NPWP tidak diterapkan pada mode pesangon final di aplikasi ini.";}else{dpp=g;tax=taxPasal17(g)*mul;rate="Pasal 17"+(mul>1?" × 120%":"");status="Tidak Final";formula=`<b>Tahun ke-3 dan seterusnya</b> dihitung sebagai tidak final: Pasal 17 × bruto${mul>1?" × 120% non-NPWP":""}.`;note="Perlakuan tahun ke-3 perlu dicek lagi dengan bukti pembayaran dan status pemotongan sebelumnya sebelum dipakai final produksi.";}}
+return {dpp,tax,rate,status,formula,note};}
+function render(){const st=ptkpStatus(),cat=catFromStatus(st);$("ptkpStatus").value=st;$("terCategory").value="TER "+cat;updateVisibility();let res=allowedMonthly()?computeMonthly():computeSingle();$("rateOut").textContent=res.rate||res.method||"—";$("dppOut").textContent=fmtIDR(res.dpp);$("taxOut").textContent=fmtIDR(res.tax);$("statusOut").textContent=res.status;$("formulaOut").innerHTML="<b>Rumus:</b><br/>"+(res.formula||"—");$("noteOut").textContent=res.note||"Sudah dihitung sesuai mode yang dipilih.";}
+function resetInputs(){["gross","expense","sevPrev","annualOtherDed","monthlyNote"].forEach(id=>$(id).value="");root.querySelectorAll(".mGross").forEach(el=>el.value="");render();}
+initMonthly();["npwp","marital","deps","taxType","gross","serviceType","expense","sevPrev","sevMode","monthlyRecipient","decMode","annualOtherDed"].forEach(id=>$(id).addEventListener("input",render));["npwp","marital","deps","taxType","serviceType","sevMode","monthlyRecipient","decMode"].forEach(id=>$(id).addEventListener("change",render));$("btnCalc").addEventListener("click",render);$("btnReset").addEventListener("click",resetInputs);$("copyJan").addEventListener("click",()=>{const first=root.querySelector('.mGross')?.value||"";root.querySelectorAll('.mGross').forEach(el=>el.value=first);render();});$("clearMonthly").addEventListener("click",()=>{root.querySelectorAll('.mGross').forEach(el=>el.value="");render();});render();
+
+
+  function showLain(){
+    document.getElementById("view_tetap").classList.add("hidden");
+    const tak=document.getElementById("view_tak"); if(tak) tak.classList.add("hidden");
+    const ph=document.getElementById("view_placeholder"); if(ph) ph.classList.add("hidden");
+    document.getElementById("view_lain").classList.remove("hidden");
+    document.getElementById("tab_tetap").classList.remove("active");
+    document.getElementById("tab_tak").classList.remove("active");
+    document.getElementById("tab_lain").classList.add("active");
+    if(typeof render === "function") render();
+  }
+  function hideLain(){
+    const v=document.getElementById("view_lain");
+    if(v) v.classList.add("hidden");
+  }
+  document.getElementById("tab_lain").addEventListener("click", showLain);
+  document.getElementById("tab_tetap").addEventListener("click", hideLain);
+  document.getElementById("tab_tak").addEventListener("click", hideLain);
+})();
+</script>
+
+<script>
+(function(){
+  const data={
+    tab_tetap:{
+      title:'Kalkulator PPh 21 Pegawai Tetap',
+      desc:'Isi data pegawai dan penghasilan bulanan, lalu aplikasi menghitung TER, PPh bulanan, dan rekonsiliasi masa pajak terakhir.',
+      badge:'Pegawai Tetap'
+    },
+    tab_tak:{
+      title:'Kalkulator PPh 21 Pegawai Tak Tetap',
+      desc:'Mode dibayar bulanan, harian, dan borongan/satuan dengan tampilan konsisten tanpa mengulang judul besar.',
+      badge:'Pegawai Tak Tetap'
+    },
+    tab_lain:{
+      title:'Kalkulator PPh 21 Lainnya',
+      desc:'Pilih jenis penerima penghasilan, isi bruto dan pengurang yang relevan, lalu aplikasi menampilkan dasar pengenaan, metode tarif, dan PPh Pasal 21.',
+      badge:'PPh 21 Lainnya'
+    }
+  };
+  function setContext(id){
+    const cfg=data[id]||data.tab_tetap;
+    const title=document.getElementById('appContextTitle');
+    const desc=document.getElementById('appContextDesc');
+    const badge=document.getElementById('appContextBadge');
+    if(title) title.textContent=cfg.title;
+    if(desc) desc.textContent=cfg.desc;
+    if(badge) badge.textContent=cfg.badge;
+  }
+  ['tab_tetap','tab_tak','tab_lain'].forEach(id=>{
+    const btn=document.getElementById(id);
+    if(btn) btn.addEventListener('click',()=>setContext(id));
+  });
+  setContext('tab_tetap');
+})();
+</script>
+
+<script>
+(function(){
+  function applyNgolahTheme(theme){
+    var isDark = theme === 'dark';
+    document.documentElement.classList.toggle('dark', isDark);
+    if (document.body) {
+      document.body.classList.toggle('dark-mode', isDark);
+      document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    }
+  }
+  var theme = 'light';
+  try { theme = new URLSearchParams(window.location.search).get('theme') || 'light'; } catch (e) {}
+  applyNgolahTheme(theme);
+  window.addEventListener('message', function(event){
+    var data = event.data || {};
+    if (data.type === 'ngolahPajakTheme') applyNgolahTheme(data.theme === 'dark' ? 'dark' : 'light');
+  });
+})();
+</script>
+
+</body>
+</html>
